@@ -1,0 +1,17 @@
+.cursor-hand {
+    cursor: pointer;
+}
+span.cursor-hand:hover {
+    cursor: pointer;
+    color: rgb(148, 148, 148);
+}
+
+label {
+    size: 18px;
+    font-weight: bold;
+}
+
+.logo-wrapper {
+    padding: 0px !important;
+    width: 80%;
+}

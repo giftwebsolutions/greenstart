@@ -1,0 +1,11 @@
+{
+    "name": "SysAdmin",
+    "alias": "sysadmin",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\SysAdmin\\Providers\\SysAdminServiceProvider"
+    ],
+    "files": []
+}

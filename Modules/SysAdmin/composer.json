@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/sysadmin",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\SysAdmin\\": "app/",
+            "Modules\\SysAdmin\\Database\\Factories\\": "database/factories/",
+            "Modules\\SysAdmin\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\SysAdmin\\Tests\\": "tests/"
+        }
+    }
+}
