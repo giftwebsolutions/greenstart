@@ -38,7 +38,7 @@ class BlockController extends Controller
     {
         $validatedData = $request->validated();
         $this->blockRepository->saveOrUpdate($validatedData);
-        return redirect()->route('sysadmin.block.index');
+        return redirect()->route('sysadmin.cms.block.index');
     }
 
     /**
@@ -68,7 +68,7 @@ class BlockController extends Controller
     {
         $validatedData = $request->validated();
         $page = $this->blockRepository->saveOrUpdate($validatedData, $id);
-        return redirect()->route('sysadmin.block.index');
+        return redirect()->route('sysadmin.cms.block.index');
     }
 
     /**
@@ -77,6 +77,6 @@ class BlockController extends Controller
     public function destroy($id)
     {
         $this->blockRepository->delete($id);
-        return redirect()->route('sysadmin.block.index');
+        return redirect()->route('sysadmin.cms.block.index');
     }
 }

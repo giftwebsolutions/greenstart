@@ -33,7 +33,7 @@
             <div class="col-md-8">
                 <div class="card">
                     <form class="theme-form" id="create-block" method="POST" enctype="multipart/form-data"
-                        action="{{ route('sysadmin.block.create') }}">
+                        action="{{ route('sysadmin.cms.block.create') }}">
                         @csrf
                         <div class="card-body p-3">
 
@@ -141,7 +141,7 @@
     <script type="module">
         let file;
         $('a#cancel-button').click(function() {
-            window.location.href = "{{ route('sysadmin.page.index') }}";
+            window.location.href = "{{ route('sysadmin.cms.page.index') }}";
         });
 
         $('#thumbnail').change(function(e) {

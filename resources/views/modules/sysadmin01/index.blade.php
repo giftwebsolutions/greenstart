@@ -109,7 +109,7 @@
                                         <div>
                                             <h4>CMS Pages</h4><span class="f-light">
 
-                                                <a href="{{ route('sysadmin.page.index') }}"> Manage CMS Pages</a></span>
+                                                <a href="{{ route('sysadmin.cms.page.index') }}"> Manage CMS Pages</a></span>
                                         </div>
                                     </div>
                                     <div class="font-warning f-w-500"><i

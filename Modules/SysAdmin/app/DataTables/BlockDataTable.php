@@ -38,7 +38,7 @@ class BlockDataTable extends DataTable
             ->orderBy(1)
             ->selectStyleSingle()
             ->buttons([
-                Button::make('add')->action("window.location = '" . route('sysadmin.block.create') . "';"),
+                Button::make('add')->action("window.location = '" . route('sysadmin.cms.block.create') . "';"),
                 Button::make('excel'),
                 //Button::make('csv'),
                 // Button::make('pdf'),
@@ -61,7 +61,7 @@ class BlockDataTable extends DataTable
 
     protected function getActionColumn($data): string
     {
-        $showUrl = route('sysadmin.block.view', $data->id);
+        $showUrl = route('sysadmin.cms.block.view', $data->id);
         $editUrl = route('sysadmin.block.edit', $data->id);
         $deleteUrl = route('sysadmin.block.delete', $data->id);
         return '

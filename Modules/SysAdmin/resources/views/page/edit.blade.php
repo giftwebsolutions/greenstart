@@ -212,7 +212,7 @@
     <script type="module">
         let file;
         $('a#cancel-button').click(function() {
-            window.location.href = "{{ route('sysadmin.page.index') }}";
+            window.location.href = "{{ route('sysadmin.cms.page.index') }}";
         });
 
         $('#featured_image').change(function(e) {

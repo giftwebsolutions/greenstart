@@ -22,7 +22,7 @@ class BlockFormRequest extends FormRequest
     public function rules()
     {
         return match (request()->route()->action['as']) {
-            'sysadmin.block.create',  => $this->store(),
+            'sysadmin.cms.block.create',  => $this->store(),
             'sysadmin.block.edit' => $this->update(),
             'sysadmin.block.update' => $this->update(),
             default => $this->store()

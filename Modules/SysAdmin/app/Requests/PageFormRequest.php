@@ -22,7 +22,7 @@ class PageFormRequest extends FormRequest
     public function rules()
     {
         return match (request()->route()->action['as']) {
-            'sysadmin.page.create',  => $this->store(),
+            'sysadmin.cms.page.create',  => $this->store(),
             'sysadmin.page.edit' => $this->update(),
             'sysadmin.page.update' => $this->update(),
             default => $this->store()

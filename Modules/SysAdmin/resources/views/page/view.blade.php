@@ -25,7 +25,7 @@
                             class="bi bi-arrow-left"></i></a>
                     <a href="{{ route('sysadmin.page.edit', $page['id']) }}" adata-bs-title="edit"  data-bs-toggle="tooltip" data-bs-placement="top" class="btn btn-primary mx-2"><i
                             class="bi bi-pencil-fill"></i></a>
-                    <a href="{{ route('sysadmin.page.index') }}" adata-bs-title="list" data-bs-toggle="tooltip" data-bs-placement="top" class="btn btn-primary"><i class="bi bi-list"></i></a>
+                    <a href="{{ route('sysadmin.cms.page.index') }}" adata-bs-title="list" data-bs-toggle="tooltip" data-bs-placement="top" class="btn btn-primary"><i class="bi bi-list"></i></a>
                 </div>
             </div>
             <div class="col-12">

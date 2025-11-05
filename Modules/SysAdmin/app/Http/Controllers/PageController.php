@@ -42,7 +42,7 @@ class PageController extends Controller
     {
         $validatedData = $request->validated();
         $this->pageRepository->saveOrUpdate($validatedData);
-        return redirect()->route('sysadmin.page.index');
+        return redirect()->route('sysadmin.cms.page.index');
     }
 
     /**
@@ -81,7 +81,7 @@ class PageController extends Controller
             //dd($request);
             $validatedData = $request->validated();
             $page = $this->pageRepository->saveOrUpdate($validatedData, $id);
-            return redirect()->route('sysadmin.page.index');
+            return redirect()->route('sysadmin.cms.page.index');
         } catch (ValidationException $e) {
             return back()->withErrors($e->validator->errors());
         }
@@ -93,6 +93,6 @@ class PageController extends Controller
     public function destroy($id)
     {
         $this->pageRepository->delete($id);
-        return redirect()->route('sysadmin.page.index');
+        return redirect()->route('sysadmin.cms.page.index');
     }
 }

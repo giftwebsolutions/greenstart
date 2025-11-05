@@ -41,7 +41,7 @@ class PageDataTable extends DataTable
             ->orderBy(1)
             ->selectStyleSingle()
             ->buttons([
-                Button::make('add')->action("window.location = '" . route('sysadmin.page.create') . "';"),
+                Button::make('add')->action("window.location = '" . route('sysadmin.cms.page.create') . "';"),
                 Button::make('excel'),
                 //Button::make('csv'),
                 // Button::make('pdf'),
@@ -65,7 +65,7 @@ class PageDataTable extends DataTable
 
     protected function getActionColumn($data): string
     {
-        $showUrl = route('sysadmin.page.view', $data->id);
+        $showUrl = route('sysadmin.cms.page.view', $data->id);
         $editUrl = route('sysadmin.page.edit', $data->id);
         $deleteUrl = route('sysadmin.page.delete', $data->id);
         return '

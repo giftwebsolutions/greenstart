@@ -1,63 +1,70 @@
 import './bootstrap';
 import 'laravel-datatables-vite';
 
-import 'tinymce/tinymce';
-import 'tinymce/skins/ui/oxide/skin.min.css';
-import 'tinymce/skins/content/default/content.min.css';
-import 'tinymce/skins/content/default/content.css';
-import 'tinymce/icons/default/icons';
-import 'tinymce/themes/silver/theme';
-import 'tinymce/models/dom/model';
-import 'tinymce/plugins/image';
-import 'tinymce/plugins/media';
-import 'tinymce/plugins/link';
-import 'tinymce/plugins/code';
-import 'tinymce/plugins/table';
+import Quill from 'quill';
+import 'quill/dist/quill.snow.css';
 
-import '@eonasdan/tempus-dominus/dist/css/tempus-dominus.min.css';
-import '@fortawesome/fontawesome-free/scss/fontawesome.scss';
-import '@fortawesome/fontawesome-free/scss/brands.scss';
-import '@fortawesome/fontawesome-free/scss/regular.scss';
-import '@fortawesome/fontawesome-free/scss/solid.scss';
-import '@fortawesome/fontawesome-free/scss/v4-shims.scss';
+document.addEventListener('DOMContentLoaded', () => {
+    const toolbarOptions = [
+        [{ header: [1, 2, 3, false] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ color: [] }, { background: [] }],
+        [{ align: [] }],
+        [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
+        [{ script: 'sub' }, { script: 'super' }],
+        ['blockquote', 'code-block'],
+        ['link', 'image', 'video'],
+        ['clean']
+    ];
 
-// Import CodeMirror styles and scripts
-//import '@codemirror/view/style.css';
+    document.querySelectorAll('.editor').forEach((el, index) => {
+        // Skip if already initialized
+        if (el.dataset.initialized) return;
 
-tinymce.init({
-    selector: '.editor',
+        const quill = new Quill(el, {
+            theme: 'snow',
+            placeholder: el.getAttribute('data-placeholder') || 'Start writing here...',
+            modules: {
+                toolbar: {
+                    container: toolbarOptions,
+                    handlers: {
+                        image: function () {
+                            const fileManagerUrl = '/file-manager/quill';
+                            const fileWindow = window.open(
+                                fileManagerUrl,
+                                'FileManager',
+                                'width=1100,height=650,resizable=yes,scrollbars=yes'
+                            );
 
-    /* TinyMCE configuration options */
-    plugins: 'image media link code table',
-    toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | image media link | table code',
-    relative_urls: false,
-    remove_script_host: false,
-    convert_urls: true,
-    file_picker_callback: function (callback, value, meta) {
-        let fileManagerUrl = '/file-manager/tinymce';
-
-        tinymce.activeEditor.windowManager.openUrl({
-            title: 'File Manager',
-            url: fileManagerUrl,
-            buttons: [
-                {
-                    type: 'cancel',
-                    text: 'Close',
-                    onClick: 'close'
+                            // Wait for image selection from file manager
+                            window.addEventListener('quillFileSelected', (event) => {
+                                const imageUrl = event.detail.url;
+                                const range = this.quill.getSelection(true);
+                                this.quill.insertEmbed(range.index, 'image', imageUrl);
+                                this.quill.setSelection(range.index + 1);
+                                if (fileWindow) fileWindow.close();
+                            }, { once: true });
+                        }
+                    }
                 }
-            ],
+            }
         });
 
-        window.addEventListener('tinymceFileSelected', function (event) {
-            const url = event.detail.url;
-            console.log('Received URL from custom event:', url);
-            callback(url); // Pass the URL to TinyMCE's callback function
+        // Sync HTML back to hidden input (for form submission)
+        const form = el.closest('form');
+        if (form) {
+            const hiddenInput = form.querySelector(
+                `input[name="content"], textarea[name="content"], input[name="${el.dataset.name}"], textarea[name="${el.dataset.name}"]`
+            );
+            if (hiddenInput) {
+                hiddenInput.value = quill.root.innerHTML;
+                quill.on('text-change', () => {
+                    hiddenInput.value = quill.root.innerHTML;
+                });
+            }
+        }
 
-            // Optionally close the TinyMCE window
-            tinymce.activeEditor.windowManager.close();
-        }, { once: true });
-
-    },
-    skin: false,
-    content_css: false
+        // Mark initialized
+        el.dataset.initialized = true;
+    });
 });
