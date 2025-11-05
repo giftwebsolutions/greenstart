@@ -2,10 +2,9 @@
 
 namespace Modules\SysAdmin\Http\Controllers\Auth;
 
-use Illuminate\Routing\Controller;
-use App\Providers\RouteServiceProvider;
-use App\Models\User;
-use Illuminate\Foundation\Auth\RegistersUsers;
+use Modules\SysAdmin\Http\Controllers\Controller;
+use Modules\SysAdmin\Models\User;
+use Modules\SysAdmin\Http\Traits\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -29,7 +28,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    protected $redirectTo = '/home';
 
     /**
      * Create a new controller instance.

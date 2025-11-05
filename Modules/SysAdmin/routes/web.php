@@ -64,12 +64,10 @@ Route::prefix('sysadmin')
         // Dashboard
         Route::get('/', [DashboardController::class, 'index'])->name('index');
 
-    Route::get('/cache', '\Modules\SysAdmin\App\Http\Controllers\SysAdminController@cache')->name('sysadmin.cache');
-
-    // ===============================
-    // 👤 User Management
-    // ===============================
-    Route::prefix('user')->as('user.')->controller(Modules\SysAdmin\Http\Controllers\UserController::class)->group(function () {
+        // ===============================
+        // 👤 User Management
+        // ===============================
+        Route::prefix('user')->as('user.')->controller(Modules\SysAdmin\Http\Controllers\UserController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('view/{id}', 'show')->name('view');
             Route::get('create', 'create')->name('create');

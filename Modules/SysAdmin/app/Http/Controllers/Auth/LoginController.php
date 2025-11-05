@@ -2,9 +2,10 @@
 
 namespace Modules\SysAdmin\Http\Controllers\Auth;
 
-use Illuminate\Routing\Controller;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Modules\SysAdmin\Http\Controllers\Controller;
+use Modules\SysAdmin\Http\Traits\AuthenticatesUsers;
+//use Spatie\Activitylog\Models\Activity;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -26,7 +27,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    protected $redirectTo = '/sys_admin/index';
 
     /**
      * Create a new controller instance.
@@ -36,5 +37,13 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    protected function authenticated(Request $request, $user)
+    {
+        // activity('login') // Define the activity name (e.g., 'login')
+        //     ->causedBy($user) // Identify the user causing the activity
+        //     ->withProperties(['ip' => $request->ip()]) // Add additional properties (e.g., user IP)
+        //     ->log('USER Login'); // Log the specific message
     }
 }

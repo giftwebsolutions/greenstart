@@ -2,8 +2,8 @@
 
 namespace Modules\SysAdmin\Http\Controllers\Auth;
 
-use Illuminate\Routing\Controller;
-use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use Modules\SysAdmin\Http\Controllers\Controller;
+use Modules\SysAdmin\Http\Traits\SendsPasswordResetEmails;
 
 class ForgotPasswordController extends Controller
 {

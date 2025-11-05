@@ -2,9 +2,8 @@
 
 namespace Modules\SysAdmin\Http\Controllers\Auth;
 
-use Illuminate\Routing\Controller;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Foundation\Auth\VerifiesEmails;
+use Modules\SysAdmin\Http\Controllers\Controller;
+use Modules\SysAdmin\Http\Traits\VerifiesEmails;
 
 class VerificationController extends Controller
 {
@@ -26,7 +25,7 @@ class VerificationController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    protected $redirectTo = '/home';
 
     /**
      * Create a new controller instance.
