@@ -14,6 +14,10 @@ class FrontendController extends Controller
     {
         return view('frontend::index');
     }
+      public function newarraival()
+    {
+        return view('frontend::pages.newarraival');
+    }
 
     public function about()
     {
@@ -35,4 +39,5 @@ class FrontendController extends Controller
     {
         return view('frontend::pages.contact');
     }
+
 }
