@@ -375,11 +375,12 @@
                         <div class="header-horizontal-menu">
                             <ul class="menu-content">
                                 <li class="active menu-dropdown">
-                                    <a href="#">Home</a>
+                                    <a href="{{ route('home') }}">Home</a>
 
                                 </li>
 
-                                <li><a href="about.html">New Arraival</a></li>
+                                <li><a href="{{ route('newarraival') }}">New Arraival</a></li>
+                               
                                 <li class="menu-dropdown">
                                     <a href="#">Shop <i class="ion-ios-arrow-down"></i></a>
                                     <ul class="mega-menu-wrap">
@@ -454,39 +455,7 @@
                                         <li><a href="wishlist.html">Wishlist Page</a></li>
                                     </ul>
                                 </li>
-                                <li class="menu-dropdown">
-                                    <a href="#">Blog <i class="ion-ios-arrow-down"></i></a>
-                                    <ul class="main-sub-menu">
-                                        <li class="menu-dropdown position-static">
-                                            <a href="#">Blog Grid <i class="ion-ios-arrow-right"></i></a>
-                                            <ul class="main-sub-menu main-sub-menu-2">
-                                                <li><a href="blog-grid-left-sidebar.html">Blog Grid Left Sidebar</a>
-                                                </li>
-                                                <li><a href="blog-grid-right-sidebar.html">Blog Grid Right Sidebar</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="menu-dropdown position-static">
-                                            <a href="#">Blog List <i class="ion-ios-arrow-right"></i></a>
-                                            <ul class="main-sub-menu main-sub-menu-2">
-                                                <li><a href="blog-list-left-sidebar.html">Blog List Left Sidebar</a>
-                                                </li>
-                                                <li><a href="blog-list-right-sidebar.html">Blog List Right Sidebar</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="menu-dropdown position-static">
-                                            <a href="#">Blog Single <i class="ion-ios-arrow-right"></i></a>
-                                            <ul class="main-sub-menu main-sub-menu-2">
-                                                <li><a href="blog-single-left-sidebar.html">Blog Single Left
-                                                        Sidebar</a>
-                                                </li>
-                                                <li><a href="blog-single-right-sidebar.html">Blog Single Right
-                                                        Sidbar</a></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
+                                <li><a href="{{ route('blogs.index') }}">Blog</a></li>
                                 <li><a href="{{ route('about') }}">About Page</a></li>
                                 <li><a href="{{ route('contact') }}">contact Us</a></li>
                             </ul>

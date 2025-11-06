@@ -12,7 +12,7 @@ class BlogController extends Controller
      */
     public function index()
     {
-        return view('frontend::blog.index');
+        return view('frontend::blogs.index');
     }
 
 
@@ -21,6 +21,6 @@ class BlogController extends Controller
      */
     public function show($id)
     {
-        return view('frontend::blog.show');
+        return view('frontend::blogs.show');
     }
 }
