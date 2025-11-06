@@ -15,42 +15,24 @@ class FrontendController extends Controller
         return view('frontend::index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function about()
     {
-        return view('frontend::create');
+        return view('frontend::pages.about');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request) {}
-
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
+    public function enquiry()
     {
-        return view('frontend::show');
+        return view('frontend::pages.enquiry');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
+    public function faqs()
     {
-        return view('frontend::edit');
+        return view('frontend::pages.faqs');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id) {}
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id) {}
+    public function contact()
+    {
+        return view('frontend::pages.contact');
+    }
 }
