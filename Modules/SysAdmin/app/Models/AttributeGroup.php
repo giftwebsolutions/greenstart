@@ -22,6 +22,15 @@ class AttributeGroup extends Model
 	protected $table = 'attribute_group';
 	public $timestamps = false;
 
+	/**
+	 * Available status options.
+	 */
+	public array $statuses = [
+		0 => 'Delete',
+		1 => 'Published',
+		2 => 'Draft',
+	];
+
 	protected $casts = [
 		'status' => 'int'
 	];

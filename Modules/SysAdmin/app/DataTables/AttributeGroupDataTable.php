@@ -35,8 +35,12 @@ class AttributeGroupDataTable extends DataTable
             ->minifiedAjax()
             ->orderBy(1)
             ->selectStyleSingle()
+            ->parameters([
+                'dom'          => 'Bfrtip',
+                'buttons'      => ['export', 'print', 'reset', 'reload'],
+            ])
             ->buttons([
-                Button::make('add')->action("window.location = '" . route('sysadmin.attribute.create') . "';"),
+                Button::make('add')->action("window.location = '" . route('sysadmin.catalog.attribute.group.create') . "';"),
                 Button::make('excel'),
                 //Button::make('csv'),
                 // Button::make('pdf'),
@@ -59,9 +63,9 @@ class AttributeGroupDataTable extends DataTable
 
     protected function getActionColumn($data): string
     {
-        $showUrl = route('sysadmin.attribute.show', $data->id);
-        $editUrl = route('sysadmin.attribute.edit', $data->id);
-        $deleteUrl = route('sysadmin.attribute.destroy', $data->id);
+        $showUrl = route('sysadmin.catalog.attribute.group.view', $data->id);
+        $editUrl = route('sysadmin.catalog.attribute.group.edit', $data->id);
+        $deleteUrl = route('sysadmin.catalog.attribute.group.delete', $data->id);
         return '
         <ul class="action">
             <li class="edit"> <a href="' . $editUrl . '" data-bs-original-title="edit" title="edit"><i class="icon-pencil-alt"></i></a></li>

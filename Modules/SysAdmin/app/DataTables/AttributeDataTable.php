@@ -67,9 +67,9 @@ class AttributeDataTable extends DataTable
 
     protected function getActionColumn($data): string
     {
-        $showUrl = route('sysadmin.catalog.attribute.show', $data->id);
+        $showUrl = route('sysadmin.catalog.attribute.view', $data->id);
         $editUrl = route('sysadmin.catalog.attribute.edit', $data->id);
-        $deleteUrl = route('sysadmin.catalog.attribute.destroy', $data->id);
+        $deleteUrl = route('sysadmin.catalog.attribute.delete', $data->id);
         return '
         <ul class="action">
             <li class="edit"> <a href="' . $editUrl . '" data-bs-original-title="edit" title="edit"><i class="icon-pencil-alt"></i></a></li>

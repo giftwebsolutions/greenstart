@@ -2,9 +2,10 @@
 
 namespace Modules\SysAdmin\Repository;
 
+use Modules\SysAdmin\Interfaces\AttributeGroupInterface;
+use Modules\SysAdmin\Models\AttributeGroup;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
-use Modules\SysAdmin\Interfaces\AttributeGroupInterface;
 
 class AttributeGroupRepository extends BaseRepository implements AttributeGroupInterface
 {
@@ -22,7 +23,29 @@ class AttributeGroupRepository extends BaseRepository implements AttributeGroupI
      */
     public function model()
     {
-        return \Modules\SysAdmin\Models\AttributeGroup::class;
+        return AttributeGroup::class;
+    }
+
+    public function getStatus()
+    {
+        return $this->getModel()->statuses;
+    }
+
+
+    public function saveOrUpdate(array $data, ?int $id = null)
+    {
+        if ($id) {
+            $group = AttributeGroup::findOrFail($id);
+            $group->update($data);
+            return $group;
+        }
+
+        return AttributeGroup::create($data);
+    }
+
+    public function getStatuses(): array
+    {
+        return (new AttributeGroup())->statuses;
     }
 
     /**
