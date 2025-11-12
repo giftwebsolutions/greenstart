@@ -113,7 +113,7 @@ Route::prefix('sysadmin')
                 Route::get('destroy/{id}', 'destroy')->name('delete');
             });
 
-            Route::controller(Modules\SysAdmin\Http\Controllers\AttributeGroupController::class)->prefix('attribute-group')->as('attribute.group.')->group(function () {
+            Route::controller(Modules\SysAdmin\Http\Controllers\AttributeGroupController::class)->prefix('group')->as('attribute.group.')->group(function () {
                 Route::get('/', 'index')->name('index');
                 Route::get('view/{id}', 'show')->name('view');
                 Route::get('create', 'create')->name('create');
