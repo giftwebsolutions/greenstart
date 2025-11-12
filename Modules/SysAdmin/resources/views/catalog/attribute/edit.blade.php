@@ -145,8 +145,8 @@
                                     @php $reqVal = old('require', $attribute->require ?? 'required'); @endphp
                                     <select id="require" name="require"
                                             class="form-select @error('require') is-invalid @enderror" required>
-                                        <option value="required" {{ $reqVal === 'required' ? 'selected' : '' }}>Required</option>
-                                        <option value="optional" {{ $reqVal === 'optional' ? 'selected' : '' }}>Optional</option>
+                                        <option value="1" {{ $reqVal === '1' ? 'selected' : '' }}>Required</option>
+                                        <option value="0" {{ $reqVal === '0' ? 'selected' : '' }}>Optional</option>
                                     </select>
                                     @error('require')
                                         <span class="invalid-feedback"><strong>{{ $message }}</strong></span>

@@ -38,9 +38,9 @@ class AttributeFormRequest extends FormRequest
             'name'        => ['required', 'string', 'max:100', 'unique:attribute,name'],
             'group_id'    => ['required', 'integer', 'exists:attribute_group,id'],
             'sort_order'  => ['nullable', 'integer', 'min:0'],
-            'type'        => ['required', 'integer', 'exists:attribute_type,id'],
+            'type'        => ['required', 'integer', 'exists:attribute_type,attribute_type_id'],
             'comparable'  => ['nullable', 'boolean'],
-            'require'     => ['required', Rule::in(['required', 'optional'])],
+            'require'     => ['required', 'boolean'],
             'status'      => ['required', Rule::in(array_keys((new Attribute)->statuses))],
         ];
     }
@@ -59,9 +59,9 @@ class AttributeFormRequest extends FormRequest
             ],
             'group_id'    => ['required', 'integer', 'exists:attribute_group,id'],
             'sort_order'  => ['nullable', 'integer', 'min:0'],
-            'type'        => ['required', 'integer', 'exists:attribute_type,id'],
+            'type'        => ['required', 'integer', 'exists:attribute_type,attribute_type_id'],
             'comparable'  => ['nullable', 'boolean'],
-            'require'     => ['required', Rule::in(['required', 'optional'])],
+            'require'     => ['required', 'boolean'],
             'status'      => ['required', Rule::in(array_keys((new Attribute)->statuses))],
         ];
     }

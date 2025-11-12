@@ -24,6 +24,7 @@ class AttributeController extends Controller
 
     public function create()
     {
+        //dd($this->attributeRepository->getAttributeTypes());
         return view('sysadmin::catalog.attribute.create')->with([
             'groups' => $this->attributeRepository->getAttributeSets(),
             'types' => $this->attributeRepository->getAttributeTypes(),

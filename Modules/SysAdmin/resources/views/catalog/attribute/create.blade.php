@@ -60,13 +60,9 @@
                                     <select id="group_id" name="group_id"
                                             class="form-select select2 @error('group_id') is-invalid @enderror" required>
                                         <option value="">Select Group</option>
-                                        @foreach ($groups as $g)
-                                            @php
-                                                $gid = is_array($g) ? $g['id'] : ($g->id ?? null);
-                                                $gname = is_array($g) ? $g['name'] : ($g->name ?? null);
-                                            @endphp
-                                            <option value="{{ $gid }}" {{ (string)$gid === (string)old('group_id') ? 'selected' : '' }}>
-                                                {{ $gname }}
+                                        @foreach ($groups as $k => $v)
+                                            <option value="{{ $k }}" {{ (string)$k === (string)old('group_id') ? 'selected' : '' }}>
+                                                {{ $v }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -83,13 +79,10 @@
                                     <select id="type" name="type"
                                             class="form-select select2 @error('type') is-invalid @enderror" required>
                                         <option value="">Select Type</option>
-                                        @foreach ($types as $t)
-                                            @php
-                                                $tid = is_array($t) ? $t['id'] : ($t->id ?? null);
-                                                $tname = is_array($t) ? $t['name'] : ($t->name ?? null);
-                                            @endphp
-                                            <option value="{{ $tid }}" {{ (string)$tid === (string)old('type') ? 'selected' : '' }}>
-                                                {{ $tname }}
+                                        @foreach ($types as $k=> $v)
+                                           
+                                            <option value="{{ $k }}" {{ (string)$k === (string)old('type') ? 'selected' : '' }}>
+                                                {{ $v }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -137,8 +130,8 @@
                                         @php
                                             $reqVal = old('require', 'required'); // default to 'required'
                                         @endphp
-                                        <option value="required" {{ $reqVal === 'required' ? 'selected' : '' }}>Required</option>
-                                        <option value="optional" {{ $reqVal === 'optional' ? 'selected' : '' }}>Optional</option>
+                                        <option value="1" {{ $reqVal === 'required' ? 'selected' : '' }}>Required</option>
+                                        <option value="0" {{ $reqVal === 'optional' ? 'selected' : '' }}>Optional</option>
                                     </select>
                                     @error('require')
                                         <span class="invalid-feedback"><strong>{{ $message }}</strong></span>

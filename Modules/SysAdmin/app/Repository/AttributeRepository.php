@@ -27,11 +27,22 @@ class AttributeRepository extends BaseRepository implements AttributeInterface
         return Attribute::class;
     }
 
+    public function saveOrUpdate(array $data, ?int $id = null)
+    {
+        if ($id) {
+            $group = Attribute::findOrFail($id);
+            $group->update($data);
+            return $group;
+        }
+
+        return Attribute::create($data);
+    }
+
     public function getStatus()
     {
         return $this->getModel()->statuses;
     }
-    
+
     /**
      * Boot up the repository, pushing criteria
      */
@@ -47,6 +58,6 @@ class AttributeRepository extends BaseRepository implements AttributeInterface
 
     public function getAttributeTypes()
     {
-        return app(AttributeTypeRepository::class)->all()->pluck('name', 'code')->toArray();
+        return app(AttributeTypeRepository::class)->all()->pluck('type_name', 'attribute_type_id')->toArray();
     }
 }
