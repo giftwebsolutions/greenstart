@@ -123,6 +123,17 @@ Route::prefix('sysadmin')
                 Route::get('destroy/{id}', 'destroy')->name('delete');
             });
 
+            Route::controller(Modules\SysAdmin\Http\Controllers\AttributeTypeController::class)->prefix('attribute-type')->as('attribute.type.')->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('view/{id}', 'show')->name('view');
+                Route::get('create', 'create')->name('create');
+                Route::post('create', 'store')->name('store');
+                Route::get('edit/{id}', 'edit')->name('edit');
+                Route::patch('update/{id}', 'update')->name('update');
+                Route::get('destroy/{id}', 'destroy')->name('delete');
+            });
+
+
             Route::controller(Modules\SysAdmin\Http\Controllers\ProductController::class)->prefix('product')->as('product.')->group(function () {
                 Route::get('/', 'index')->name('index');
                 Route::get('view/{id}', 'show')->name('view');

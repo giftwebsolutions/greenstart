@@ -72,6 +72,13 @@ return [
                 'sort'       => 1,
                 'icon'       => 'icon-gear',
             ],
+             [
+                'key'        => 'attribute-type',
+                'name'       => 'Attribute Type',
+                'route'      => 'sysadmin.catalog.attribute.type.index',
+                'sort'       => 1,
+                'icon'       => 'icon-gear',
+            ],
             [
                 'key'        => 'product-list',
                 'name'       => 'Manage Products',
@@ -79,6 +86,7 @@ return [
                 'sort'       => 1,
                 'icon'       => 'icon-gear',
             ]
+            
         ]
     ],
     [
