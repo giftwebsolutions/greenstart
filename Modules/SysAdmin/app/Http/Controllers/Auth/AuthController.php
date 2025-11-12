@@ -25,11 +25,11 @@ class AuthController extends Controller
 
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
-            return redirect()->intended('dashboard')
-                ->withSuccess('Signed in');
+            return redirect()->route('sysadmin.index')
+                ->with('success', 'Login successful!');;
         }
 
-        return redirect()->route('sysadmin.login.form')->withSuccess('Login details are not valid');
+        return redirect()->route('sysadmin.login.form')->with('error', 'Login details are not valid');
     }
 
     public function registration()

@@ -52,6 +52,36 @@ return [
         ]
     ],
     [
+        'key'        => 'catalog',
+        'name'       => 'Catalog',
+        'route'      => '#',
+        'sort'       => 1,
+        'icon'       => 'stroke-project',
+        'children' => [
+            [
+                'key'        => 'atrribute-list',
+                'name'       => 'Manage Attributes',
+                'route'      => 'sysadmin.catalog.attribute.index',
+                'sort'       => 1,
+                'icon'       => 'icon-gear',
+            ],
+            [
+                'key'        => 'attribute-group',
+                'name'       => 'Attribute Groups',
+                'route'      => 'sysadmin.catalog.attribute.group.index',
+                'sort'       => 1,
+                'icon'       => 'icon-gear',
+            ],
+            [
+                'key'        => 'product-list',
+                'name'       => 'Manage Products',
+                'route'      => 'sysadmin.catalog.product.index',
+                'sort'       => 1,
+                'icon'       => 'icon-gear',
+            ]
+        ]
+    ],
+    [
         'key'        => 'page',
         'name'       => 'CMS Pages',
         'route'      => '#',
@@ -86,7 +116,7 @@ return [
         'name'       => 'Blogs',
         'route'      => 'sysadmin.blog.index',
         'sort'       => 1,
-        'icon'       => 'tag',
+        'icon'       => 'stroke-user',
         'children' => [
             [
                 'key'        => 'blog-category',

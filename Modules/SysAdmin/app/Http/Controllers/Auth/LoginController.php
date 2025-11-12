@@ -27,7 +27,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/sys_admin/index';
+    protected $redirectTo = '/sysadmin/index';
 
     /**
      * Create a new controller instance.
@@ -41,9 +41,6 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user)
     {
-        // activity('login') // Define the activity name (e.g., 'login')
-        //     ->causedBy($user) // Identify the user causing the activity
-        //     ->withProperties(['ip' => $request->ip()]) // Add additional properties (e.g., user IP)
-        //     ->log('USER Login'); // Log the specific message
+         
     }
 }

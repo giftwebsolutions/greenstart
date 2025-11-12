@@ -24,7 +24,7 @@ Route::prefix('sysadmin')->as('sysadmin.')->group(function () {
         Route::get('registration', 'registration')->name('register');
         Route::post('registration', 'submitRegistration')->name('register.submit');
 
-        Route::get('signout', 'signOut')->name('logout');
+        Route::post('signout', 'signOut')->name('logout');
     });
 
     // ---------------------------
@@ -92,6 +92,38 @@ Route::prefix('sysadmin')
             });
 
             Route::controller(Modules\SysAdmin\Http\Controllers\BlockController::class)->prefix('block')->as('block.')->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('view/{id}', 'show')->name('view');
+                Route::get('create', 'create')->name('create');
+                Route::post('create', 'store')->name('store');
+                Route::get('edit/{id}', 'edit')->name('edit');
+                Route::patch('update/{id}', 'update')->name('update');
+                Route::get('destroy/{id}', 'destroy')->name('delete');
+            });
+        });
+
+        Route::prefix('catalog')->as('catalog.')->group(function () {
+            Route::controller(Modules\SysAdmin\Http\Controllers\AttributeController::class)->prefix('attribute')->as('attribute.')->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('view/{id}', 'show')->name('view');
+                Route::get('create', 'create')->name('create');
+                Route::post('create', 'store')->name('store');
+                Route::get('edit/{id}', 'edit')->name('edit');
+                Route::patch('update/{id}', 'update')->name('update');
+                Route::get('destroy/{id}', 'destroy')->name('delete');
+            });
+
+            Route::controller(Modules\SysAdmin\Http\Controllers\AttributeGroupController::class)->prefix('attribute-group')->as('attribute.group.')->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('view/{id}', 'show')->name('view');
+                Route::get('create', 'create')->name('create');
+                Route::post('create', 'store')->name('store');
+                Route::get('edit/{id}', 'edit')->name('edit');
+                Route::patch('update/{id}', 'update')->name('update');
+                Route::get('destroy/{id}', 'destroy')->name('delete');
+            });
+
+            Route::controller(Modules\SysAdmin\Http\Controllers\ProductController::class)->prefix('product')->as('product.')->group(function () {
                 Route::get('/', 'index')->name('index');
                 Route::get('view/{id}', 'show')->name('view');
                 Route::get('create', 'create')->name('create');

@@ -18,6 +18,5 @@
 <!-- Responsive css-->
 <link rel="stylesheet" type="text/css" href="{{asset('admin/css/responsive.css')}}">
 
-<link rel="stylesheet" type="text/css" href="{{ asset('build-sysadmin/assets/app-DD6m3XQB.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('build-sysadmin/assets/style-CtZ8RMLD.css') }}">
+{{ module_vite('build-sysadmin', 'resources/assets/scss/style.scss') }}
 

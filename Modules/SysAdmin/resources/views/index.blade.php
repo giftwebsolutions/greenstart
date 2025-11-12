@@ -26,7 +26,7 @@
                             <div class="media-body">
                                 <div class="greeting-user">
                                     <h4 class="f-w-600">Welcome to</h4>
-                                    <p>Adhi Parasakthi Hospitals</p>
+                                    <p>Green Star</p>
                                 </div>
                             </div>
 
