@@ -26,6 +26,22 @@ class AttributeTypeRepository extends BaseRepository implements AttributeTypeInt
         return AttributeType::class;
     }
 
+    public function saveOrUpdate(array $data, ?int $id = null)
+    {
+        if ($id) {
+            $group = AttributeType::findOrFail($id);
+            $group->update($data);
+            return $group;
+        }
+
+        return AttributeType::create($data);
+    }
+
+    public function getStatuses(): array
+    {
+        return (new AttributeType())->statuses;
+    }
+
     /**
      * Boot up the repository, pushing criteria
      */

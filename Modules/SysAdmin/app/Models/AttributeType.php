@@ -23,6 +23,12 @@ class AttributeType extends Model
 	protected $primaryKey = 'attribute_type_id';
 	public $timestamps = false;
 
+	public $statuses = [
+		0 => 'Delete',
+		1 => 'Published',
+		2 => 'Draft',
+	];
+
 	protected $fillable = [
 		'type_name',
 		'identifier',

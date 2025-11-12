@@ -16,7 +16,7 @@ class AttributeTypeDataTable extends DataTable
 {
     public function query(AttributeType $model): QueryBuilder
     {
-        return $model->newQuery()->select(['id', 'name', 'group_id', 'sort_order', 'type', 'comparable', 'require', 'status']);
+        return $model->newQuery()->select(['attribute_type_id', 'type_name', 'identifier','status']);
     }
 
     public function dataTable(QueryBuilder $query): EloquentDataTable
@@ -54,13 +54,9 @@ class AttributeTypeDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::make('id'),
-            Column::make('name'),
-            Column::make('group_id'),
-            Column::make('sort_order'),
-            Column::make('type'),
-            Column::make('comparable'),
-            Column::make('require'),
+            Column::make('attribute_type_id'),
+            Column::make('type_name'),
+            Column::make('identifier'),
             Column::make('status'),
             Column::make('action')->searchable(false)->orderable(true)->width(100),
         ];
@@ -68,9 +64,9 @@ class AttributeTypeDataTable extends DataTable
 
     protected function getActionColumn($data): string
     {
-        $showUrl = route('sysadmin.catalog.attributetype.show', $data->id);
-        $editUrl = route('sysadmin.catalog.attributetype.edit', $data->id);
-        $deleteUrl = route('sysadmin.catalog.attributetype.destroy', $data->id);
+        $showUrl = route('sysadmin.catalog.attribute.type.view', $data->attribute_type_id);
+        $editUrl = route('sysadmin.catalog.attribute.type.edit', $data->attribute_type_id);
+        $deleteUrl = route('sysadmin.catalog.attribute.type.delete', $data->attribute_type_id);
         return '
         <ul class="action">
             <li class="edit"> <a href="' . $editUrl . '" data-bs-original-title="edit" title="edit"><i class="icon-pencil-alt"></i></a></li>

@@ -6,11 +6,11 @@
 @endsection
 
 @section('breadcrumb-title')
-    <h3>AttributeType Pages</h3>
+    <h3>Manage Attribute Type</h3>
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Pages</li>
+    <li class="breadcrumb-item">Attribute Type</li>
     <li class="breadcrumb-item active">List</li>
 @endsection
 
