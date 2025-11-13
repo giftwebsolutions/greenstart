@@ -35,6 +35,12 @@ class Product extends Model
 {
 	protected $table = 'product';
 
+	public static $statuses = [
+		0 => 'Delete',
+		1 => 'Published',
+		2 => 'Draft',
+	];
+
 	protected $casts = [
 		'type' => 'int',
 		'is_featured' => 'int',
@@ -67,4 +73,16 @@ class Product extends Model
 		'slider',
 		'order'
 	];
+
+	// Main Category (Parent)
+	public function category()
+	{
+		return $this->belongsTo(ProductCategory::class, 'product_category', 'id');
+	}
+
+	// Sub Category (Child)
+	public function subCategory()
+	{
+		return $this->belongsTo(ProductCategory::class, 'sub_product_category', 'id');
+	}
 }

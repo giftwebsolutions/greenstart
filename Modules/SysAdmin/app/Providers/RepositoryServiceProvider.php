@@ -46,6 +46,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(AttributeGroupInterface::class, AttributeGroupRepository::class);
         $this->app->bind(AttributeTypeInterface::class, AttributeTypeRepository::class);
         $this->app->bind(AttributeMappingInterface::class, AttributeMappingRepository::class);
+        $this->app->bind(\Modules\SysAdmin\Interfaces\ProductInterface::class, \Modules\SysAdmin\Repository\ProductRepository::class);
     }
 
 

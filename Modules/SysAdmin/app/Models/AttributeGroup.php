@@ -7,15 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class AttributeGroup
- * 
+ *
  * @property int $id
  * @property string $name
  * @property string|null $slug
  * @property int $status
- * 
- * @property Collection|Attribute[] $attributes
  *
- * @package App\Models
+ * @property Collection|Attribute[] $attributes
+ * @property Collection|AttributeMapping[] $mappings
  */
 class AttributeGroup extends Model
 {
@@ -32,17 +31,53 @@ class AttributeGroup extends Model
 	];
 
 	protected $casts = [
-		'status' => 'int'
+		'status' => 'int',
 	];
 
 	protected $fillable = [
 		'name',
 		'slug',
-		'status'
+		'status',
 	];
 
+	/**
+	 * Many-to-many: Group ↔ Attributes via attribute_group_map
+	 * Includes optional pivot column: value
+	 */
 	public function attributes()
 	{
-		return $this->hasMany(Attribute::class, 'group_id');
+		return $this->belongsToMany(
+			Attribute::class,
+			'attribute_mapping',   // pivot table
+			'group_id',              // FK on pivot pointing to this model
+			'attribute_id'           // FK on pivot pointing to Attribute
+		)->withPivot(['value'])
+			->withTimestamps();        // remove if your pivot stores int timestamps
+	}
+
+	/**
+	 * Direct access to mapping rows (pivot as a model).
+	 */
+	public function mappings()
+	{
+		return $this->hasMany(AttributeMapping::class, 'group_id', 'id');
+	}
+
+	/**
+	 * Scope: only Published (and optionally Draft) groups.
+	 */
+	public function scopeActive($query, bool $includeDraft = false)
+	{
+		return $includeDraft
+			? $query->whereIn('status', [1, 2])
+			: $query->where('status', 1);
+	}
+
+	/**
+	 * Helper to get status label.
+	 */
+	public function getStatusLabelAttribute(): string
+	{
+		return $this->statuses[$this->status] ?? (string) $this->status;
 	}
 }

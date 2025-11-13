@@ -2,89 +2,111 @@
 
 namespace Modules\SysAdmin\Http\Controllers;
 
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Validation\ValidationException;
-use Modules\SysAdmin\Interfaces\AttributeInterface;
-use Modules\SysAdmin\DataTables\AttributeDataTable;
-use Modules\SysAdmin\Requests\AttributeFormRequest;
+use Modules\SysAdmin\DataTables\ProductDataTable;
+use Modules\SysAdmin\Interfaces\ProductInterface;
+use Modules\SysAdmin\Requests\ProductFormRequest;
 
 class ProductController extends Controller
 {
-
     public function __construct(
-        protected AttributeInterface $attributeRepository
+        protected ProductInterface $productRepository
     ) {}
 
-    public function index(AttributeDataTable $dataTable)
+    /**
+     * Display Product Listing (DataTable)
+     */
+    public function index(ProductDataTable $dataTable)
     {
-        return $dataTable->render('sysadmin::attribute.index');
+        return $dataTable->render('sysadmin::catalog.product.index');
     }
 
+    /**
+     * Show create form
+     */
     public function create()
     {
-        return view('sysadmin::attribute.create')->with([
-            'attributeSets' => $this->attributeRepository->getAttributeSets(),
-            'attributeTypes' => $this->attributeRepository->getAttributeTypes(),
-        ]);
-    }
-
-    public function store(AttributeFormRequest $request): RedirectResponse
-    {
-        $validatedData = $request->validated();
-        $this->attributeRepository->saveOrUpdate($validatedData);
-        return redirect()->route('sysadmin.catalog.attribute.index');
-    }
-
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
-    {
-        try {
-            $page = $this->attributeRepository->with(['parent'])->findOrFail($id)->toArray();
-            return view('sysadmin::catalog.attribute.view')->with([
-                'page' => $page,
-            ]);
-        } catch (ValidationException $e) {
-            return back()->withErrors($e->validator->errors());
-        }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        $page = $this->attributeRepository->findOrFail($id);
-        return view('sysadmin::catalog.attribute.edit', compact('page'))->with([
-            'parents' => $this->attributeRepository->getParents(),
-            'statuses' => $this->attributeRepository->getStatus()
+        return view('sysadmin::catalog.product.create', [
+            'statuses'      => $this->productRepository->getStatuses(),
+            'categories'    => $this->productRepository->getCategories(),
+            'subCategories' => $this->productRepository->getSubCategories(),
         ]);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Store new product
      */
-    public function update(AttributeFormRequest $request, $id): RedirectResponse
+    public function store(ProductFormRequest $request): RedirectResponse
     {
-        try {
-            //dd($request);
-            $validatedData = $request->validated();
-            $page = $this->attributeRepository->saveOrUpdate($validatedData, $id);
-            return redirect()->route('sysadmin.catalog.attribute.index');
-        } catch (ValidationException $e) {
-            return back()->withErrors($e->validator->errors());
-        }
+        // Normalize checkbox values
+        $validated = $request->validated();
+        $validated['is_featured'] = $request->boolean('is_featured');
+        $validated['slider']      = $request->boolean('slider');
+
+        $this->productRepository->saveOrUpdate($validated);
+
+        return redirect()
+            ->route('sysadmin.catalog.product.index')
+            ->with('success', 'Product created successfully.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Edit Product
      */
-    public function destroy($id)
+    public function edit(int $id)
     {
-        $this->attributeRepository->delete($id);
-        return redirect()->route('sysadmin.catalog.attribute.index');
+        $product = $this->productRepository->find($id);
+
+        return view('sysadmin::catalog.product.edit', [
+            'product'       => $product,
+            'statuses'      => $this->productRepository->getStatuses(),
+            'categories'    => $this->productRepository->getCategories(),
+            'subCategories' => $this->productRepository->getSubCategories(),
+        ]);
+    }
+
+    /**
+     * Update Product
+     */
+    public function update(ProductFormRequest $request, int $id): RedirectResponse
+    {
+        $validated = $request->validated();
+        $validated['is_featured'] = $request->boolean('is_featured');
+        $validated['slider']      = $request->boolean('slider');
+
+        $this->productRepository->saveOrUpdate($validated, $id);
+
+        return redirect()
+            ->route('sysadmin.catalog.product.index')
+            ->with('success', 'Product updated successfully.');
+    }
+
+    /**
+     * Delete Product
+     */
+    public function destroy(int $id): RedirectResponse
+    {
+        $product = $this->productRepository->find($id);
+        $product->delete();
+
+        return redirect()
+            ->route('sysadmin.catalog.product.index')
+            ->with('success', 'Product deleted successfully.');
+    }
+
+    /**
+     * View single product details
+     */
+    public function show(int $id)
+    {
+        $product = $this->productRepository->find($id);
+
+        return view('sysadmin::catalog.product.view', [
+            'product'  => $product,
+            'status'   => $product->status_label ?? null,
+            'category' => $product->category ?? null,
+            'subCategory' => $product->subCategory ?? null,
+        ]);
     }
 }

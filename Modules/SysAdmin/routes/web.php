@@ -133,7 +133,6 @@ Route::prefix('sysadmin')
                 Route::get('destroy/{id}', 'destroy')->name('delete');
             });
 
-
             Route::controller(Modules\SysAdmin\Http\Controllers\ProductController::class)->prefix('product')->as('product.')->group(function () {
                 Route::get('/', 'index')->name('index');
                 Route::get('view/{id}', 'show')->name('view');

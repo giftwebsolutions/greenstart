@@ -59,4 +59,20 @@ class Attribute extends Model
 	{
 		return $this->belongsTo(AttributeType::class, 'type');
 	}
+
+	public function groups()
+	{
+		return $this->belongsToMany(
+			AttributeGroup::class,
+			'attribute_mapping',
+			'attribute_id',
+			'group_id'
+		)->withPivot(['value'])
+			->withTimestamps();
+	}
+
+	public function mappings()
+	{
+		return $this->hasMany(AttributeMapping::class, 'attribute_id');
+	}
 }
