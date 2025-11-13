@@ -8,11 +8,11 @@
 @endsection
 
 @section('breadcrumb-title')
-    <h3>Create Product</h3>
+    <h3>Create Product Category</h3>
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Products</li>
+    <li class="breadcrumb-item">Product Categories</li>
     <li class="breadcrumb-item active">Create</li>
 @endsection
 
@@ -35,87 +35,75 @@
 
         <div class="col-md-8">
             <div class="card">
-                <form id="create-product" class="theme-form" method="POST" enctype="multipart/form-data"
-                      action="{{ route('sysadmin.catalog.product.store') }}">
+                <form id="create-category" class="theme-form" method="POST" enctype="multipart/form-data"
+                      action="{{ route('sysadmin.catalog.productcategory.store') }}">
                     @csrf
 
                     <div class="card-body p-3">
 
-                        {{-- Title --}}
+                        {{-- Name --}}
                         <div class="row mb-3">
-                            <label class="col-md-12 col-form-label">Product Title</label>
+                            <label class="col-md-12 col-form-label">Category Name</label>
                             <div class="col-md-12">
-                                <input type="text" name="title" class="form-control" value="{{ old('title') }}" required>
+                                <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
                             </div>
                         </div>
 
-                        {{-- Keywords --}}
+                        {{-- Slug --}}
                         <div class="row mb-3">
-                            <label class="col-md-12 col-form-label">Keywords</label>
+                            <label class="col-md-12 col-form-label">Slug</label>
                             <div class="col-md-12">
-                                <input type="text" name="keywords" class="form-control" value="{{ old('keywords') }}">
+                                <input type="text" name="slug" class="form-control" value="{{ old('slug') }}">
                             </div>
                         </div>
 
-                        {{-- Short Description --}}
-                        <div class="form-group mb-3">
-                            <label class="col-md-12 col-form-label">Short Description</label>
-                            <textarea name="short_description" class="form-control" rows="3">{{ old('short_description') }}</textarea>
+                        {{-- Parent Category --}}
+                        <div class="row mb-3">
+                            <label class="col-md-12 col-form-label">Parent Category</label>
+                            <div class="col-md-12">
+                                <select class="form-select select2" name="parent_id">
+                                    <option value="">None</option>
+                                    @foreach($categories as $cat)
+                                        <option value="{{ $cat['id'] }}">{{ $cat['name'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
 
                         {{-- Description --}}
                         <div class="form-group mb-3">
                             <label class="col-md-12 col-form-label">Description</label>
-                            <textarea name="description" class="form-control editor" rows="8">{{ old('description') }}</textarea>
+                            <textarea name="description" class="form-control editor" rows="5">{{ old('description') }}</textarea>
                         </div>
 
-                        {{-- SKU --}}
+                        {{-- Banner Image --}}
                         <div class="row mb-3">
-                            <label class="col-md-12 col-form-label">SKU</label>
+                            <label class="col-md-12 col-form-label">Banner Image</label>
                             <div class="col-md-12">
-                                <input type="text" name="sku" class="form-control" value="{{ old('sku') }}">
+                                <input type="file" name="banner" class="form-control">
                             </div>
                         </div>
 
-                        {{-- Product Type --}}
+                        {{-- Category Image --}}
                         <div class="row mb-3">
-                            <label class="col-md-12 col-form-label">Product Type</label>
+                            <label class="col-md-12 col-form-label">Category Image</label>
                             <div class="col-md-12">
-                                <select class="form-select" name="type">
-                                    <option value="1">Simple</option>
-                                    <option value="2">Variable</option>
-                                </select>
+                                <input type="file" name="image" class="form-control">
                             </div>
                         </div>
 
-                        {{-- Video --}}
+                        {{-- Sort Order --}}
                         <div class="row mb-3">
-                            <label class="col-md-12 col-form-label">Video URL</label>
+                            <label class="col-md-12 col-form-label">Sort Order</label>
                             <div class="col-md-12">
-                                <input type="text" name="video" class="form-control" value="{{ old('video') }}">
-                            </div>
-                        </div>
-
-                        {{-- Catalog --}}
-                        <div class="row mb-3">
-                            <label class="col-md-12 col-form-label">Catalog URL</label>
-                            <div class="col-md-12">
-                                <input type="text" name="catalog" class="form-control" value="{{ old('catalog') }}">
-                            </div>
-                        </div>
-
-                        {{-- Thumb Image --}}
-                        <div class="row mb-3">
-                            <label class="col-md-12 col-form-label">Thumbnail Image</label>
-                            <div class="col-md-12">
-                                <input type="file" name="thumb" class="form-control">
+                                <input type="number" name="sort" class="form-control" value="{{ old('sort', 0) }}">
                             </div>
                         </div>
 
                     </div>
 
                     <div class="card-footer text-end">
-                        <a href="{{ route('sysadmin.catalog.product.index') }}" class="btn btn-secondary">Cancel</a>
+                        <a href="{{ route('sysadmin.catalog.productcategory.index') }}" class="btn btn-secondary">Cancel</a>
                         <button type="submit" class="btn btn-primary mx-2">Submit</button>
                     </div>
 
@@ -127,7 +115,7 @@
         <div class="col-md-4">
 
             {{-- Status --}}
-            <div class="card">
+             <div class="card">
                 <div class="card-header p-3">
                     <label class="col-md-12 col-form-label">Status</label>
                 </div>
@@ -140,36 +128,6 @@
                 </div>
             </div>
 
-            {{-- Category --}}
-            <div class="card mt-3">
-                <div class="card-header p-3">
-                    <label class="col-md-12 col-form-label">Category</label>
-                </div>
-                <div class="card-body p-3">
-                    <select class="form-select" name="product_category">
-                        <option>Select Category</option>
-                        @foreach($categories as $cat)
-                            <option value="{{ $cat['id'] }}">{{ $cat['name'] }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-
-            {{-- Sub Category --}}
-            <div class="card mt-3">
-                <div class="card-header p-3">
-                    <label class="col-md-12 col-form-label">Sub Category</label>
-                </div>
-                <div class="card-body p-3">
-                    <select class="form-select" name="sub_product_category">
-                        <option>Select Sub Category</option>
-                        @foreach($subCategories as $cat)
-                            <option value="{{ $cat['id'] }}">{{ $cat['name'] }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-
         </div>
 
     </div>
@@ -177,5 +135,5 @@
 @endsection
 
 @pushOnce('scripts')
-    {!! JsValidator::formRequest('Modules\SysAdmin\Requests\ProductFormRequest', '#create-product') !!}
+    {!! JsValidator::formRequest('Modules\SysAdmin\Requests\ProductCategoryFormRequest', '#create-category') !!}
 @endPushOnce

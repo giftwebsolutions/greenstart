@@ -37,7 +37,7 @@ class ProductCategoryRepository extends BaseRepository implements ProductCategor
      */
     public function getStatuses(): array
     {
-        return ProductCategory::$statuses ?? [];
+        return ProductCategory::$statuses;
     }
 
     /**

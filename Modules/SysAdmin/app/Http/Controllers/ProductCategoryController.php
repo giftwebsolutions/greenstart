@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Modules\SysAdmin\DataTables\ProductCategoryDataTable;
 use Modules\SysAdmin\Interfaces\ProductCategoryInterface;
-use Modules\SysAdmin\Requests\ProductFormRequest;
+use Modules\SysAdmin\Requests\ProductCategoryFormRequest;
 
 class ProductCategoryController extends Controller
 {
     public function __construct(
-        protected ProductCategoryInterface $productRepository
+        protected ProductCategoryInterface $categoryRepository
     ) {}
 
     /**
@@ -28,19 +28,19 @@ class ProductCategoryController extends Controller
     public function create()
     {
         return view('sysadmin::catalog.productcategory.create', [
-            'statuses'      => $this->productRepository->getStatuses(),
-            'categories'    => $this->productRepository->getCategories(),
-            'subCategories' => $this->productRepository->getSubCategories(),
+            'statuses'      => $this->categoryRepository->getStatuses(),
+            'categories'    => $this->categoryRepository->getCategories(),
+            'subCategories' => $this->categoryRepository->getSubCategories(),
         ]);
     }
 
     /**
      * Store new product category
      */
-    public function store(ProductFormRequest $request): RedirectResponse
+    public function store(ProductCategoryFormRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        $this->productRepository->saveOrUpdate($validated);
+        $this->categoryRepository->saveOrUpdate($validated);
 
         return redirect()
             ->route('sysadmin.catalog.productcategory.index')
@@ -52,13 +52,13 @@ class ProductCategoryController extends Controller
      */
     public function edit(int $id)
     {
-        $category = $this->productRepository->find($id);
+        $category = $this->categoryRepository->find($id);
 
         return view('sysadmin::catalog.productcategory.edit', [
             'category'      => $category,
-            'statuses'      => $this->productRepository->getStatuses(),
-            'categories'    => $this->productRepository->getCategories(),
-            'subCategories' => $this->productRepository->getSubCategories(),
+            'statuses'      => $this->categoryRepository->getStatuses(),
+            'categories'    => $this->categoryRepository->getCategories(),
+            'subCategories' => $this->categoryRepository->getSubCategories(),
         ]);
     }
 
@@ -68,7 +68,7 @@ class ProductCategoryController extends Controller
     public function update(ProductFormRequest $request, int $id): RedirectResponse
     {
         $validated = $request->validated();
-        $this->productRepository->saveOrUpdate($validated, $id);
+        $this->categoryRepository->saveOrUpdate($validated, $id);
 
         return redirect()
             ->route('sysadmin.catalog.productcategory.index')
@@ -80,7 +80,7 @@ class ProductCategoryController extends Controller
      */
     public function destroy(int $id): RedirectResponse
     {
-        $category = $this->productRepository->find($id);
+        $category = $this->categoryRepository->find($id);
         $category->delete();
 
         return redirect()
@@ -93,7 +93,7 @@ class ProductCategoryController extends Controller
      */
     public function show(int $id)
     {
-        $category = $this->productRepository->find($id);
+        $category = $this->categoryRepository->find($id);
 
         return view('sysadmin::catalog.productcategory.view', [
             'category' => $category,

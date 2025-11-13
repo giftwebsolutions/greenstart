@@ -31,7 +31,7 @@ class ProductCategoryDataTable extends DataTable
             ->rawColumns(['action']);
     }
 
-   public function query(ProductCategory $model)
+   public function query( $model)
 {
     return $model->newQuery()
         ->select([
