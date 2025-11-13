@@ -85,6 +85,13 @@ return [
                 'route'      => 'sysadmin.catalog.product.index',
                 'sort'       => 1,
                 'icon'       => 'icon-gear',
+            ],
+            [
+                'key'        => 'product-category',
+                'name'       => 'Product Category',
+                'route'      => 'sysadmin.catalog.productcategory.index',
+                'sort'       => 1,
+                'icon'       => 'icon-gear',
             ]
             
         ]
