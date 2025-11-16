@@ -30,7 +30,7 @@ class AttributeDataTable extends DataTable
 
         // Relation display columns
         $dt->addColumn('group_name', fn($row) => $row->attribute_group?->name ?? '—');
-        $dt->addColumn('type_name',  fn($row) => $row->attribute_type?->type_name ?? '—');
+        //$dt->addColumn('type_name',  fn($row) => $row->attribute_type?->type_name ?? '—');
 
         // Boolean badges
         $dt->editColumn(
@@ -39,6 +39,22 @@ class AttributeDataTable extends DataTable
             $row->require
                 ? '<span class="badge bg-success">Required</span>'
                 : '<span class="badge bg-secondary">Optional</span>'
+        );
+
+        $dt->editColumn(
+            'configurable',
+            fn($row) =>
+            $row->configurable
+                ? '<span class="badge bg-info">Yes</span>'
+                : '<span class="badge bg-light text-muted border">No</span>'
+        );
+
+        $dt->editColumn(
+            'filterable',
+            fn($row) =>
+            $row->filterable
+                ? '<span class="badge bg-info">Yes</span>'
+                : '<span class="badge bg-light text-muted border">No</span>'
         );
 
         $dt->editColumn(
@@ -70,9 +86,9 @@ class AttributeDataTable extends DataTable
             $query->whereHas('attribute_group', fn($q) => $q->where('name', 'like', "%{$keyword}%"));
         });
 
-        $dt->filterColumn('type_name', function ($query, $keyword) {
-            $query->whereHas('attribute_type', fn($q) => $q->where('type_name', 'like', "%{$keyword}%"));
-        });
+        // $dt->filterColumn('type_name', function ($query, $keyword) {
+        //     $query->whereHas('attribute_type', fn($q) => $q->where('type_name', 'like', "%{$keyword}%"));
+        // });
 
         // These columns contain HTML
         return $dt->rawColumns(['require', 'comparable', 'status', 'action']);
@@ -103,8 +119,8 @@ class AttributeDataTable extends DataTable
             Column::make('id')->title('ID')->width(60),
             Column::make('name')->title('Attribute'),
             Column::computed('group_name')->title('Group')->searchable(true)->orderable(false),
-            Column::make('sort_order')->title('Sort')->width(80),
-            Column::computed('type_name')->title('Type')->searchable(true)->orderable(false),
+            Column::make('filterable')->title('Filterable')->width(80),
+            Column::make('configurable')->title('configurable')->width(80),
             Column::make('comparable')->title('Comparable')->width(110),
             Column::make('require')->title('Required')->width(110),
             Column::make('status')->title('Status')->width(110),

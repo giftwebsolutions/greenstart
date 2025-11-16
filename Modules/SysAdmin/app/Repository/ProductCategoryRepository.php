@@ -7,6 +7,7 @@ use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
 use Modules\SysAdmin\Models\Product;
 use Modules\SysAdmin\Interfaces\ProductCategoryInterface;
 use Modules\SysAdmin\Models\ProductCategory;
+use Modules\SysAdmin\Helpers\ImageUploader;
 
 class ProductCategoryRepository extends BaseRepository implements ProductCategoryInterface
 {
@@ -23,10 +24,28 @@ class ProductCategoryRepository extends BaseRepository implements ProductCategor
      */
     public function saveOrUpdate(array $data, ?int $id = null)
     {
+
+        $data['parent_id'] = ($data['parent_id'] == 0) ? NULL : $data['parent_id'];
+
         if ($id) {
             $category = ProductCategory::findOrFail($id);
+
+            if (isset($data['banner'])) {
+                $data['banner'] = ImageUploader::upload($data['banner'], $category->created_at);
+            }
+            if (isset($data['image'])) {
+                $data['image'] = ImageUploader::upload($data['image'], $category->created_at);
+            }
+
             $category->update($data);
             return $category;
+        } else {
+            if (isset($data['banner'])) {
+                $data['banner'] = ImageUploader::upload($data['banner'], $this->getModel()->created_at);
+            }
+            if (isset($data['image'])) {
+                $data['image'] = ImageUploader::upload($data['image'], $this->getModel()->created_at);
+            }
         }
 
         return ProductCategory::create($data);
@@ -43,7 +62,7 @@ class ProductCategoryRepository extends BaseRepository implements ProductCategor
     /**
      * Get parent categories for dropdowns.
      */
-    public function getCategories(): array
+    public function getParentCategories(): array
     {
         return ProductCategory::where('parent_id', 0)
             ->orderBy('name')

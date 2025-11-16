@@ -138,6 +138,43 @@
                                 </div>
                             </div>
 
+                            <div class="row mb-3">
+                                <label class="col-md-12 col-form-label">Configurable</label>
+                                <div class="col-md-12">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input @error('configurable') is-invalid @enderror"
+                                               type="checkbox" role="switch" id="configurable"
+                                               name="configurable" value="1"
+                                               {{ old('configurable', $attribute->configurable) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="configurable">
+                                            Enable product configurable for this attribute
+                                        </label>
+                                        @error('configurable')
+                                            <span class="invalid-feedback d-block"><strong>{{ $message }}</strong></span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label class="col-md-12 col-form-label">Filterable</label>
+                                <div class="col-md-12">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input @error('filterable') is-invalid @enderror"
+                                               type="checkbox" role="switch" id="filterable"
+                                               name="filterable" value="1"
+                                               {{ old('filterable', $attribute->filterable) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="filterable">
+                                            Enable product filterable for this attribute
+                                        </label>
+                                        @error('filterable')
+                                            <span class="invalid-feedback d-block"><strong>{{ $message }}</strong></span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+
                             {{-- Require --}}
                             <div class="row mb-3">
                                 <label for="require" class="col-md-12 col-form-label">Input Requirement</label>

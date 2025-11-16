@@ -40,6 +40,8 @@ class AttributeFormRequest extends FormRequest
             'sort_order'  => ['nullable', 'integer', 'min:0'],
             'type'        => ['required', 'integer', 'exists:attribute_type,attribute_type_id'],
             'comparable'  => ['nullable', 'boolean'],
+            'filterable'  => ['nullable', 'boolean'],
+            'configurable' => ['nullable', 'boolean'],
             'require'     => ['required', 'boolean'],
             'status'      => ['required', Rule::in(array_keys((new Attribute)->statuses))],
         ];
@@ -61,6 +63,8 @@ class AttributeFormRequest extends FormRequest
             'sort_order'  => ['nullable', 'integer', 'min:0'],
             'type'        => ['required', 'integer', 'exists:attribute_type,attribute_type_id'],
             'comparable'  => ['nullable', 'boolean'],
+            'filterable'  => ['nullable', 'boolean'],
+            'configurable'=> ['nullable', 'boolean'],
             'require'     => ['required', 'boolean'],
             'status'      => ['required', Rule::in(array_keys((new Attribute)->statuses))],
         ];

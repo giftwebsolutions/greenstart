@@ -21,7 +21,7 @@
         <div class="row">
             <div class="col-12 mb-3 text-end">
                 <a href="{{ route('sysadmin.catalog.productcategory.create') }}" class="btn btn-primary">
-                    <i class="fa fa-plus"></i> Create ProductCategory
+                    <i class="fa fa-plus"></i> Create Category
                 </a>
             </div>
 

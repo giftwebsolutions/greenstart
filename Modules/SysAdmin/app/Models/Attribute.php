@@ -37,6 +37,8 @@ class Attribute extends Model
 		'sort_order' => 'int',
 		'type' => 'int',
 		'comparable' => 'bool',
+		'configurable' => 'bool',
+		'filterable' => 'bool',
 		'status' => 'int'
 	];
 
@@ -46,6 +48,8 @@ class Attribute extends Model
 		'sort_order',
 		'type',
 		'comparable',
+		'configurable',
+		'filterable',
 		'require',
 		'status'
 	];

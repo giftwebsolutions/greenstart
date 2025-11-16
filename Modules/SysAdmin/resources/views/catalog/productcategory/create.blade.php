@@ -49,22 +49,14 @@
                             </div>
                         </div>
 
-                        {{-- Slug --}}
-                        <div class="row mb-3">
-                            <label class="col-md-12 col-form-label">Slug</label>
-                            <div class="col-md-12">
-                                <input type="text" name="slug" class="form-control" value="{{ old('slug') }}">
-                            </div>
-                        </div>
-
                         {{-- Parent Category --}}
                         <div class="row mb-3">
                             <label class="col-md-12 col-form-label">Parent Category</label>
                             <div class="col-md-12">
                                 <select class="form-select select2" name="parent_id">
                                     <option value="">None</option>
-                                    @foreach($categories as $cat)
-                                        <option value="{{ $cat['id'] }}">{{ $cat['name'] }}</option>
+                                    @foreach($parents as $k => $v)
+                                        <option value="{{ $k }}">{{ $v }}</option>
                                     @endforeach
                                 </select>
                             </div>

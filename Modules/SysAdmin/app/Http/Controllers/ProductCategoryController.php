@@ -29,8 +29,7 @@ class ProductCategoryController extends Controller
     {
         return view('sysadmin::catalog.productcategory.create', [
             'statuses'      => $this->categoryRepository->getStatuses(),
-            'categories'    => $this->categoryRepository->getCategories(),
-            'subCategories' => $this->categoryRepository->getSubCategories(),
+            'parents'    => $this->categoryRepository->getParentCategories(),
         ]);
     }
 
@@ -52,20 +51,18 @@ class ProductCategoryController extends Controller
      */
     public function edit(int $id)
     {
-        $category = $this->categoryRepository->find($id);
-
+        $category = $this->categoryRepository->find($id);   
         return view('sysadmin::catalog.productcategory.edit', [
             'category'      => $category,
             'statuses'      => $this->categoryRepository->getStatuses(),
-            'categories'    => $this->categoryRepository->getCategories(),
-            'subCategories' => $this->categoryRepository->getSubCategories(),
+            'parents'    => $this->categoryRepository->getParentCategories()
         ]);
     }
 
     /**
      * Update product category
      */
-    public function update(ProductFormRequest $request, int $id): RedirectResponse
+    public function update(ProductCategoryFormRequest $request, int $id): RedirectResponse
     {
         $validated = $request->validated();
         $this->categoryRepository->saveOrUpdate($validated, $id);

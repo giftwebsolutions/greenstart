@@ -3,26 +3,12 @@
 namespace Modules\SysAdmin\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
-/**
- * Class ProductCategory
- * 
- * @property int $id
- * @property int $parent_id
- * @property string|null $name
- * @property string $description
- * @property string|null $banner
- * @property string $slug
- * @property string|null $image
- * @property int $sort
- * @property string $status
- *
- * @package App\Models
- */
 class ProductCategory extends Model
 {
 	protected $table = 'product_category';
-    
+
 	public static $statuses = [
 		0 => 'Delete',
 		1 => 'Published',
@@ -33,7 +19,7 @@ class ProductCategory extends Model
 
 	protected $casts = [
 		'parent_id' => 'int',
-		'sort' => 'int'
+		'sort'      => 'int',
 	];
 
 	protected $fillable = [
@@ -44,6 +30,53 @@ class ProductCategory extends Model
 		'slug',
 		'image',
 		'sort',
-		'status'
+		'status',
 	];
+
+	/**
+	 * AUTO SLUG BEFORE SAVE/UPDATE
+	 */
+	protected static function boot()
+	{
+		parent::boot();
+
+		// Before create
+		static::creating(function ($model) {
+			// Default parent_id = 0
+			if (empty($model->parent_id)) {
+				$model->parent_id = 0;
+			}
+
+			if (!empty($model->name)) {
+				$model->slug = Str::slug($model->name);
+			}
+		});
+
+		// Before update
+		static::updating(function ($model) {
+
+			// Default parent_id = 0 if empty
+			if (empty($model->parent_id)) {
+				$model->parent_id = 0;
+			}
+			
+			// Only regenerate slug if name changed
+			if ($model->isDirty('name')) {
+				$model->slug = Str::slug($model->name);
+			}
+		});
+	}
+
+	/**
+	 * Category relations
+	 */
+	public function parent()
+	{
+		return $this->belongsTo(ProductCategory::class, 'parent_id', 'id');
+	}
+
+	public function children()
+	{
+		return $this->hasMany(ProductCategory::class, 'parent_id', 'id');
+	}
 }
