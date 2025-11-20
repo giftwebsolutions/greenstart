@@ -20,6 +20,7 @@ class ProductCategory extends Model
 	protected $casts = [
 		'parent_id' => 'int',
 		'sort'      => 'int',
+		'status'    => 'int',
 	];
 
 	protected $fillable = [

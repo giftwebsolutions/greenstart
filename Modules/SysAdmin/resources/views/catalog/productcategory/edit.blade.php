@@ -18,30 +18,27 @@
 
 @section('content')
     <div class="container-fluid">
-        <div class="row">
-
-            {{-- Error block --}}
-            <div class="col-12">
-                @if ($errors->any())
-                    <div class="alert alert-secondary alert-dismissible fade show" role="alert">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif
-            </div>
-
-            {{-- Left column: main form --}}
-            <div class="col-md-8">
-                <div class="card">
-                    <form id="edit-category" class="theme-form" method="POST" enctype="multipart/form-data"
-                        action="{{ route('sysadmin.catalog.productcategory.update', $category->id) }}">
-                        @csrf
-                        @method('PATCH')
-
+        <form id="edit-category" class="theme-form" method="POST" enctype="multipart/form-data"
+            action="{{ route('sysadmin.catalog.productcategory.update', $category->id) }}">
+            @csrf
+            @method('PATCH')
+            <div class="row">
+                {{-- Error block --}}
+                <div class="col-12">
+                    @if ($errors->any())
+                        <div class="alert alert-secondary alert-dismissible fade show" role="alert">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                            <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+                </div>
+                {{-- Left column: main form --}}
+                <div class="col-md-8">
+                    <div class="card">
                         <div class="card-body p-3">
 
                             {{-- Name --}}
@@ -193,35 +190,37 @@
                         </div>
 
                         <div class="card-footer text-end">
-                            <a href="{{ route('sysadmin.catalog.productcategory.index') }}" class="btn btn-secondary">Cancel</a>
+                            <a href="{{ route('sysadmin.catalog.productcategory.index') }}"
+                                class="btn btn-secondary">Cancel</a>
                             <button type="submit" class="btn btn-primary mx-2">Update</button>
                         </div>
-                    </form>
-                </div>
-            </div>
 
-            {{-- Right column: status --}}
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header p-3">
-                        <label class="col-md-12 col-form-label">Status</label>
                     </div>
-                    <div class="card-body p-3">
-                        <select class="form-select @error('status') is-invalid @enderror" name="status">
-                            @foreach ($statuses as $key => $value)
-                                <option value="{{ $key }}"
-                                    {{ (int) old('status', $category->status) === (int) $key ? 'selected' : '' }}>
-                                    {{ $value }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('status')
-                            <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
-                        @enderror
+                </div>
+
+                {{-- Right column: status --}}
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header p-3">
+                            <label class="col-md-12 col-form-label">Status</label>
+                        </div>
+                        <div class="card-body p-3">
+                            <select class="form-select @error('status') is-invalid @enderror" id="status" name="status">
+                                @foreach ($statuses as $key => $value)
+                                    <option value="{{ $key }}"
+                                        {{ (int) old('status', $category->status) === (int) $key ? 'selected' : '' }}>
+                                        {{ $value }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('status')
+                                <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
+                            @enderror
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 @endsection
 

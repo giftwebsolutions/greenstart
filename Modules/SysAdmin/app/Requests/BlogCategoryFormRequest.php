@@ -44,7 +44,8 @@ class BlogCategoryFormRequest extends FormRequest
             'description' => 'string',
             'content' => 'string',
             'parent_id' => 'integer|nullable',
-            'featured_image' => 'image|mimes:jpg,png,jpeg|max:2048'
+            'featured_image' => 'image|mimes:jpg,png,jpeg|max:2048',
+            'status'=> 'required|integer',
         ];
     }
 
@@ -62,7 +63,8 @@ class BlogCategoryFormRequest extends FormRequest
             'description' => 'string',
             'content' => 'string',
             'parent_id' => 'integer|nullable',
-            'featured_image' => 'image|mimes:jpg,png,jpeg|max:2048'
+            'featured_image' => 'image|mimes:jpg,png,jpeg|max:2048',
+            'status' => 'required|integer',
         ];
     }
 }
