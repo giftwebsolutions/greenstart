@@ -105,7 +105,7 @@
                                 <label class="col-md-12 col-form-label">Description</label>
                                 {{-- <textarea name="description" class="form-control editor @error('description') is-invalid @enderror" rows="8">{{ old('description', $product->description) }}</textarea> --}}
 
-                                <textarea name="description" id="description" hidden lass="form-control editor @error('description') is-invalid @enderror" rows="8">
+                                <textarea name="description" id="description" hidden class="form-control editor @error('description') is-invalid @enderror" rows="8">
                                     {!! old('description', $product->description ?? '') !!}
                                 </textarea>
 

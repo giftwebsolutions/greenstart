@@ -1,5 +1,6 @@
 <?php
 
+
 namespace Modules\SysAdmin\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -22,7 +23,7 @@ class ProductCategory extends Model
 		'sort'      => 'int',
 		'status'    => 'int',
 	];
-
+   
 	protected $fillable = [
 		'parent_id',
 		'name',

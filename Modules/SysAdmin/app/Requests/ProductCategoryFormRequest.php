@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace Modules\SysAdmin\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -8,86 +10,91 @@ use Modules\SysAdmin\Models\ProductCategory;
 
 class ProductCategoryFormRequest extends FormRequest
 {
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
 
     /**
-     * Apply validation rules based on route name.
+     * Get validation rules based on route name.
      */
-    public function rules()
+    public function rules(): array
     {
-        return match (request()->route()->action['as'] ?? null) {
+        $routeName = request()->route()->action['as'] ?? null;
+
+        return match ($routeName) {
             'sysadmin.catalog.category.create',
-            'sysadmin.catalog.category.store' => $this->store(),
+            'sysadmin.catalog.category.store'  => $this->store(),
 
             'sysadmin.catalog.category.edit',
             'sysadmin.catalog.category.update' => $this->update(),
 
-            default => $this->store(),
+            default                             => $this->store(),
         };
     }
 
     /**
-     * Validation rules for store
+     * Rules for CREATE (POST)
      */
-    public function store()
+    public function store(): array
     {
         return [
             'parent_id'   => ['nullable', 'integer', 'exists:product_category,id'],
             'name'        => ['required', 'string', 'max:255', 'unique:product_category,name'],
             'description' => ['nullable', 'string'],
-            'banner'      => ['nullable', 'string', 'max:255'],
+            'banner'      => ['nullable', 'image', 'mimes:jpg,png,jpeg,webp', 'max:3072'],
             'slug'        => ['nullable', 'string', 'max:255', 'unique:product_category,slug'],
-            'image'       => ['nullable', 'string', 'max:255'],
+            'image'       => ['nullable', 'image', 'mimes:jpg,png,jpeg,webp', 'max:3072'],
             'sort'        => ['nullable', 'integer', 'min:0'],
             'status'      => ['required', Rule::in(array_keys(ProductCategory::$statuses))]
         ];
     }
 
     /**
-     * Validation rules for update
+     * Rules for UPDATE (PUT/PATCH)
      */
-    public function update()
+    public function update(): array
     {
         return [
             'parent_id'   => ['nullable', 'integer', 'exists:product_category,id'],
             'name'        => 'required|string|max:255|unique:product_category,name,' . $this->id,
             'description' => ['nullable', 'string'],
-            'banner'      => ['nullable', 'string', 'max:255'],
-            'slug'        =>  'nullable|string|max:255|unique:product_category,slug,' . $this->id,
-            'image'       => ['nullable', 'string', 'max:255'],
+            'banner'      => ['nullable', 'image', 'mimes:jpg,png,jpeg,webp', 'max:3072'],
+            'slug'        => 'nullable|string|max:255|unique:product_category,slug,' . $this->id,
+            'image'       => ['nullable', 'image', 'mimes:jpg,png,jpeg,webp', 'max:3072'],
             'sort'        => ['nullable', 'integer', 'min:0'],
             'status'      => ['required', Rule::in(array_keys(ProductCategory::$statuses))]
         ];
     }
 
     /**
-     * Friendly attribute names for validation errors
+     * Friendly attribute names for validation messages
      */
-    public function attributes()
+    public function attributes(): array
     {
         return [
-            'name'        => 'category name',
-            'parent_id'   => 'parent category',
-            'sort'        => 'sort order',
-            'slug'        => 'slug',
-            'status'      => 'status',
+            'name'      => 'category name',
+            'description' =>'description',
+            'parent_id' => 'parent category',
+            'sort'      => 'sort order',
+            'slug'      => 'slug',
+            'banner'    => 'banner image',
+            'image'     => 'category image',
+            'status'    => 'status',
         ];
     }
 
     /**
-     * Modify validated data before controller receives it.
+     * Normalize validated data
      */
     public function validated($key = null, $default = null)
     {
         $data = parent::validated($key, $default);
 
-        // Normalize empty parent_id -> null (model will convert to 0)
-        if (empty($data['parent_id'])) {
-            $data['parent_id'] = null;
-        }
+        // Normalize parent_id
+        $data['parent_id'] = $data['parent_id'] ?: null;
+
+        
 
         return $data;
     }

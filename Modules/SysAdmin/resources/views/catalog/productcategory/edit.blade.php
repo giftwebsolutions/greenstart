@@ -1,3 +1,6 @@
+@php
+    // dd($description);
+@endphp
 @extends('sysadmin::layouts.master')
 
 @section('css')
@@ -90,7 +93,16 @@
                             {{-- Description --}}
                             <div class="form-group mb-3">
                                 <label class="col-md-12 col-form-label">Description</label>
-                                <textarea name="description" class="form-control editor @error('description') is-invalid @enderror" rows="5">{{ old('description', $category->description) }}</textarea>
+
+                             
+                                <textarea name="description" id="description" hidden class="form-control editor @error('description') is-invalid @enderror" rows="5">
+                                    {!! old('description', $category->description ?? '') !!}
+                                </textarea>
+
+                                <div class="editor" data-name="description" data-placeholder="Write product description...">
+                                </div>
+                                   
+
                                 @error('description')
                                     <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
                                 @enderror
@@ -112,7 +124,7 @@
                                     @if (!empty($category->banner))
                                         <div class="mt-3 text-center">
                                             <img id="bannerPreview"
-                                                src="{{ ImageUploader::getFilePath($category->banner, $category->created_at, 'thumbnail') }}"
+                                                src="{{ \Modules\SysAdmin\Helpers\ImageUploader::getFilePath($category->banner, $category->created_at, 'thumbnail') }}"
                                                 class="img-fluid mb-2 rounded" alt="Banner">
 
                                             <div id="remove-banner-block">
@@ -151,7 +163,7 @@
                                     @if (!empty($category->image))
                                         <div class="mt-3 text-center">
                                             <img id="imagePreview"
-                                                src="{{ ImageUploader::getFilePath($category->image, $category->created_at, 'thumbnail') }}"
+                                                src="{{ \Modules\SysAdmin\Helpers\ImageUploader::getFilePath($category->image, $category->created_at, 'thumbnail') }}"
                                                 class="img-fluid mb-2 rounded" alt="Category Image">
 
                                             <div id="remove-image-block">

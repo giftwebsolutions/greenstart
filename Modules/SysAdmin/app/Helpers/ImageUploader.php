@@ -94,6 +94,8 @@ class ImageUploader
             $timestamp = strtotime($date);
         }
 
+        //dd($date);
+
         if ($timestamp && $timestamp > 0) {
             $yearMonth = date('Y/m', $timestamp);
 
