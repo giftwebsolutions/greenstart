@@ -1,3 +1,23 @@
+@php
+    use Modules\SysAdmin\Helpers\ImageUploader;
+    use Carbon\Carbon;
+
+    // Convert UNIX created_at → normal datetime string
+    $createdAt = isset($product->created_at) && $product->created_at
+        ? Carbon::createFromTimestamp($product->created_at)->toDateTimeString()
+        : null;
+
+    // Build thumbnail path via helper if thumb exists
+    $thumbPath = null;
+
+    if ($product->thumb && $createdAt) {
+        $thumbPath = ImageUploader::getFilePath($product->thumb, $createdAt, 'thumbnail');
+    }
+
+    // Allow old() to override if there was a validation error
+    $thumbPath = old('thumb_path', $thumbPath);
+@endphp
+
 @extends('sysadmin::layouts.master')
 
 @section('css')
@@ -211,7 +231,7 @@
                                             $thumb = old('thumb_path', $product->thumb);
                                         @endphp
                                         @if ($thumb)
-                                            <img id="thumbPreview" src="{{ asset($thumb) }}" alt="Thumbnail"
+                                            <img id="thumbPreview" src="{{ asset($thumbPath) }}" alt="Thumbnail"
                                                 class="img-fluid mb-2">
                                         @else
                                             <img id="thumbPreview" src="" alt=""

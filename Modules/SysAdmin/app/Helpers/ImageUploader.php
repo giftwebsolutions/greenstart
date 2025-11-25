@@ -79,22 +79,38 @@ class ImageUploader
         // Return the stored filename
         return $filename;
     }
-    public static function getFilePath(string $filename = null, string $date, string $type = null): string
+
+    public static function getFilePath(string $filename = null, $date = null, string $type = null): string
     {
-        if ($filename != null || $filename != '') {
-            $yearMonth = date('Y/m', strtotime($date));
-            if ($type !== null) {
-                $file = $yearMonth . '/' . $type . '/' . $filename;
-            } else {
-                $file = $yearMonth . '/' . $filename;
-            }
-            //dd(Storage::disk('uploads')->path($file));
-            if (file_exists(Storage::disk('uploads')->path($file))) {
-                return env('APP_URL') . self::URL . $yearMonth . '/' . $filename;
+        if (empty($filename)) {
+            return asset('uploads/default.jpg');
+        }
+
+        // Decide timestamp
+        $timestamp = null;
+        if (is_numeric($date)) {
+            $timestamp = (int) $date;
+        } elseif (!empty($date)) {
+            $timestamp = strtotime($date);
+        }
+
+        if ($timestamp && $timestamp > 0) {
+            $yearMonth = date('Y/m', $timestamp);
+
+            $relative = $type
+                ? $yearMonth . '/' . $type . '/' . $filename
+                : $yearMonth . '/' . $filename;
+
+            $disk = Storage::disk(self::DISK);
+
+            if ($disk->exists($relative)) {
+                return $disk->url($relative); // → APP_URL/uploads/2025/11/...
             }
         }
-        return  env('APP_URL') . '/uploads/default.jpg';
+
+        return asset('uploads/default.jpg');
     }
+
 
     public static function getFileRootPath(string $filename, string $date, string $type = null): string
     {

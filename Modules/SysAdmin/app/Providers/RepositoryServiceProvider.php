@@ -27,6 +27,7 @@ use Modules\SysAdmin\Repository\AttributeGroupRepository;
 use Modules\SysAdmin\Repository\AttributeMappingRepository;
 use Modules\SysAdmin\Repository\AttributeRepository;
 use Modules\SysAdmin\Repository\AttributeTypeRepository;
+
 class RepositoryServiceProvider extends ServiceProvider
 {
     /**
@@ -48,6 +49,26 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(AttributeMappingInterface::class, AttributeMappingRepository::class);
         $this->app->bind(\Modules\SysAdmin\Interfaces\ProductInterface::class, \Modules\SysAdmin\Repository\ProductRepository::class);
         $this->app->bind(\Modules\SysAdmin\Interfaces\ProductCategoryInterface::class, \Modules\SysAdmin\Repository\ProductCategoryRepository::class);
+
+        $this->app->bind(
+            \Modules\SysAdmin\Interfaces\AttributeValueInterface::class,
+            \Modules\SysAdmin\Repository\AttributeValueRepository::class
+        );
+
+        $this->app->bind(
+            \Modules\SysAdmin\Interfaces\ProductConfigurableAttributeInterface::class,
+            \Modules\SysAdmin\Repository\ProductConfigurableAttributeRepository::class
+        );
+
+        $this->app->bind(
+            \Modules\SysAdmin\Interfaces\ProductVariantInterface::class,
+            \Modules\SysAdmin\Repository\ProductVariantRepository::class
+        );
+
+        $this->app->bind(
+            \Modules\SysAdmin\Interfaces\ProductVariantValueInterface::class,
+            \Modules\SysAdmin\Repository\ProductVariantValueRepository::class
+        );
     }
 
 
