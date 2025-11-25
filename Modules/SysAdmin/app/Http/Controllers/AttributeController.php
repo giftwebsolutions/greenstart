@@ -9,6 +9,8 @@ use Modules\SysAdmin\Interfaces\AttributeInterface;
 use Modules\SysAdmin\Interfaces\AttributeValueInterface;
 use Modules\SysAdmin\DataTables\AttributeDataTable;
 use Modules\SysAdmin\Requests\AttributeFormRequest;
+use Modules\SysAdmin\Models\AttributeValue;
+use Modules\SysAdmin\Models\ProductVariantValue;
 
 class AttributeController extends Controller
 {
@@ -75,17 +77,28 @@ class AttributeController extends Controller
 
     public function edit($id)
     {
-        $page = $this->attributeRepository->findOrFail($id);
+        $attribute = $this->attributeRepository->findOrFail($id);
 
-        // load existing values for this attribute (for edit form)
-        $values = $page->values()->orderBy('sort_order')->pluck('value')->toArray() ?? [];
+        // load existing values for this attribute (id + value)
+        $values = $attribute->values()
+            ->orderBy('sort_order')
+            ->get(['id', 'value'])
+            ->map(function ($v) {
+                return [
+                    'id'    => $v->id,
+                    'value' => $v->value,
+                ];
+            })
+            ->toArray();
 
-        return view('sysadmin::catalog.attribute.edit', compact('page', 'values'))->with([
-            'parents'        => $this->attributeRepository->getParents(),
-            'attributeTypes' => $this->attributeRepository->getAttributeTypes(),
-            'statuses'       => $this->attributeRepository->getStatus(),
+        //dd($this->attributeRepository->getAttributeSets());
+        return view('sysadmin::catalog.attribute.edit', compact('attribute', 'values'))->with([
+            'groups'   => $this->attributeRepository->getAttributeSets(),
+            'types'    => $this->attributeRepository->getAttributeTypes(),
+            'statuses' => $this->attributeRepository->getStatus(),
         ]);
     }
+
 
     public function update(AttributeFormRequest $request, $id): RedirectResponse
     {
@@ -95,24 +108,59 @@ class AttributeController extends Controller
             // 1) Update attribute
             $attribute = $this->attributeRepository->saveOrUpdate($validatedData, $id);
 
-            // 2) Sync values (simple strategy: delete & recreate)
-            $this->attributeValueRepository->deleteWhere(['attribute_id' => $attribute->id]);
+            // 2) Handle values WITHOUT deleting everything
+            $submittedValues = $request->input('values', []); // each: ['id' => ?, 'value' => ?]
+            $submittedIds    = [];
 
-            $values = $request->input('values', []);
-            if (!empty($values) && is_array($values)) {
-                $sort = 0;
-                foreach ($values as $value) {
-                    $value = trim((string) $value);
+            $sort = 0;
 
-                    if ($value === '') {
-                        continue;
-                    }
+            foreach ($submittedValues as $row) {
+                $valueText = trim((string) ($row['value'] ?? ''));
 
-                    $this->attributeValueRepository->create([
+                if ($valueText === '') {
+                    continue;
+                }
+
+                $id = $row['id'] ?? null;
+
+                if ($id) {
+                    // UPDATE existing value
+                    $submittedIds[] = (int) $id;
+
+                    $this->attributeValueRepository->update([
+                        'value'      => $valueText,
+                        'sort_order' => $sort++,
+                    ], $id);
+                } else {
+                    // CREATE new value
+                    $value = $this->attributeValueRepository->create([
                         'attribute_id' => $attribute->id,
-                        'value'        => $value,
+                        'value'        => $valueText,
                         'sort_order'   => $sort++,
                     ]);
+
+                    $submittedIds[] = $value->id;
+                }
+            }
+
+            // 3) Handle removed values (present in DB, not in submittedIds)
+            $existingValues = AttributeValue::where('attribute_id', $attribute->id)->get();
+
+            foreach ($existingValues as $existing) {
+                if (in_array($existing->id, $submittedIds, true)) {
+                    continue; // still in use
+                }
+
+                // Check if this value is used in product variants
+                $isUsed = ProductVariantValue::where('attribute_value_id', $existing->id)->exists();
+
+                if ($isUsed) {
+                    // SOFT DELETE / DISABLE (recommended)
+                    $existing->status = 0;   // make sure 'status' column exists
+                    $existing->save();
+                } else {
+                    // SAFE to hard delete
+                    $existing->delete();
                 }
             }
 
