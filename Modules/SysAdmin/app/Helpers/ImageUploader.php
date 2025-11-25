@@ -4,7 +4,7 @@ namespace Modules\SysAdmin\Helpers;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Laravel\Facades\Image as Image;
+use Intervention\Image\Laravel\Facades\Image;
 use InvalidArgumentException;
 
 class ImageUploader
@@ -111,17 +111,35 @@ class ImageUploader
         return  BASE_ROOT_PATH . '/uploads/default.jpg';
     }
 
-    public static function remove(string $filename, string $date)
+    public static function remove(string $date, string $filename): bool
     {
-        $yearMonth = date('Y/m', strtotime($date));
-        $thumb = $yearMonth . '/thumbnail/' . $filename;
-        $file = $yearMonth . '/' . $filename;
-
-        //dd(Storage::disk('uploads')->path($file));
-        if (file_exists(Storage::disk('uploads')->path($file))) {
-            Storage::disk('uploads')->delete($file);
-            Storage::disk('uploads')->delete($thumb);
+        // Handle both: Unix timestamp OR normal date string
+        if (is_numeric($date)) {
+            $timestamp = (int) $date;
+        } else {
+            $timestamp = strtotime($date);
         }
+
+        // Fallback: if invalid date, avoid deleting wrong path
+        if (!$timestamp || $timestamp <= 0) {
+            return false;
+        }
+
+        $yearMonth = date('Y/m', $timestamp);
+
+        $thumb = $yearMonth . '/thumbnail/' . $filename;
+        $file  = $yearMonth . '/' . $filename;
+
+        $disk = Storage::disk('uploads');
+
+        if ($disk->exists($file)) {
+            $disk->delete($file);
+        }
+
+        if ($disk->exists($thumb)) {
+            $disk->delete($thumb);
+        }
+
         return true;
     }
 }

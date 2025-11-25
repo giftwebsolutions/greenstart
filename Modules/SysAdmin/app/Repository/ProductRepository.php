@@ -6,23 +6,15 @@ use Prettus\Repository\Criteria\RequestCriteria;
 use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
 use Modules\SysAdmin\Models\Product;
 use Modules\SysAdmin\Interfaces\ProductInterface;
-use Modules\SysAdmin\Models\Category;
 use Modules\SysAdmin\Models\ProductCategory;
+use Modules\SysAdmin\Helpers\ImageUploader;
+use Illuminate\Http\UploadedFile;
+use Carbon\Carbon;
 
 class ProductRepository extends BaseRepository implements ProductInterface
 {
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [];
 
-    /**
-     * Specify Model class name
-     *
-     * @return string
-     */
     public function model()
     {
         return Product::class;
@@ -31,28 +23,52 @@ class ProductRepository extends BaseRepository implements ProductInterface
     /**
      * Create or update a product
      */
-    public function saveOrUpdate(array $data, ?int $id = null)
+    public function saveOrUpdate($data, $id = 0)
     {
-        if ($id) {
-            $product = Product::findOrFail($id);
-            $product->update($data);
-            return $product;
+        $product = null;
+
+        if ($id !== 0) {
+            // Editing existing product
+            $product = $this->find($id);
+
+            // Handle thumb upload only if a new file is provided
+            if (isset($data['thumb']) && $data['thumb'] instanceof UploadedFile) {
+                $createdAt = Carbon::createFromTimestamp($product->created_at);
+                // Remove old image (original + thumbnail)
+                if ($product->thumb && $product->created_at) {
+                    ImageUploader::remove($product->thumb, $createdAt);
+                }
+
+                // Upload new one using existing created_at date
+                $data['thumb'] = ImageUploader::upload(
+                    $data['thumb'],
+                    $createdAt
+                );
+            } else {
+                // Don't touch the current thumb if no new file is uploaded
+                unset($data['thumb']);
+            }
+            //dd($data);
+            $product = parent::update($data, $id);
+        } else {
+            // Creating new product
+
+            if (isset($data['thumb']) && $data['thumb'] instanceof UploadedFile) {
+                // For create, pass null date -> ImageUploader will use now()
+                $data['thumb'] = ImageUploader::upload($data['thumb'], null);
+            }
+
+            $product = parent::create($data);
         }
 
-        return Product::create($data);
+        return $product;
     }
 
-    /**
-     * Get Product Status List from Model
-     */
     public function getStatuses(): array
     {
         return Product::$statuses;
     }
 
-    /**
-     * Get Category list for dropdowns
-     */
     public function getCategories(): array
     {
         return ProductCategory::where('parent_id', 0)
@@ -61,12 +77,9 @@ class ProductRepository extends BaseRepository implements ProductInterface
             ->toArray();
     }
 
-    /**
-     * Get Sub-category list for dropdowns
-     */
     public function getSubCategories(int $parentId = null): array
     {
-        $query =  ProductCategory::query()->orderBy('name');
+        $query = ProductCategory::query()->orderBy('name');
 
         if ($parentId) {
             $query->where('parent_id', $parentId);
@@ -75,9 +88,6 @@ class ProductRepository extends BaseRepository implements ProductInterface
         return $query->pluck('name', 'id')->toArray();
     }
 
-    /**
-     * Boot up the repository, pushing criteria
-     */
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));

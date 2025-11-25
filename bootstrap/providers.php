@@ -9,4 +9,5 @@ return [
     FrontendServiceProvider::class,
     Yajra\DataTables\DataTablesServiceProvider::class,
     Yajra\DataTables\HtmlServiceProvider::class,
+    Intervention\Image\Laravel\ServiceProvider::class,
 ];

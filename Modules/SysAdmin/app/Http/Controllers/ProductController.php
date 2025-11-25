@@ -57,7 +57,7 @@ class ProductController extends Controller
     public function edit(int $id)
     {
         $product = $this->productRepository->find($id);
-
+        //dd($product);
         return view('sysadmin::catalog.product.edit', [
             'product'       => $product,
             'statuses'      => $this->productRepository->getStatuses(),

@@ -22,7 +22,7 @@
         <form id="edit-product" class="theme-form" method="POST" enctype="multipart/form-data"
             action="{{ route('sysadmin.catalog.product.update', $product->id) }}">
             @csrf
-            @method('PUT')
+            @method('PATCH')
             <div class="row">
 
                 {{-- Error block --}}
@@ -58,19 +58,6 @@
                                 </div>
                             </div>
 
-                            {{-- Slug --}}
-                            <div class="row mb-3">
-                                <label class="col-md-12 col-form-label">Slug</label>
-                                <div class="col-md-12">
-                                    <input type="text" name="slug"
-                                        class="form-control @error('slug') is-invalid @enderror"
-                                        value="{{ old('slug', $product->slug) }}">
-                                    @error('slug')
-                                        <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
-                                    @enderror
-                                </div>
-                            </div>
-
                             {{-- Keywords --}}
                             <div class="row mb-3">
                                 <label class="col-md-12 col-form-label">Keywords</label>
@@ -96,7 +83,15 @@
                             {{-- Description --}}
                             <div class="form-group mb-3">
                                 <label class="col-md-12 col-form-label">Description</label>
-                                <textarea name="description" class="form-control editor @error('description') is-invalid @enderror" rows="8">{{ old('description', $product->description) }}</textarea>
+                                {{-- <textarea name="description" class="form-control editor @error('description') is-invalid @enderror" rows="8">{{ old('description', $product->description) }}</textarea> --}}
+
+                                <textarea name="description" id="description" hidden lass="form-control editor @error('description') is-invalid @enderror" rows="8">
+                                    {!! old('description', $product->description ?? '') !!}
+                                </textarea>
+
+                                <div class="editor" data-name="description" data-placeholder="Write product description...">
+                                </div>
+
                                 @error('description')
                                     <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
                                 @enderror
@@ -169,28 +164,22 @@
                                     @enderror
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="col-form-label">Display Order</label>
-                                    <input type="number" name="order"
-                                        class="form-control @error('order') is-invalid @enderror"
-                                        value="{{ old('order', $product->order) }}">
-                                    @error('order')
+                                    <label class="col-md-12 col-form-label">Product Type</label>
+
+                                    <select class="form-select @error('type') is-invalid @enderror" name="type">
+                                        <option value="1" {{ old('type', $product->type) == 1 ? 'selected' : '' }}>
+                                            Simple</option>
+                                        <option value="2" {{ old('type', $product->type) == 2 ? 'selected' : '' }}>
+                                            Variable</option>
+                                    </select>
+                                    @error('type')
                                         <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
                                     @enderror
                                 </div>
                             </div>
 
                             {{-- Hits --}}
-                            <div class="row mb-3">
-                                <label class="col-md-12 col-form-label">Hits</label>
-                                <div class="col-md-12">
-                                    <input type="number" name="hits"
-                                        class="form-control @error('hits') is-invalid @enderror"
-                                        value="{{ old('hits', $product->hits) }}">
-                                    @error('hits')
-                                        <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
-                                    @enderror
-                                </div>
-                            </div>
+
 
                             {{-- Feature & Slider checkboxes --}}
                             <div class="row mb-3">

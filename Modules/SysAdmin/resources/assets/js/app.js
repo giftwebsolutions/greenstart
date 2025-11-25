@@ -57,7 +57,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 `input[name="content"], textarea[name="content"], input[name="${el.dataset.name}"], textarea[name="${el.dataset.name}"]`
             );
             if (hiddenInput) {
-                hiddenInput.value = quill.root.innerHTML;
+                // ✅ 1. If we already have value from DB, put it into Quill
+                if (hiddenInput.value) {
+                    quill.clipboard.dangerouslyPasteHTML(hiddenInput.value);
+                }
+
+                // ✅ 2. Now keep hidden input in sync when user types
                 quill.on('text-change', () => {
                     hiddenInput.value = quill.root.innerHTML;
                 });
