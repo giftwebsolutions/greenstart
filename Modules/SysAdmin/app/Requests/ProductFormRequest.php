@@ -52,6 +52,7 @@ class ProductFormRequest extends FormRequest
             'hits'                 => 'nullable|integer',
             'product_category'     => 'required|integer',
             'sub_product_category' => 'required|integer',
+            'attribute_set_id'  => 'required|integer',
             'slider'               => 'nullable|boolean',
             'order'                => 'nullable|integer',
         ];
@@ -80,6 +81,7 @@ class ProductFormRequest extends FormRequest
             'hits'                 => 'nullable|integer',
             'product_category'     => 'required|integer',
             'sub_product_category' => 'required|integer',
+            'attribute_set_id'     => 'required|integer',
             'slider'               => 'nullable|boolean',
             'order'                => 'nullable|integer',
         ];

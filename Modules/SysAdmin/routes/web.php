@@ -141,6 +141,15 @@ Route::prefix('sysadmin')
                 Route::get('edit/{id}', 'edit')->name('edit');
                 Route::patch('update/{id}', 'update')->name('update');
                 Route::get('destroy/{id}', 'destroy')->name('delete');
+
+                Route::post('catalog/products/load-attributes', 'loadAttributeSetAttributes')
+                    ->name('load-attributes');
+
+                Route::get('catalog/products/{product}/attributes', 'attributes')
+                    ->name('attributes');
+
+                Route::post('catalog/products/{product}/attributes', 'storeAttributes')
+                    ->name('attributes.store');
             });
 
             Route::controller(Modules\SysAdmin\Http\Controllers\ProductCategoryController::class)->prefix('productcategory')->as('productcategory.')->group(function () {
@@ -152,7 +161,6 @@ Route::prefix('sysadmin')
                 Route::patch('update/{id}', 'update')->name('update');
                 Route::get('destroy/{id}', 'destroy')->name('delete');
             });
-
         });
 
         // ===============================

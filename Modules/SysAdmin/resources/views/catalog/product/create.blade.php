@@ -174,8 +174,27 @@
                         </div>
                     </div>
 
+                    {{-- Attribute Set --}}
+                    <div class="card mt-3">
+                        <div class="card-header p-3">
+                            <label for="attribute_set_id" class="col-form-label">Attribute Set</label>
+                        </div>
+                        <div class="card-body p-3">
+                            <select id="attribute_set_id" name="attribute_set_id" class="form-select select2">
+                                <option value="">Select Attribute Set</option>
+                                @foreach ($attributeSets as $id => $name)
+                                    <option value="{{ $id }}"
+                                        {{ old('attribute_set_id') == $id ? 'selected' : '' }}>
+                                        {{ $name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <small class="text-muted d-block mt-1">
+                                After saving, you can fill attribute values in the next step.
+                            </small>
+                        </div>
+                    </div>
                 </div>
-
             </div>
         </form>
     </div>
@@ -184,3 +203,4 @@
 @pushOnce('scripts')
     {!! JsValidator::formRequest('Modules\SysAdmin\Requests\ProductFormRequest', '#create-product') !!}
 @endPushOnce
+

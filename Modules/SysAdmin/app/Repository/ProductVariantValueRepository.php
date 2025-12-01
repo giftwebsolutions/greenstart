@@ -34,6 +34,6 @@ class ProductVariantValueRepository extends BaseRepository implements ProductVar
 
     public function getByVariantId(int $variantId)
     {
-        return $this->model->where('product_variant_id', $variantId)->get();
+        return $this->model->where('product_id', $variantId)->get();
     }
 }

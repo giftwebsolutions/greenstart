@@ -1,0 +1,10 @@
+ALTER TABLE `product` ADD `attribute_set_id` TINYINT UNSIGNED NULL DEFAULT NULL AFTER `sub_product_category`; 
+
+ALTER TABLE `product_variant_values` CHANGE `attribute_value_id` `attribute_value_id` VARCHAR(255) NULL DEFAULT NULL; 
+
+ALTER TABLE `product_variant_values` CHANGE `product_variant_id` `product_id` VARCHAR(255) NULL DEFAULT NULL; 
+
+
+ALTER TABLE `product_variant_values` ADD `value` VARCHAR(255) NULL DEFAULT NULL AFTER `attribute_value_id`; 
+
+ALTER TABLE `product_variants` CHANGE `price` `price` DECIMAL(10,2) NOT NULL DEFAULT '0'; 

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class ProductVariantValue
  *
  * @property int $id
- * @property int $product_variant_id
+ * @property int $product_id
  * @property int $attribute_id
  * @property int $attribute_value_id
  *
@@ -23,29 +23,20 @@ class ProductVariantValue extends Model
     protected $table = 'product_variant_values';
 
     protected $casts = [
-        'product_variant_id' => 'int',
+        'product_id' => 'int',
         'attribute_id'       => 'int',
         'attribute_value_id' => 'int',
     ];
 
     protected $fillable = [
-        'product_variant_id',
+        'product_id',
         'attribute_id',
         'attribute_value_id',
+        'value'
     ];
-
-    public function variant()
-    {
-        return $this->belongsTo(ProductVariant::class, 'product_variant_id');
-    }
 
     public function attribute()
     {
         return $this->belongsTo(Attribute::class, 'attribute_id');
-    }
-
-    public function attributeValue()
-    {
-        return $this->belongsTo(AttributeValue::class, 'attribute_value_id');
     }
 }

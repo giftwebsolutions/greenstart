@@ -30,6 +30,7 @@ class Product extends Model
 		'sub_product_category' => 'int',
 		'slider' => 'int',
 		'order' => 'int',
+		'attribute_set_id' => 'int',
 	];
 
 	protected $fillable = [
@@ -49,6 +50,7 @@ class Product extends Model
 		'hits',
 		'product_category',
 		'sub_product_category',
+		'attribute_set_id',
 		'slider',
 		'order',
 	];
