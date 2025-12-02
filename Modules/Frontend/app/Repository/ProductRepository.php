@@ -14,7 +14,7 @@ class ProductRepository extends BaseRepository implements ProductInterface
     }
 
     /**
-     * Paginated product list for frontend.
+     * Common listing for: all products / by category / search.
      */
     public function paginateForFrontend(array $filters = [], int $perPage = 12)
     {
@@ -23,15 +23,18 @@ class ProductRepository extends BaseRepository implements ProductInterface
         $this->scopeQuery(function ($q) use ($filters) {
             $q = $q->where('status', 1);
 
+            // category filter
             if (!empty($filters['category_id'])) {
                 $q->where('product_category', $filters['category_id']);
             }
 
+            // search filter
             if (!empty($filters['search'])) {
                 $search = $filters['search'];
                 $q->where(function ($sub) use ($search) {
                     $sub->where('title', 'like', "%{$search}%")
-                        ->orWhere('keywords', 'like', "%{$search}%");
+                        ->orWhere('keywords', 'like', "%{$search}%")
+                        ->orWhere('sku', 'like', "%{$search}%");
                 });
             }
 
@@ -41,9 +44,6 @@ class ProductRepository extends BaseRepository implements ProductInterface
         return $this->paginate($perPage);
     }
 
-    /**
-     * Detail page finder.
-     */
     public function findForFrontend(string|int $id): ?Product
     {
         $this->resetModel();
@@ -55,22 +55,44 @@ class ProductRepository extends BaseRepository implements ProductInterface
                 return $q->where('id', (int) $id);
             }
 
-            // assuming slug column exists
             return $q->where('slug', $id);
         });
 
         return $this->first();
     }
 
-    /**
-     * Related products (same category, exclude current).
-     */
+    public function findWithVariantsForFrontend(string|int $id): ?Product
+    {
+        $this->resetModel();
+
+        $this->with([
+            'variants' => function ($q) {
+                $q->where('status', 1)->orderBy('id');
+            },
+            'variants.values.attribute',
+            'variants.values.attributeValue',
+            'configurableAttributes.attribute.values',
+        ]);
+
+        $this->scopeQuery(function ($q) use ($id) {
+            $q = $q->where('status', 1);
+
+            if (is_numeric($id)) {
+                return $q->where('id', (int) $id);
+            }
+
+            return $q->where('slug', $id);
+        });
+
+        return $this->first();
+    }
+
     public function getRelatedForFrontend(Product $product, int $limit = 10)
     {
         $this->resetModel();
 
         $this->scopeQuery(function ($q) use ($product, $limit) {
-            $q = $q->where('status', 1)
+            $q->where('status', 1)
                 ->where('id', '!=', $product->id);
 
             if ($product->product_category) {

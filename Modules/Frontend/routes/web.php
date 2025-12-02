@@ -21,8 +21,19 @@ Route::get('/blog/{id}', [BlogController::class, 'show'])->name('blogs.show');
 
 
 
-Route::get('/products', [ProductController::class, 'index'])
-    ->name('frontend.products.index');
+Route::prefix('shop')->group(function () {
+    Route::get('/categories', [ProductController::class, 'categories'])
+        ->name('frontend.shop.categories');
 
-Route::get('/products/{slug}', [ProductController::class, 'show'])
-    ->name('frontend.products.show');
+    Route::get('/products', [ProductController::class, 'index'])
+        ->name('frontend.shop.products.index');
+
+    Route::get('/category/{slug}', [ProductController::class, 'category'])
+        ->name('frontend.shop.category');
+
+    Route::get('/search', [ProductController::class, 'search'])
+        ->name('frontend.shop.search');
+
+    Route::get('/product/{slug}', [ProductController::class, 'show'])
+        ->name('frontend.shop.product.show');
+});
