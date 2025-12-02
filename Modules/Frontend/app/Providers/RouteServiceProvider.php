@@ -17,6 +17,11 @@ class RouteServiceProvider extends ServiceProvider
     public function boot(): void
     {
         parent::boot();
+
+        $this->app->bind(
+            \Modules\SysAdmin\Interfaces\ProductInterface::class,
+            \Modules\SysAdmin\Repository\ProductRepository::class
+        );
     }
 
     /**
