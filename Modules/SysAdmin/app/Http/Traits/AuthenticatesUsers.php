@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 trait AuthenticatesUsers
+
 {
     use RedirectsUsers, ThrottlesLogins;
 
