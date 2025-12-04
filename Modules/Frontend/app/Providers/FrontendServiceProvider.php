@@ -37,12 +37,12 @@ class FrontendServiceProvider extends ServiceProvider
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
         $this->app->bind(
-            \Modules\SysAdmin\Interfaces\ProductInterface::class,
-            \Modules\SysAdmin\Repository\ProductRepository::class
+            \Modules\Frontend\Interfaces\ProductInterface::class,
+            \Modules\Frontend\Repository\ProductRepository::class
         );
 
         $this->app->bind(
-            \Modules\SysAdmin\Interfaces\ProductCategoryInterface::class,
+            \Modules\Frontend\Interfaces\ProductCategoryInterface::class,
             \Modules\SysAdmin\Repository\ProductCategoryRepository::class
         );
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\SysAdmin\Repository;
+namespace Modules\Frontend\Repository;
 
 use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
 use Modules\SysAdmin\Interfaces\ProductInterface;
