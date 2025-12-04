@@ -98,4 +98,14 @@ class Product extends Model
 	{
 		return $this->belongsTo(ProductCategory::class, 'sub_product_category', 'id');
 	}
+
+	public function variants()
+	{
+		return $this->hasMany(ProductVariant::class, 'product_id', 'id');
+	}
+
+	public function configurableAttributes()
+	{
+		return $this->hasMany(ProductConfigurableAttribute::class, 'product_id', 'id');
+	}
 }

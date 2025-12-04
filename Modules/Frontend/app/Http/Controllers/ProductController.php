@@ -5,7 +5,7 @@ namespace Modules\Frontend\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\Frontend\Interfaces\ProductInterface;
-use Modules\Frontend\Interfaces\ProductCategoryInterface;
+use Modules\SysAdmin\Interfaces\ProductCategoryInterface;
 
 class ProductController extends Controller
 {

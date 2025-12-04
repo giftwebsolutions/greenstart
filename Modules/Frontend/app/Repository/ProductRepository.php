@@ -3,7 +3,7 @@
 namespace Modules\Frontend\Repository;
 
 use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
-use Modules\SysAdmin\Interfaces\ProductInterface;
+use Modules\Frontend\Interfaces\ProductInterface;
 use Modules\SysAdmin\Models\Product;
 
 class ProductRepository extends BaseRepository implements ProductInterface
