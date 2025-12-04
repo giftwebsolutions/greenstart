@@ -1,5 +1,5 @@
 @php
-    // dd($description);
+    // dd($category);
 @endphp
 @extends('sysadmin::layouts.master')
 
@@ -94,7 +94,7 @@
                             <div class="form-group mb-3">
                                 <label class="col-md-12 col-form-label">Description</label>
 
-                             
+                             {{-- {{dd( $category->description)}} --}}
                                 <textarea name="description" id="description" hidden class="form-control @error('description') is-invalid @enderror" rows="5">
                                     {!! old('description', $category->description ?? '') !!}
                                 </textarea>

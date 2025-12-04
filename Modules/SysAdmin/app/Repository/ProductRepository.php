@@ -85,7 +85,7 @@ class ProductRepository extends BaseRepository implements ProductInterface
             $query->where('parent_id', $parentId);
         }
 
-        return $query->pluck('name', 'id')->toArray();
+        return []; //$query->pluck('name', 'id')->toArray();
     }
 
     public function boot()

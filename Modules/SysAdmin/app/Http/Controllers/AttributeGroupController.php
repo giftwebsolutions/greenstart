@@ -27,7 +27,6 @@ class AttributeGroupController extends Controller
     {
         // Load attributes (filter to active/draft if you want)
         $attributes = Attribute::orderBy('name')->get(['id', 'name']);
-
         return view('sysadmin::catalog.groups.create', [
             'statuses'   => $this->groupRepository->getStatuses(),
             'attributes' => $attributes,
