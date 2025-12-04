@@ -79,9 +79,10 @@ class ProductCategoryRepository extends BaseRepository implements ProductCategor
 
         if ($parentId) {
             $query->where('parent_id', $parentId);
+            return $query->pluck('name', 'id')->toArray();
         }
 
-        return $query->pluck('name', 'id')->toArray();
+        return [];
     }
 
     /**

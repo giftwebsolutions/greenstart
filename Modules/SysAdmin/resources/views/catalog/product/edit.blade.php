@@ -3,9 +3,10 @@
     use Carbon\Carbon;
 
     // Convert UNIX created_at → normal datetime string
-    $createdAt = isset($product->created_at) && $product->created_at
-        ? Carbon::createFromTimestamp($product->created_at)->toDateTimeString()
-        : null;
+    $createdAt =
+        isset($product->created_at) && $product->created_at
+            ? Carbon::createFromTimestamp($product->created_at)->toDateTimeString()
+            : null;
 
     // Build thumbnail path via helper if thumb exists
     $thumbPath = null;
@@ -39,11 +40,8 @@
 @section('content')
     <div class="container-fluid">
 
-    <form id="edit-product"
-              class="theme-form"
-              method="POST"
-              enctype="multipart/form-data"
-              action="{{ route('sysadmin.catalog.product.update', $product->id) }}">
+        <form id="edit-product" class="theme-form" method="POST" enctype="multipart/form-data"
+            action="{{ route('sysadmin.catalog.product.update', $product->id) }}">
 
             @csrf
             @method('PATCH')
@@ -79,11 +77,8 @@
                             <div class="row mb-3">
                                 <label class="col-md-12 col-form-label">Product Title</label>
                                 <div class="col-md-12">
-                                    <input type="text"
-                                           name="title"
-                                           class="form-control"
-                                           value="{{ old('title', $product->title) }}"
-                                           required>
+                                    <input type="text" name="title" class="form-control"
+                                        value="{{ old('title', $product->title) }}" required>
                                 </div>
                             </div>
 
@@ -91,37 +86,29 @@
                             <div class="row mb-3">
                                 <label class="col-md-12 col-form-label">Keywords</label>
                                 <div class="col-md-12">
-                                    <input type="text"
-                                           name="keywords"
-                                           class="form-control"
-                                           value="{{ old('keywords', $product->keywords) }}">
+                                    <input type="text" name="keywords" class="form-control"
+                                        value="{{ old('keywords', $product->keywords) }}">
                                 </div>
                             </div>
 
                             {{-- Short Description --}}
                             <div class="form-group mb-3">
                                 <label class="col-md-12 col-form-label">Short Description</label>
-                                <textarea name="short_description"
-                                          class="form-control"
-                                          rows="3">{{ old('short_description', $product->short_description) }}</textarea>
+                                <textarea name="short_description" class="form-control" rows="3">{{ old('short_description', $product->short_description) }}</textarea>
                             </div>
 
                             {{-- Description --}}
                             <div class="form-group mb-3">
                                 <label class="col-md-12 col-form-label">Description</label>
-                                <textarea name="description"
-                                          class="form-control editor"
-                                          rows="8">{{ old('description', $product->description) }}</textarea>
+                                <textarea name="description" class="form-control editor" rows="8">{{ old('description', $product->description) }}</textarea>
                             </div>
 
                             {{-- SKU --}}
                             <div class="row mb-3">
                                 <label class="col-md-12 col-form-label">SKU</label>
                                 <div class="col-md-12">
-                                    <input type="text"
-                                           name="sku"
-                                           class="form-control"
-                                           value="{{ old('sku', $product->sku) }}">
+                                    <input type="text" name="sku" class="form-control"
+                                        value="{{ old('sku', $product->sku) }}">
                                 </div>
                             </div>
 
@@ -130,12 +117,10 @@
                                 <label class="col-md-12 col-form-label">Product Type</label>
                                 <div class="col-md-12">
                                     <select class="form-select" name="type">
-                                        <option value="1"
-                                            {{ old('type', $product->type) == 1 ? 'selected' : '' }}>
+                                        <option value="1" {{ old('type', $product->type) == 1 ? 'selected' : '' }}>
                                             Simple
                                         </option>
-                                        <option value="2"
-                                            {{ old('type', $product->type) == 2 ? 'selected' : '' }}>
+                                        <option value="2" {{ old('type', $product->type) == 2 ? 'selected' : '' }}>
                                             Variable
                                         </option>
                                     </select>
@@ -146,10 +131,8 @@
                             <div class="row mb-3">
                                 <label class="col-md-12 col-form-label">Video URL</label>
                                 <div class="col-md-12">
-                                    <input type="text"
-                                           name="video"
-                                           class="form-control"
-                                           value="{{ old('video', $product->video) }}">
+                                    <input type="text" name="video" class="form-control"
+                                        value="{{ old('video', $product->video) }}">
                                 </div>
                             </div>
 
@@ -157,10 +140,8 @@
                             <div class="row mb-3">
                                 <label class="col-md-12 col-form-label">Catalog URL</label>
                                 <div class="col-md-12">
-                                    <input type="text"
-                                           name="catalog"
-                                           class="form-control"
-                                           value="{{ old('catalog', $product->catalog) }}">
+                                    <input type="text" name="catalog" class="form-control"
+                                        value="{{ old('catalog', $product->catalog) }}">
                                 </div>
                             </div>
 
@@ -171,9 +152,7 @@
                                     <input type="file" name="thumb" class="form-control">
                                     @if ($product->thumb_path ?? false)
                                         <div class="mt-2">
-                                            <img src="{{ $product->thumb_path }}"
-                                                 alt="Thumbnail"
-                                                 style="max-height:80px;">
+                                            <img src="{{ $product->thumb_path }}" alt="Thumbnail" style="max-height:80px;">
                                         </div>
                                     @endif
                                 </div>
@@ -182,8 +161,7 @@
                         </div>
 
                         <div class="card-footer text-end">
-                            <a href="{{ route('sysadmin.catalog.product.index') }}"
-                               class="btn btn-secondary">Cancel</a>
+                            <a href="{{ route('sysadmin.catalog.product.index') }}" class="btn btn-secondary">Cancel</a>
                             <button type="submit" class="btn btn-primary mx-2">Update</button>
                         </div>
                     </div>
@@ -215,7 +193,7 @@
                             <label class="col-md-12 col-form-label">Category</label>
                         </div>
                         <div class="card-body p-3">
-                            <select class="form-select" name="product_category">
+                            <select class="form-select" name="product_category" id="product_category">
                                 <option value="">Select Category</option>
                                 @foreach ($categories as $k => $v)
                                     <option value="{{ $k }}"
@@ -233,14 +211,10 @@
                             <label class="col-md-12 col-form-label">Sub Category</label>
                         </div>
                         <div class="card-body p-3">
-                            <select class="form-select" name="sub_product_category">
+                            <select class="form-select" name="sub_product_category" id="sub_product_category"
+                                data-selected="{{ old('sub_product_category', $product->sub_product_category) }}">
                                 <option value="">Select Sub Category</option>
-                                @foreach ($subCategories as $k => $v)
-                                    <option value="{{ $k }}"
-                                        {{ (int) old('sub_product_category', $product->sub_product_category) === (int) $k ? 'selected' : '' }}>
-                                        {{ $v }}
-                                    </option>
-                                @endforeach
+                                {{-- No need to loop here; JS will fill based on main category --}}
                             </select>
                         </div>
                     </div>
@@ -251,9 +225,7 @@
                             <label for="attribute_set_id" class="col-form-label">Attribute Set</label>
                         </div>
                         <div class="card-body p-3">
-                            <select id="attribute_set_id"
-                                    name="attribute_set_id"
-                                    class="form-select select2">
+                            <select id="attribute_set_id" name="attribute_set_id" class="form-select select2">
                                 <option value="">Select Attribute Set</option>
                                 @foreach ($attributeSets as $id => $name)
                                     <option value="{{ $id }}"
@@ -274,13 +246,15 @@
                             <div class="card-body p-3">
                                 <p class="mb-2">
                                     Go to the Attributes page to fill attribute values
-                                    @if((int)$product->type === 2)
+                                    @if ((int) $product->type === 2)
                                         and manage variants.
                                     @endif
                                 </p>
                                 <a href="{{ route('sysadmin.catalog.product.attributes', $product->id) }}"
-                                   class="btn btn-outline-primary w-100">
-                                    Manage Attributes @if((int)$product->type === 2)& Variants @endif
+                                    class="btn btn-outline-primary w-100">
+                                    Manage Attributes @if ((int) $product->type === 2)
+                                        & Variants
+                                    @endif
                                 </a>
                             </div>
                         </div>
@@ -339,4 +313,72 @@
 
 @section('script')
     <script type="module" src="{{ asset('admin/js/select2/select2.full.min.js') }}"></script>
+
+
+    <script type="module">
+        $(function() {
+
+            const $categorySelect = $('#product_category');
+            const $subCategorySelect = $('#sub_product_category');
+            const subCategoryUrl = "{{ route('sysadmin.catalog.product.subcategories') }}";
+
+            function clearSubCategories() {
+                $subCategorySelect.html('<option value="">Select Sub Category</option>');
+            }
+
+            function loadSubCategories(parentId, preselectedId = null) {
+                if (!parentId) {
+                    clearSubCategories();
+                    return;
+                }
+
+                $.ajax({
+                    url: subCategoryUrl,
+                    type: 'GET',
+                    data: {
+                        parent_id: parentId
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        clearSubCategories();
+
+                        if (!response.success || $.isEmptyObject(response.data)) {
+                            return;
+                        }
+
+                        $.each(response.data, function(id, name) {
+                            let option = $('<option>', {
+                                value: id,
+                                text: name
+                            });
+
+                            if (preselectedId && String(preselectedId) === String(id)) {
+                                option.prop('selected', true);
+                            }
+
+                            $subCategorySelect.append(option);
+                        });
+                    },
+                    error: function(err) {
+                        console.error("Error loading sub categories:", err);
+                    }
+                });
+            }
+
+            // On category change (create/edit)
+            $categorySelect.on('change', function() {
+                const parentId = $(this).val();
+                clearSubCategories();
+                loadSubCategories(parentId);
+            });
+
+            // ✅ On edit / validation error – preselect existing subcategory
+            const initialParent = $categorySelect.val(); // existing category
+            const preselectedSub = $subCategorySelect.data('selected') || null; // existing subcategory
+
+            if (initialParent) {
+                loadSubCategories(initialParent, preselectedSub);
+            }
+        });
+    </script>
 @endsection

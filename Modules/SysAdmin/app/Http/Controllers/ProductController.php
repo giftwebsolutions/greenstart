@@ -18,7 +18,7 @@ use Modules\SysAdmin\Models\ProductVariantValue;
 use Modules\SysAdmin\DataTables\ProductDataTable;
 use Modules\SysAdmin\Interfaces\ProductVariantValueInterface;
 use Modules\SysAdmin\Repository\AttributeRepository;
-
+use Modules\SysAdmin\Repository\ProductCategoryRepository;
 class ProductController extends Controller
 {
     public function __construct(
@@ -27,6 +27,7 @@ class ProductController extends Controller
         protected ProductConfigurableAttributeInterface $configAttrRepository,
         protected ProductVariantValueInterface    $productAttributeValueRepository,
         protected AttributeRepository $attributeRepository,
+        protected ProductCategoryRepository $categoryRepository,
     ) {}
 
     /**
@@ -316,7 +317,7 @@ class ProductController extends Controller
             'product'       => $product,
             'statuses'      => $this->productRepository->getStatuses(),
             'categories'    => $this->productRepository->getCategories(),
-            'subCategories' => $this->productRepository->getSubCategories(),
+            'subCategories' => $this->productRepository->getSubCategories($product->product_category),
             'attributeSets' => $attributeSets,
         ]);
     }
@@ -373,6 +374,31 @@ class ProductController extends Controller
             'status'   => $product->status_label ?? null,
             'category' => $product->category ?? null,
             'subCategory' => $product->subCategory ?? null,
+        ]);
+    }
+
+    /**
+     * Return sub categories for given parent category (AJAX)
+     */
+    public function subCategories(Request $request)
+    {
+        $parentId = (int) $request->get('parent_id', 0);
+
+        if (! $parentId) {
+            return response()->json([
+                'success' => false,
+                'data'    => [],
+                'message' => 'Invalid parent category',
+            ], 422);
+        }
+
+        // You’ll create this method in the repository (see below)
+        $subCategories = $this->categoryRepository->getSubCategories($parentId);
+
+        return response()->json([
+            'success' => true,
+            // Expecting array: [id => name, id2 => name2, ...]
+            'data'    => $subCategories,
         ]);
     }
 }

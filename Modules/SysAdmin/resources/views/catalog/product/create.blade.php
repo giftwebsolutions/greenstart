@@ -150,10 +150,12 @@
                             <label class="col-md-12 col-form-label">Category</label>
                         </div>
                         <div class="card-body p-3">
-                            <select class="form-select" name="product_category">
-                                <option>Select Category</option>
+                            <select class="form-select" name="product_category" id="product_category">
+                                <option value="">Select Category</option>
                                 @foreach ($categories as $k => $v)
-                                    <option value="{{ $k }}">{{ $v }}</option>
+                                    <option value="{{ $k }}" @selected(old('product_category', $product->product_category ?? '') == $k)>
+                                        {{ $v }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -165,11 +167,9 @@
                             <label class="col-md-12 col-form-label">Sub Category</label>
                         </div>
                         <div class="card-body p-3">
-                            <select class="form-select" name="sub_product_category">
-                                <option>Select Sub Category</option>
-                                @foreach ($subCategories as $k => $v)
-                                    <option value="{{ $k }}">{{ $v }}</option>
-                                @endforeach
+                            <select class="form-select" name="sub_product_category" id="sub_product_category"
+                                data-selected="{{ old('sub_product_category', $product->sub_product_category ?? '') }}">
+                                <option value="">Select Sub Category</option>
                             </select>
                         </div>
                     </div>
@@ -202,5 +202,72 @@
 
 @pushOnce('scripts')
     {!! JsValidator::formRequest('Modules\SysAdmin\Requests\ProductFormRequest', '#create-product') !!}
-@endPushOnce
+    <script type="module">
+        // ─────────────────────────────────────────────
+        //  Load Sub Categories When Main Category Changes
+        // ─────────────────────────────────────────────
+        $(function() {
+            const $categorySelect = $('#product_category');
+            const $subCategorySelect = $('#sub_product_category');
+            const subCategoryUrl = "{{ route('sysadmin.catalog.product.subcategories') }}";
 
+            function clearSubCategories() {
+                $subCategorySelect.html('<option value="">Select Sub Category</option>');
+            }
+
+            function loadSubCategories(parentId, preselectedId = null) {
+                if (!parentId) {
+                    clearSubCategories();
+                    return;
+                }
+
+                $.ajax({
+                    url: subCategoryUrl,
+                    type: 'GET',
+                    data: {
+                        parent_id: parentId
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        clearSubCategories();
+
+                        if (!response.success || $.isEmptyObject(response.data)) {
+                            return;
+                        }
+
+                        $.each(response.data, function(id, name) {
+                            const $opt = $('<option>', {
+                                value: id,
+                                text: name
+                            });
+
+                            if (preselectedId && String(preselectedId) === String(id)) {
+                                $opt.prop('selected', true);
+                            }
+
+                            $subCategorySelect.append($opt);
+                        });
+                    },
+                    error: function(err) {
+                        console.error('Error loading sub categories:', err);
+                    }
+                });
+            }
+
+            // Change (and optionally blur) handler
+            $categorySelect.on('change blur', function() {
+                const parentId = $(this).val();
+                clearSubCategories();
+                loadSubCategories(parentId);
+            });
+
+            // 🔥 Initial load after refresh / validation error / edit
+            const initialParentId = $categorySelect.val(); // old()/edit
+            const preselectedSubId = $subCategorySelect.data('selected') || null; // old()/edit
+
+            if (initialParentId) {
+                loadSubCategories(initialParentId, preselectedSubId);
+            }
+        });
+    </script>
+@endPushOnce

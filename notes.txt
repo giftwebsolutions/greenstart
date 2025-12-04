@@ -8,3 +8,5 @@ ALTER TABLE `product_variant_values` CHANGE `product_variant_id` `product_id` VA
 ALTER TABLE `product_variant_values` ADD `value` VARCHAR(255) NULL DEFAULT NULL AFTER `attribute_value_id`; 
 
 ALTER TABLE `product_variants` CHANGE `price` `price` DECIMAL(10,2) NOT NULL DEFAULT '0'; 
+
+ ALTER TABLE `product_variant_values` DROP INDEX `variant_attribute_unique`; 

@@ -150,6 +150,11 @@ Route::prefix('sysadmin')
 
                 Route::post('catalog/products/{product}/attributes', 'storeAttributes')
                     ->name('attributes.store');
+
+                Route::get(
+                    'catalog/productcategory/sub-categories',
+                    'subCategories'
+                )->name('subcategories');
             });
 
             Route::controller(Modules\SysAdmin\Http\Controllers\ProductCategoryController::class)->prefix('productcategory')->as('productcategory.')->group(function () {
