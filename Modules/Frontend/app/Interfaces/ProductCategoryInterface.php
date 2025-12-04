@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\SysAdmin\Interfaces;
+namespace Modules\Frontend\Interfaces;
 
 use Prettus\Repository\Contracts\RepositoryInterface;
 
