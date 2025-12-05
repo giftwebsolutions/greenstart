@@ -57,7 +57,7 @@
                                 <div class="cart-btn">
                                     <a href="{{ route('frontend.shop.product.show', $product->slug) }}"
                                         class="add-to-curt">
-                                        <i class="icon-shopping-cart"></i> Buy Now
+                                        <i class="icon-shopping-cart"></i>
                                     </a>
                                 </div>
                             </div>

@@ -5,7 +5,7 @@
             <div class="container">
                 <div class="header-nav-wrapper d-md-flex d-sm-flex d-xl-flex d-lg-flex justify-content-between">
                     <div class="header-static-nav d-flex">
-                        <p>WELCOME TO SHARMA ONLINE SHOPPING STORE !</p>
+                        <p>WELCOME TO GREENSTART ONLINE SHOPPING STORE !</p>
                         <div class="social-top">
                             <div class="follow d-flex">
                                 <label>Follow Us:</label>
@@ -81,7 +81,7 @@
             <div class="container">
                 <div class="header-nav-wrapper ">
                     <div class="header-static-nav f-none text-center">
-                        <p>WELCOME TO SHARMA ONLINE SHOPPING STORE !</p>
+                        <p>WELCOME TO GREENSTART ONLINE SHOPPING STORE !</p>
                     </div>
                     <div class="header-menu-nav d-flex justify-content-between">
                         <div class="social-top align-self-center">
@@ -160,8 +160,8 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-3 d-flex">
-                        <div class="logo align-self-center">
-                            <a href="{{ route('home') }}"><img class="img-responsive" src="assets/images/logo/logo.png"
+                        <div class="align-self-center">
+                            <a href="{{ route('home') }}"><img class="img-responsive logo" src="assets/images/logo/logo.png"
                                     alt="logo.png" /></a>
                         </div>
                     </div>
@@ -196,7 +196,7 @@
                         <div class="header-menu-vertical">
                             <h4 class="menu-title">Browse Categories </h4>
                             <ul class="menu-content display-none">
-                                <li class="menu-item"><a href="#">Brake Parts <i
+                                <li class="menu-item"><a href="#">{}<i
                                             class="ion-ios-arrow-right"></i></a>
                                     <ul class="sub-menu sub-menu-2">
                                         <li>
@@ -495,8 +495,8 @@
                             </svg>
                         </a>
                     </div>
-                    <div class="header-logo mt-7px">
-                        <a href="{{ route('home') }}"><img class="img-responsive" src="assets/images/logo/logo.png"
+                    <div class="header-logo  mt-7px">
+                        <a href="{{ route('home') }}"><img class="img-responsive logo" src="assets/images/logo/logo.png"
                                 alt="{{ env('APP_NAME') }}" /></a>
                     </div>
                 </div>

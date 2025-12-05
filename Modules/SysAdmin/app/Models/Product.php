@@ -59,7 +59,11 @@ class Product extends Model
 	{
 		parent::boot();
 
+		
 		static::creating(function ($model) {
+
+			$model->sub_product_category = $model->sub_product_category ?? 0;
+
 			// slug from title if empty
 			if (empty($model->slug) && !empty($model->title)) {
 				$model->slug = Str::slug($model->title);
