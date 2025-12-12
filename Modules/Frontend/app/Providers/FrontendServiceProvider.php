@@ -113,6 +113,7 @@ class FrontendServiceProvider extends ServiceProvider
                 }
             }
         }
+        $this->mergeConfigFrom(module_path($this->name, 'config/menu.php'), 'frontend.menus');
     }
 
     /**
