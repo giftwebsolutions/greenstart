@@ -20,58 +20,7 @@
                             </div>
                         </div>
                     </div>
-                    {{-- <div class="header-menu-nav">
-                        <ul class="menu-nav">
-                            <li>
-                                <div class="dropdown">
-                                    <button type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
-                                        aria-haspopup="true" aria-expanded="false"><i
-                                            class="icon-myaccount ion-android-person"></i> <span>My Account</span> <i
-                                            class="ion-ios-arrow-down"></i></button>
 
-                                    <ul class="dropdown-menu animation slideDownIn"
-                                        aria-labelledby="dropdownMenuButton">
-                                        <li><a href="login.html">Register</a></li>
-                                        <li><a href="login.html">Login</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="pr-0">
-                                <div class="dropdown">
-                                    <button type="button" id="dropdownMenuButton-3" data-bs-toggle="dropdown"
-                                        aria-haspopup="true" aria-expanded="false">
-                                        <img src="assets/images/flag/1.png" alt="" /> <span>EN-GB</span> <i
-                                            class="ion-ios-arrow-down"></i>
-                                    </button>
-
-                                    <ul class="dropdown-menu animation slideDownIn"
-                                        aria-labelledby="dropdownMenuButton-3">
-                                        <li>
-                                            <a href="#"><img src="assets/images/flag/1.png" alt="" />
-                                                English</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"><img src="assets/images/flag/2.png" alt="" />
-                                                Germany</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="dropdown">
-                                    <button type="button" id="dropdownMenuButton-2" data-bs-toggle="dropdown"
-                                        aria-haspopup="true" aria-expanded="false">£ <span>GBP</span> <i
-                                            class="ion-ios-arrow-down"></i></button>
-                                    <ul class="dropdown-menu animation slideDownIn"
-                                        aria-labelledby="dropdownMenuButton-2">
-                                        <li><a href="#">€ Euro</a></li>
-                                        <li><a href="#">£ Pound Sterling</a></li>
-                                        <li><a href="#">$ US Dollar</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                        </ul>
-                    </div> --}}
                 </div>
             </div>
         </div>
@@ -99,56 +48,7 @@
                             </div>
                         </div>
                         <div class="mobile-menu-nav">
-                            {{-- <ul class="menu-nav">
-                                <li>
-                                    <div class="dropdown">
-                                        <button type="button" id="dropdownMenuButton-1" data-bs-toggle="dropdown"
-                                            aria-haspopup="true" aria-expanded="false"><i
-                                                class="icon-myaccount ion-android-person"></i> <span>My Account</span>
-                                            <i class="ion-ios-arrow-down"></i></button>
 
-                                        <ul class="dropdown-menu animation slideDownIn"
-                                            aria-labelledby="dropdownMenuButton-1">
-                                            <li><a href="login.html">Register</a></li>
-                                            <li><a href="login.html">Login</a></li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li class="pr-0">
-                                    <div class="dropdown">
-                                        <button type="button" id="dropdownMenuButton-4" data-bs-toggle="dropdown"
-                                            aria-haspopup="true" aria-expanded="false">
-                                            <img src="assets/images/flag/1.png" alt="" /> <span>EN-GB</span>
-                                            <i class="ion-ios-arrow-down"></i>
-                                        </button>
-
-                                        <ul class="dropdown-menu animation slideDownIn"
-                                            aria-labelledby="dropdownMenuButton-4">
-                                            <li>
-                                                <a href="#"><img src="assets/images/flag/1.png"
-                                                        alt="" /> English</a>
-                                            </li>
-                                            <li>
-                                                <a href="#"><img src="assets/images/flag/2.png"
-                                                        alt="" /> Germany</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="dropdown">
-                                        <button type="button" id="dropdownMenuButton-5" data-bs-toggle="dropdown"
-                                            aria-haspopup="true" aria-expanded="false">£ <span>GBP</span> <i
-                                                class="ion-ios-arrow-down"></i></button>
-                                        <ul class="dropdown-menu animation slideDownIn"
-                                            aria-labelledby="dropdownMenuButton-5">
-                                            <li><a href="#">€ Euro</a></li>
-                                            <li><a href="#">£ Pound Sterling</a></li>
-                                            <li><a href="#">$ US Dollar</a></li>
-                                        </ul>
-                                    </div>
-                                </li>
-                            </ul> --}}
                         </div>
                     </div>
                 </div>
@@ -161,8 +61,8 @@
                 <div class="row">
                     <div class="col-md-3 d-flex">
                         <div class="align-self-center">
-                            <a href="{{ route('home') }}"><img class="img-responsive logo" src="assets/images/logo/logo.png"
-                                    alt="logo.png" /></a>
+                            <a href="{{ route('home') }}"><img class="img-responsive logo"
+                                    src="assets/images/logo/logo.png" alt="logo.png" /></a>
                         </div>
                     </div>
                     <div class="col-md-9 align-self-center">
@@ -174,14 +74,7 @@
                                 </form>
                             </div>
                             <!--Cart info Start -->
-                            <div class="header-tools d-flex">
-                                <div class="cart-info d-flex align-self-center">
-                                    <a title="wishlist" href="#offcanvas-wishlist" class="heart offcanvas-toggle"
-                                        data-number="3"><i class="icon-heart"></i></a>
-                                    <a title="cart" href="#offcanvas-cart" class="bag offcanvas-toggle"
-                                        data-number="3"><i class="icon-shopping-cart"></i><span>£30.00</span></a>
-                                </div>
-                            </div>
+
                         </div>
                         <!--Cart info End -->
                     </div>
@@ -195,178 +88,7 @@
                     <div class="col-lg-3">
                         <div class="header-menu-vertical">
                             <h4 class="menu-title">Browse Categories </h4>
-                            <ul class="menu-content display-none">
-                                <li class="menu-item"><a href="#">{}<i
-                                            class="ion-ios-arrow-right"></i></a>
-                                    <ul class="sub-menu sub-menu-2">
-                                        <li>
-                                            <ul class="submenu-item">
-                                                <li><a href="#">Brake Tools</a></li>
-                                                <li><a href="#">Drive shafts</a></li>
-                                                <li><a href="#">Emergency Brake</a></li>
-                                                <li><a href="#">Spools</a></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                    <!-- sub menu -->
-                                </li>
-                                <li class="menu-item">
-                                    <a href="#">Wheels & Tires <i class="ion-ios-arrow-right"></i></a>
-                                    <ul class="sub-menu flex-wrap overflow-hidden">
-                                        <li class="col-md-4">
-                                            <a href="#">
-                                                <span> <strong> WHEEL BEARINGS</strong></span>
-                                            </a>
-                                            <ul class="submenu-item">
-                                                <li><a href="#">Bower</a></li>
-                                                <li><a href="#">Celestron</a></li>
-                                                <li><a href="#">Flipbac</a></li>
-                                                <li><a href="#">Gary Fong</a></li>
-                                                <li><a href="#">GigaPan</a></li>
-                                            </ul>
-                                        </li>
-                                        <li class="col-md-4">
-                                            <a href="#">
-                                                <span><strong>WHEEL RIM SCREWS</strong></span>
-                                            </a>
-                                            <ul class="submenu-item">
-                                                <li><a href="#">Camera Lenses</a></li>
-                                                <li><a href="#">DSLR Lenses</a></li>
-                                                <li><a href="#">Lens Accessories</a></li>
-                                                <li><a href="#">Lowepro</a></li>
-                                                <li><a href="#">SanDisk</a></li>
-                                            </ul>
-                                        </li>
-                                        <li class="col-md-6">
-                                            <a href="#">
-                                                <span><strong>Wheel Simulators</strong></span>
-                                            </a>
-                                            <ul class="submenu-item">
-                                                <li><a href="#">Bags & Cases</a></li>
-                                                <li><a href="#">Binoculars & Scopes</a></li>
-                                                <li><a href="#">Digital Cameras</a></li>
-                                                <li><a href="#">Film Photography</a></li>
-                                                <li><a href="#">Lighting & Studio</a></li>
-                                            </ul>
-                                        </li>
-                                        <li class="col-md-12 text-right">
-                                            <div class="static-bottom-vermenu text-right">
-                                                <a href="#">
-                                                    <img class="img-responsive"
-                                                        src="assets/images/menu-image/banner-menu1.jpg"
-                                                        alt="">
-                                                </a>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                    <!-- sub menu -->
-                                </li>
-                                <li class="menu-item">
-                                    <a href="#">Moto Oil<i class="ion-ios-arrow-right"></i></a>
-                                    <ul class="sub-menu sub-menu-2">
-                                        <li>
-                                            <ul class="submenu-item">
-                                                <li><a href="#">2-Stroke</a></li>
-                                                <li><a href="#">4-Stroke</a></li>
-                                                <li><a href="#">Diesel</a></li>
-                                                <li><a href="#">Gasoline</a></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                    <!-- sub menu -->
-                                </li>
-                                <li class="menu-item"><a href="#">Turbo System <i
-                                            class="ion-ios-arrow-right"></i></a>
-                                    <ul class="sub-menu sub-menu-2">
-                                        <li>
-                                            <ul class="submenu-item">
-                                                <li><a href="#">Turbo Blanket </a></li>
-                                                <li><a href="#">Turbo Kits</a></li>
-                                                <li><a href="#">Turbo Wrap</a></li>
-                                                <li><a href="#">Turbocharger</a></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                    <!-- sub menu -->
-                                </li>
-                                <li class="menu-item"><a href="#">Lighting <i
-                                            class="ion-ios-arrow-right"></i></a>
-                                    <ul class="sub-menu sub-menu-2">
-                                        <li>
-                                            <ul class="submenu-item">
-                                                <li><a href="#">Bulbs</a></li>
-                                                <li><a href="#">Headlights</a></li>
-                                                <li><a href="#">Light Bars</a></li>
-                                                <li><a href="#">Light Kits</a></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                    <!-- sub menu -->
-                                </li>
-                                <li class="menu-item"><a href="#"> Body Parts <i
-                                            class="ion-ios-arrow-right"></i></a>
-                                    <ul class="sub-menu sub-menu-2">
-                                        <li>
-                                            <ul class="submenu-item">
-                                                <li><a href="#">Handbag <i class="ion-ios-arrow-right"></i></a>
-                                                    <ul class="sub-menu sub-menu-2 sub-menu-3 ">
-                                                        <li>
-                                                            <ul class="submenu-item">
-                                                                <li><a href="#">CD Players & Turntables</a></li>
-                                                                <li><a href="#">Home Theater Systems</a></li>
-                                                                <li><a href="#">Receivers & Amplifiers</a></li>
-                                                                <li><a href="#">Speakers</a></li>
-                                                                <li><a href="#">Stereo Shelf Systems</a></li>
-                                                                <li><a href="#">Wireless & Multiroom Audio</a>
-                                                                </li>
-                                                            </ul>
-                                                        </li>
-                                                    </ul>
-                                                    <!-- sub menu -->
-                                                </li>
-                                                <li><a href="#">Accessories</a></li>
-                                                <li><a href="#">Clothing</a></li>
-                                                <li><a href="#">Shoes <i class="ion-ios-arrow-right"></i></a>
-                                                    <ul class="sub-menu sub-menu-2 sub-menu-3">
-                                                        <li>
-                                                            <ul class="submenu-item">
-                                                                <li><a href="#">4K Media Players</a></li>
-                                                                <li><a href="#">Apple TV</a></li>
-                                                                <li><a href="#">Fire TV</a></li>
-                                                                <li><a href="#">Google Chromecast</a></li>
-                                                                <li><a href="#">NVIDIA Shield</a></li>
-                                                                <li><a href="#">Roku</a></li>
-                                                                <li><a href="#">Blu-ray Players</a></li>
-                                                                <li><a href="#">Streaming Media Player</a></li>
-                                                                <li><a href="#">TiVo</a></li>
-                                                            </ul>
-                                                        </li>
-                                                    </ul>
-                                                    <!-- sub menu -->
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                    <!-- sub menu -->
-                                </li>
-                                <li class="menu-item"><a href="#"> Perfomance Filters</a></li>
-                                <li class="menu-item"><a href="#"> Engine Parts <i
-                                            class="ion-ios-arrow-right"></i></a>
-                                    <ul class="sub-menu sub-menu-2">
-                                        <li>
-                                            <ul class="submenu-item">
-                                                <li><a href="#">Calculators</a></li>
-                                                <li><a href="#">Check Trousers</a></li>
-                                                <li><a href="#">Ink & Toner</a></li>
-                                                <li><a href="#">Low-Cut Jeans</a></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                    <!-- sub menu -->
-                                </li>
-                                <li class="menu-item"><a href="#"> Accessories</a></li>
-                                <li class="menu-item"><a href="#"> Seals & Hubs</a></li>
-                            </ul>
+                             <x-frontend::category-menu />
                             <!-- menu content -->
                         </div>
                         <!-- header menu vertical -->
@@ -380,7 +102,7 @@
                                 </li>
 
                                 <li><a href="{{ route('newarraival') }}">New Arraival</a></li>
-                               
+
                                 <li class="menu-dropdown">
                                     <a href="#">Shop <i class="ion-ios-arrow-down"></i></a>
                                     <ul class="mega-menu-wrap">
@@ -496,8 +218,8 @@
                         </a>
                     </div>
                     <div class="header-logo  mt-7px">
-                        <a href="{{ route('home') }}"><img class="img-responsive logo" src="assets/images/logo/logo.png"
-                                alt="{{ env('APP_NAME') }}" /></a>
+                        <a href="{{ route('home') }}"><img class="img-responsive logo"
+                                src="assets/images/logo/logo.png" alt="{{ env('APP_NAME') }}" /></a>
                     </div>
                 </div>
                 <!-- Header Logo End -->

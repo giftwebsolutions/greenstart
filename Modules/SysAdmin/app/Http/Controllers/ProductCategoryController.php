@@ -40,7 +40,7 @@ class ProductCategoryController extends Controller
     {
         $validated = $request->validated();
         $this->categoryRepository->saveOrUpdate($validated);
-
+        $this->categoryRepository->clearMenuCache();
         return redirect()
             ->route('sysadmin.catalog.productcategory.index')
             ->with('success', 'Category created successfully.');
@@ -66,7 +66,7 @@ class ProductCategoryController extends Controller
     {
         $validated = $request->validated();
         $this->categoryRepository->saveOrUpdate($validated, $id);
-
+        $this->categoryRepository->clearMenuCache();
         return redirect()
             ->route('sysadmin.catalog.productcategory.index')
             ->with('success', 'Category updated successfully.');
@@ -79,7 +79,7 @@ class ProductCategoryController extends Controller
     {
         $category = $this->categoryRepository->find($id);
         $category->delete();
-
+        $this->categoryRepository->clearMenuCache();
         return redirect()
             ->route('sysadmin.catalog.productcategory.index')
             ->with('success', 'Category deleted successfully.');

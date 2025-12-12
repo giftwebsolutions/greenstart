@@ -4,7 +4,7 @@ namespace Modules\SysAdmin\Repository;
 
 use Prettus\Repository\Criteria\RequestCriteria;
 use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
-use Modules\SysAdmin\Models\Product;
+use Illuminate\Support\Facades\Cache;
 use Modules\SysAdmin\Interfaces\ProductCategoryInterface;
 use Modules\SysAdmin\Models\ProductCategory;
 use Modules\SysAdmin\Helpers\ImageUploader;
@@ -91,5 +91,28 @@ class ProductCategoryRepository extends BaseRepository implements ProductCategor
     public function boot(): void
     {
         $this->pushCriteria(app(RequestCriteria::class));
+    }
+
+    public function getMenuTree()
+    {
+        $this->clearMenuCache();
+        return Cache::rememberForever('menu.categories', function () {
+            return ProductCategory::with(['children' => function ($q) {
+                $q->where('status', '1')          // enum('0','1') → use string
+                    ->orderBy('sort');
+            }])
+                ->where('parent_id', 0)              // root categories = 0
+                ->where('status', '1')               // only active categories
+                ->orderBy('sort')
+                ->get();
+        });
+
+        return ProductCategory::with('children')->get();
+    }
+
+
+    public function clearMenuCache()
+    {
+        Cache::forget('menu.categories');
     }
 }

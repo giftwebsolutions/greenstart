@@ -42,7 +42,7 @@ class FrontendServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
-            \Modules\Frontend\Interfaces\ProductCategoryInterface::class,
+            \Modules\SysAdmin\Interfaces\ProductCategoryInterface::class,
             \Modules\SysAdmin\Repository\ProductCategoryRepository::class
         );
     }
@@ -166,5 +166,9 @@ class FrontendServiceProvider extends ServiceProvider
     {
         Blade::component('frontend::new-arrivals', \Modules\Frontend\App\Http\Components\NewArrivals::class);
         Blade::component('frontend::category-tab-slider', \Modules\Frontend\App\Http\Components\CategoryTabSlider::class);
+        Blade::component(
+            'frontend::category-menu',
+            \Modules\Frontend\App\Http\Components\CategoryMenu::class
+        );
     }
 }
