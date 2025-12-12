@@ -19,6 +19,11 @@ class ProductCategoryRepository extends BaseRepository implements ProductCategor
         return ProductCategory::class;
     }
 
+    public function findBySlug(string $slug): ?ProductCategory
+    {
+        return ProductCategory::where('slug', $slug)->first();
+    }
+
     /**
      * Create or update a product category.
      */
@@ -95,7 +100,7 @@ class ProductCategoryRepository extends BaseRepository implements ProductCategor
 
     public function getMenuTree()
     {
-        $this->clearMenuCache();
+        //$this->clearMenuCache();
         return Cache::rememberForever('menu.categories', function () {
             return ProductCategory::with(['children' => function ($q) {
                 $q->where('status', '1')          // enum('0','1') → use string
@@ -106,8 +111,6 @@ class ProductCategoryRepository extends BaseRepository implements ProductCategor
                 ->orderBy('sort')
                 ->get();
         });
-
-        return ProductCategory::with('children')->get();
     }
 
 
