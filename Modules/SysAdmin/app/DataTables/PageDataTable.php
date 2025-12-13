@@ -66,8 +66,8 @@ class PageDataTable extends DataTable
     protected function getActionColumn($data): string
     {
         $showUrl = route('sysadmin.cms.page.view', $data->id);
-        $editUrl = route('sysadmin.page.edit', $data->id);
-        $deleteUrl = route('sysadmin.page.delete', $data->id);
+        $editUrl = route('sysadmin.cms.page.edit', $data->id);
+        $deleteUrl = route('sysadmin.cms.page.delete', $data->id);
         return '
         <ul class="action">
             <li class="edit"> <a href="' . $editUrl . '" data-bs-original-title="edit" title="edit"><i class="icon-pencil-alt"></i></a></li>

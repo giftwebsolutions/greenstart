@@ -152,7 +152,7 @@
                             <div class="row mb-3">
                                 <label class="col-md-12 col-form-label">Thumbnail Image</label>
                                 <div class="col-md-12">
-                                    <input type="file" name="thumb" class="form-control">
+                                    <input type="file" id="thumb-image" name="thumb" class="form-control">
                                 </div>
                             </div>
 
@@ -365,7 +365,7 @@
 
             $('#remove-image').click(function() {
                 file = '';
-                $('#featured_image').val('');
+                $('#thumb-image').val('');
                 $("#imgPreview").attr("src", '');
                 $('#remove-image-block').addClass('d-none')
             });

@@ -23,7 +23,7 @@
             <div class="col-md-8">
                 <div class="card">
                     <form class="theme-form" id="update-page" method="POST" enctype="multipart/form-data"
-                        action="{{ route('sysadmin.page.update', $page->id) }}">
+                        action="{{ route('sysadmin.cms.page.update', $page->id) }}">
                         @method('PATCH')
                         @csrf
                         <div class="card-body p-3">
