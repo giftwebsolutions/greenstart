@@ -61,10 +61,13 @@
                             </div>
 
                             {{-- Short Description --}}
+
                             <div class="form-group mb-3">
-                                <label class="col-md-12 col-form-label">Short Description</label>
-                                <textarea name="short_description" class="form-control" rows="3">{{ old('short_description') }}</textarea>
+                                <label class="col-md-12 col-form-label">Description</label>
+                                <div class="editor" data-name="description">{!! old('description') !!}</div>
+                                <input type="hidden" name="description" value="{{ old('description') }}">
                             </div>
+
 
                             {{-- Description --}}
                             <div class="form-group mb-3">
@@ -143,7 +146,8 @@
                             <label class="col-md-12 col-form-label">Sales Price</label>
                         </div>
                         <div class="card-body p-3">
-                            <input type="number" name="sales_price" class="form-control" value="{{ old('sales_price') }}" required>
+                            <input type="number" name="sales_price" class="form-control"
+                                value="{{ old('sales_price') }}" required>
                         </div>
                     </div>
 

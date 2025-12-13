@@ -100,7 +100,9 @@
                             {{-- Description --}}
                             <div class="form-group mb-3">
                                 <label class="col-md-12 col-form-label">Description</label>
-                                <textarea name="description" class="form-control editor" rows="8">{{ old('description', $product->description) }}</textarea>
+                                <div class="editor" data-name="description">{!! old('description', $product->description ?? '') !!}</div>
+                                <input type="hidden" name="description"
+                                    value="{{ old('description', $product->description ?? '') }}">
                             </div>
 
                             {{-- SKU --}}
@@ -146,15 +148,25 @@
                             </div>
 
                             {{-- Thumb Image --}}
+
                             <div class="row mb-3">
                                 <label class="col-md-12 col-form-label">Thumbnail Image</label>
                                 <div class="col-md-12">
                                     <input type="file" name="thumb" class="form-control">
-                                    @if ($product->thumb_path ?? false)
-                                        <div class="mt-2">
-                                            <img src="{{ $product->thumb_path }}" alt="Thumbnail" style="max-height:80px;">
-                                        </div>
-                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+
+                                @if ($product->thumb !== null)
+                                    <img src="{{ asset(Modules\SysAdmin\Helpers\ImageUploader::getFilePath($product->thumb, $product->created_at, 'thumbnail')) }}"
+                                        id="imgPreview" class="img-fluid" alt="" />
+                                @else
+                                    <img src="" id="imgPreview" class="img-fluid" alt="" />
+                                @endif
+
+                                <div id="remove-image-block" class="my-2 text-center">
+                                    <a href="javascript:void(0)" id="remove-image" class="btn btn-danger">Remove</a>
                                 </div>
                             </div>
 
@@ -170,12 +182,13 @@
                 {{-- RIGHT PANEL --}}
                 <div class="col-md-4">
 
-                      <div class="card">
+                    <div class="card">
                         <div class="card-header p-3">
                             <label class="col-md-12 col-form-label">MRP Price</label>
                         </div>
                         <div class="card-body p-3">
-                            <input type="number" name="mrp" class="form-control" value="{{ old('mrp', $product->mrp) }}" required>
+                            <input type="number" name="mrp" class="form-control"
+                                value="{{ old('mrp', $product->mrp) }}" required>
                         </div>
                     </div>
 
@@ -184,7 +197,8 @@
                             <label class="col-md-12 col-form-label">Sales Price</label>
                         </div>
                         <div class="card-body p-3">
-                            <input type="number" name="sales_price" class="form-control" value="{{ old('sales_price', $product->sales_price) }}" required>
+                            <input type="number" name="sales_price" class="form-control"
+                                value="{{ old('sales_price', $product->sales_price) }}" required>
                         </div>
                     </div>
 
@@ -246,10 +260,10 @@
                         <div class="card-body p-3">
                             <select id="attribute_set_id" name="attribute_set_id" class="form-select select2">
                                 <option value="">Select Attribute Set</option>
-                                @foreach ($attributeSets as $id => $name)
-                                    <option value="{{ $id }}"
-                                        {{ (int) old('attribute_set_id', $product->attribute_set_id) === (int) $id ? 'selected' : '' }}>
-                                        {{ $name }}
+                                @foreach ($attributeSets as $k => $b)
+                                    <option value="{{ $k }}"
+                                        {{ (int) old('attribute_set_id', $product->attribute_set_id) === (int) $k ? 'selected' : '' }}>
+                                        {{ $v }}
                                     </option>
                                 @endforeach
                             </select>
@@ -336,6 +350,25 @@
 
     <script type="module">
         $(function() {
+
+            $(document).ready(function() {
+                const value = $('#attribute_set_id').val();
+
+                $('#attribute_set_id').select2();
+
+                // Force Select2 to read selected option
+                if (value) {
+                    $('#attribute_set_id').val(value).trigger('change');
+                }
+            });
+
+
+            $('#remove-image').click(function() {
+                file = '';
+                $('#featured_image').val('');
+                $("#imgPreview").attr("src", '');
+                $('#remove-image-block').addClass('d-none')
+            });
 
             const $categorySelect = $('#product_category');
             const $subCategorySelect = $('#sub_product_category');
