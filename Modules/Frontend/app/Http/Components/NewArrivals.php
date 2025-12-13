@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Frontend\App\Http\Components;
+namespace Modules\Frontend\Http\Components;
 
 use Illuminate\View\Component;
 use Modules\SysAdmin\Interfaces\ProductInterface;

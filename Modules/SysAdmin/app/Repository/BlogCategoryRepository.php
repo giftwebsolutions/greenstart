@@ -63,4 +63,24 @@ class BlogCategoryRepository extends BaseRepository implements BlogCategoryInter
         }
         return $response;
     }
+
+    public function frontendWithCount()
+    {
+        return $this->getModel()
+            ->newQuery()
+            ->withCount(['blogs' => function ($q) {
+                $q->where('status', 1)
+                    ->where(function ($qq) {
+                        $qq->whereNull('published_at')
+                            ->orWhere('published_at', '<=', \Illuminate\Support\Carbon::now());
+                    });
+            }])
+            ->orderBy('name')
+            ->get();
+    }
+
+    public function findBySlug(string $slug)
+    {
+        return $this->getModel()->newQuery()->where('slug', $slug)->firstOrFail();
+    }
 }

@@ -4,6 +4,7 @@ namespace Modules\Frontend\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\DB;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -27,6 +28,7 @@ class FrontendServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+        $this->setSiteSettings();
     }
 
     /**
@@ -165,11 +167,17 @@ class FrontendServiceProvider extends ServiceProvider
 
     public function registerWidgets()
     {
-        Blade::component('frontend::new-arrivals', \Modules\Frontend\App\Http\Components\NewArrivals::class);
-        Blade::component('frontend::category-tab-slider', \Modules\Frontend\App\Http\Components\CategoryTabSlider::class);
-        Blade::component(
-            'frontend::category-menu',
-            \Modules\Frontend\App\Http\Components\CategoryMenu::class
-        );
+        Blade::component('frontend::new-arrivals', \Modules\Frontend\Http\Components\NewArrivals::class);
+        Blade::component('frontend::category-tab-slider', \Modules\Frontend\Http\Components\CategoryTabSlider::class);
+        Blade::component('frontend::category-menu', \Modules\Frontend\Http\Components\CategoryMenu::class);
+    }
+
+
+    protected function setSiteSettings()
+    {
+        if (DB::table('settings')->where('type', 'system')->exists()) {
+            $settings  = \Modules\SysAdmin\Models\Settings::getSettingByType('system');
+            config()->set('site-settings', array_merge(config('site-settings'), $settings));
+        }
     }
 }

@@ -5,7 +5,7 @@ namespace Modules\SysAdmin\Repository;
 use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Modules\SysAdmin\Models\Page;
-use App\Validators\PageValidator;
+use Illuminate\Support\Carbon;
 use Modules\SysAdmin\Helpers\ImageUploader;
 use Modules\SysAdmin\Interfaces\PageInterface;
 
@@ -65,5 +65,29 @@ class PageRepository extends BaseRepository implements PageInterface
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
+    }
+
+    public function frontendBaseQuery(array $with = ['parent'])
+    {
+        return $this->getModel()
+            ->newQuery()
+            ->with($with)
+            ->where('status', 1);
+    }
+
+    public function findFrontendBySlug(string $slug, array $with = ['parent'])
+    {
+        return $this->frontendBaseQuery($with)
+            ->where('slug', $slug)
+            ->first();
+    }
+
+    public function getChildrenByParentId(int $parentId, array $columns = ['id', 'name', 'slug'])
+    {
+        return $this->frontendBaseQuery([])
+            ->select($columns)
+            ->where('parent_id', $parentId)
+            ->orderBy('order_id', 'asc')
+            ->get();
     }
 }

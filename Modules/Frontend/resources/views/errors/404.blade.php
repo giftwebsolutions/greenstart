@@ -36,7 +36,7 @@
                                 Sorry, the page you are looking for does not exist or has been moved.
                             </p>
 
-                            <a href="{{ route('home') }}" class="btn btn-success">
+                            <a href="{{ route('home') }}" class="btn btn-primary">
                                 <i class="ion-ios-home"></i> Go to Home
                             </a>
                         </div>

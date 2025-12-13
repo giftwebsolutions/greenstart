@@ -19,7 +19,7 @@ class ProductController extends Controller
      */
     public function categories()
     {
-        $rootCategories = $this->categories->getRootCategories();
+        $rootCategories = $this->categories->getMenuTree();
 
         return view('frontend::catalog.categories', compact('rootCategories'));
     }
@@ -58,6 +58,18 @@ class ProductController extends Controller
         $activeTitle = $category->name;
 
         return view('frontend::catalog.product-list', compact('products', 'activeTitle', 'category'));
+    }
+
+    /**
+     * 4) Product search page
+     */
+    public function newarraival(Request $request)
+    {
+        
+        $products    = $this->products->paginateForFrontend([], 12);
+        $activeTitle =  'New Arraival';
+
+        return view('frontend::catalog.product-list', compact('products', 'activeTitle'));
     }
 
     /**

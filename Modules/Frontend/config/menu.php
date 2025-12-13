@@ -7,7 +7,7 @@ return [
     ],
     [
         'label' => 'New Arrival',
-        'route' => 'newarraival',
+        'route' => 'frontend.shop.newarraival',
     ],
     [
         'label' => 'Shop',
@@ -15,11 +15,12 @@ return [
     ],
     [
         'label' => 'Blog',
-        'route' => 'blogs.index',
+        'route' => 'blog.index',
     ],
     [
         'label' => 'About Page',
-        'route' => 'about',
+        'route' => 'cms.view',
+        'params' => ['slug' => 'about'],
     ],
     [
         'label' => 'Enquiry',

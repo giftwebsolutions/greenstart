@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Frontend\App\Http\Components;
+namespace Modules\Frontend\Http\Components;
 
 use Illuminate\Support\Collection;
 use Illuminate\View\Component;
