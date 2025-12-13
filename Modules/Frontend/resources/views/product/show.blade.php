@@ -183,14 +183,14 @@
                             <div class="product-inner">
 
                                 <div class="img-block">
-                                    <a href="{{ route('frontend.products.show', $rel->slug ?? $rel->id) }}" class="thumbnail">
+                                    <a href="{{ route('frontend.shop.product.show', $rel->slug ?? $rel->id) }}" class="thumbnail">
                                         <img class="first-img" src="{{ $rel->thumb_path }}" alt="{{ $rel->title }}"/>
                                     </a>
                                 </div>
 
                                 <div class="product-decs">
                                     <h2>
-                                        <a href="{{ route('frontend.products.show', $rel->slug ?? $rel->id) }}" class="product-link">
+                                        <a href="{{ route('frontend.shop.product.show', $rel->slug ?? $rel->id) }}" class="product-link">
                                             {{ $rel->title }}
                                         </a>
                                     </h2>
@@ -203,7 +203,7 @@
                                 </div>
 
                                 <div class="cart-btn">
-                                    <a href="{{ route('frontend.products.show', $rel->slug ?? $rel->id) }}" class="btn btn-primary btn-sm">
+                                    <a href="{{ route('frontend.shop.product.show', $rel->slug ?? $rel->id) }}" class="btn btn-primary btn-sm">
                                         BUY NOW
                                     </a>
                                 </div>

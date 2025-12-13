@@ -30,7 +30,7 @@
                                             <article class="list-product text-left">
                                                 <div class="product-inner">
                                                     <div class="img-block">
-                                                        <a href="{{ route('frontend.products.show', $product->slug ?? $product->id) }}"
+                                                        <a href="{{ route('frontend.shop.product.show', $product->slug ?? $product->id) }}"
                                                            class="thumbnail">
                                                             <img class="first-img"
                                                                  src="{{ $product->thumb_path ?? asset('assets/images/product-image/placeholder.jpg') }}"
@@ -39,7 +39,7 @@
                                                     </div>
                                                     <div class="product-decs">
                                                         <h2>
-                                                            <a href="{{ route('frontend.products.show', $product->slug ?? $product->id) }}"
+                                                            <a href="{{ route('frontend.shop.product.show', $product->slug ?? $product->id) }}"
                                                                class="product-link">
                                                                 {{ $product->title }}
                                                             </a>
@@ -53,7 +53,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="cart-btn mt-2">
-                                                        <a href="{{ route('frontend.products.show', $product->slug ?? $product->id) }}"
+                                                        <a href="{{ route('frontend.shop.product.show', $product->slug ?? $product->id) }}"
                                                            class="btn btn-primary btn-sm">
                                                             Buy Now
                                                         </a>

@@ -170,6 +170,25 @@
                 {{-- RIGHT PANEL --}}
                 <div class="col-md-4">
 
+                      <div class="card">
+                        <div class="card-header p-3">
+                            <label class="col-md-12 col-form-label">MRP Price</label>
+                        </div>
+                        <div class="card-body p-3">
+                            <input type="number" name="mrp" class="form-control" value="{{ old('mrp', $product->mrp)) }}" required>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header p-3">
+                            <label class="col-md-12 col-form-label">Sales Price</label>
+                        </div>
+                        <div class="card-body p-3">
+                            <input type="number" name="sales_mrp" class="form-control" value="{{ old('sales_mrp', $product->sales_mrp)) }}" required>
+                        </div>
+                    </div>
+
+
                     {{-- Status --}}
                     <div class="card">
                         <div class="card-header p-3">

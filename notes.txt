@@ -10,3 +10,6 @@ ALTER TABLE `product_variant_values` ADD `value` VARCHAR(255) NULL DEFAULT NULL 
 ALTER TABLE `product_variants` CHANGE `price` `price` DECIMAL(10,2) NOT NULL DEFAULT '0'; 
 
  ALTER TABLE `product_variant_values` DROP INDEX `variant_attribute_unique`; 
+
+
+ ALTER TABLE `product` ADD `mrp` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT '0' AFTER `order`, ADD `sales_price` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT '0' AFTER `mrp`; 

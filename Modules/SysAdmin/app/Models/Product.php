@@ -31,6 +31,8 @@ class Product extends Model
 		'slider' => 'int',
 		'order' => 'int',
 		'attribute_set_id' => 'int',
+		'mrp' => 'int',
+		'special_price' => 'int',
 	];
 
 	protected $fillable = [
@@ -53,6 +55,8 @@ class Product extends Model
 		'attribute_set_id',
 		'slider',
 		'order',
+		'mrp',
+		'special_price',
 	];
 
 	protected static function boot()

@@ -21,6 +21,8 @@ class ProductController extends Controller
     {
         $rootCategories = $this->categories->getMenuTree();
 
+        //dd( $rootCategories);
+
         return view('frontend::catalog.categories', compact('rootCategories'));
     }
 
