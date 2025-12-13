@@ -32,7 +32,7 @@ class Product extends Model
 		'order' => 'int',
 		'attribute_set_id' => 'int',
 		'mrp' => 'int',
-		'special_price' => 'int',
+		'sales_price' => 'int',
 	];
 
 	protected $fillable = [
@@ -56,7 +56,7 @@ class Product extends Model
 		'slider',
 		'order',
 		'mrp',
-		'special_price',
+		'sales_price',
 	];
 
 	protected static function boot()
@@ -80,6 +80,9 @@ class Product extends Model
 		});
 
 		static::updating(function ($model) {
+
+			$model->sub_product_category = $model->sub_product_category ?? 0;
+
 			// regenerate slug if title changed or slug empty
 			if ($model->isDirty('title') || empty($model->slug)) {
 				$model->slug = Str::slug($model->title);

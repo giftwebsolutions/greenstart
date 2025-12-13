@@ -175,7 +175,7 @@
                             <label class="col-md-12 col-form-label">MRP Price</label>
                         </div>
                         <div class="card-body p-3">
-                            <input type="number" name="mrp" class="form-control" value="{{ old('mrp', $product->mrp)) }}" required>
+                            <input type="number" name="mrp" class="form-control" value="{{ old('mrp', $product->mrp) }}" required>
                         </div>
                     </div>
 
@@ -184,7 +184,7 @@
                             <label class="col-md-12 col-form-label">Sales Price</label>
                         </div>
                         <div class="card-body p-3">
-                            <input type="number" name="sales_mrp" class="form-control" value="{{ old('sales_mrp', $product->sales_mrp)) }}" required>
+                            <input type="number" name="sales_price" class="form-control" value="{{ old('sales_price', $product->sales_price) }}" required>
                         </div>
                     </div>
 
