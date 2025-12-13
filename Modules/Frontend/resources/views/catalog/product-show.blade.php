@@ -73,8 +73,14 @@
                             <div class="pricing-meta">
                                 <ul>
                                     <li class="cuttent-price">
-                                        ₹{{ number_format($product->price ?? 0, 2) }}
+                                        ₹{{ number_format($product->sales_price ?? 0, 2) }}
                                     </li>
+                                   <li class="cuttent-price">
+    <del class="text-muted fs-6">
+        ₹{{ number_format($product->mrp ?? 0, 2) }}
+    </del>
+</li>
+
                                 </ul>
                             </div>
 

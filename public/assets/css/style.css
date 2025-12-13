@@ -9962,3 +9962,9 @@ offcanvas-menu > ul > li .menu-expand {
 .logo{
   width: 200px;
 }
+
+.mrp-price {
+    color: #999;
+    margin-left: 10px;
+    font-size: 14px;
+}
