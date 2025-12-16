@@ -22,12 +22,14 @@ class ProductCategoryFormRequest extends FormRequest
     {
         $routeName = request()->route()->action['as'] ?? null;
 
-        return match ($routeName) {
-            'sysadmin.catalog.category.create',
-            'sysadmin.catalog.category.store'  => $this->store(),
+        //dd($routeName);
 
-            'sysadmin.catalog.category.edit',
-            'sysadmin.catalog.category.update' => $this->update(),
+        return match ($routeName) {
+            'sysadmin.catalog.productcategory.create',
+            'sysadmin.catalog.productcategory.store'  => $this->store(),
+
+            'sysadmin.catalog.productcategory.edit',
+            'sysadmin.catalog.productcategory.update' => $this->update(),
 
             default                             => $this->store(),
         };

@@ -10,13 +10,13 @@ class ProductCategory extends Model
 {
 	protected $table = 'product_category';
 
+	public $timestamps = true;
+
 	public static $statuses = [
 		0 => 'Delete',
 		1 => 'Published',
 		2 => 'Draft',
 	];
-
-	public $timestamps = false;
 
 	protected $casts = [
 		'parent_id' => 'int',

@@ -1,6 +1,7 @@
 @php
     // dd($category);
 @endphp
+
 @extends('sysadmin::layouts.master')
 
 @section('css')
@@ -20,283 +21,223 @@
 @endsection
 
 @section('content')
-    <div class="container-fluid">
-        <form id="edit-category" class="theme-form" method="POST" enctype="multipart/form-data"
-            action="{{ route('sysadmin.catalog.productcategory.update', $category->id) }}">
-            @csrf
-            @method('PATCH')
-            <div class="row">
-                {{-- Error block --}}
-                <div class="col-12">
-                    @if ($errors->any())
-                        <div class="alert alert-secondary alert-dismissible fade show" role="alert">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                            <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-                </div>
-                {{-- Left column: main form --}}
-                <div class="col-md-8">
-                    <div class="card">
-                        <div class="card-body p-3">
+<div class="container-fluid">
+    <form id="edit-category" class="theme-form" method="POST" enctype="multipart/form-data"
+        action="{{ route('sysadmin.catalog.productcategory.update', $category->id) }}">
 
-                            {{-- Name --}}
-                            <div class="row mb-3">
-                                <label class="col-md-12 col-form-label">Category Name</label>
-                                <div class="col-md-12">
-                                    <input type="text" name="name"
-                                        class="form-control @error('name') is-invalid @enderror"
-                                        value="{{ old('name', $category->name) }}" required>
-                                    @error('name')
-                                        <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
-                                    @enderror
-                                </div>
-                            </div>
+        @csrf
+        @method('PATCH')
 
-                            {{-- Slug --}}
-                            <div class="row mb-3">
-                                <label class="col-md-12 col-form-label">Slug</label>
-                                <div class="col-md-12">
-                                    <input type="text" name="slug"
-                                        class="form-control @error('slug') is-invalid @enderror"
-                                        value="{{ old('slug', $category->slug) }}">
-                                    @error('slug')
-                                        <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
-                                    @enderror
-                                </div>
-                            </div>
+        <div class="row">
 
-                            {{-- Parent Category --}}
-                            <div class="row mb-3">
-                                <label class="col-md-12 col-form-label">Parent Category</label>
-                                <div class="col-md-12">
-                                    <select class="form-select select2 @error('parent_id') is-invalid @enderror"
-                                        name="parent_id">
-                                        <option value="">None</option>
-                                        @foreach ($parents as $k => $v)
-                                            <option value="{{ $k }}"
-                                                {{ (int) old('parent_id', $category->parent_id) === (int) $k ? 'selected' : '' }}>
-                                                {{ $v }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('parent_id')
-                                        <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            {{-- Description --}}
-                            <div class="form-group mb-3">
-                                <label class="col-md-12 col-form-label">Description</label>
-
-                             {{-- {{dd( $category->description)}} --}}
-                                <textarea name="description" id="description" hidden class="form-control @error('description') is-invalid @enderror" rows="5">
-                                    {!! old('description', $category->description ?? '') !!}
-                                </textarea>
-
-                                <div class="editor" data-name="description" data-placeholder="Write product description...">
-                                </div>
-                                   
-
-                                @error('description')
-                                    <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
-                                @enderror
-                            </div>
-
-                            <div class="row mb-3">
-                                <label class="col-md-12 col-form-label">Banner Image</label>
-
-                                <div class="col-md-12">
-                                    <input type="file" name="banner" id="banner"
-                                        class="form-control @error('banner') is-invalid @enderror">
-                                    @error('banner')
-                                        <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
-                                    @enderror
-
-                                    {{-- Hidden field to mark remove on submit (optional but useful) --}}
-                                    <input type="hidden" name="remove_banner" id="remove_banner" value="0">
-
-                                    @if (!empty($category->banner))
-                                        <div class="mt-3 text-center">
-                                            <img id="bannerPreview"
-                                                src="{{ \Modules\SysAdmin\Helpers\ImageUploader::getFilePath($category->banner, $category->created_at, 'thumbnail') }}"
-                                                class="img-fluid mb-2 rounded" alt="Banner">
-
-                                            <div id="remove-banner-block">
-                                                <a href="javascript:void(0)" id="remove-banner"
-                                                    class="btn btn-danger btn-sm">
-                                                    Remove
-                                                </a>
-                                            </div>
-                                        </div>
-                                    @else
-                                        <img id="bannerPreview" src="" class="img-fluid mb-2 rounded d-none"
-                                            alt="Banner">
-                                        <div id="remove-banner-block" class="d-none text-center">
-                                            <a href="javascript:void(0)" id="remove-banner" class="btn btn-danger btn-sm">
-                                                Remove
-                                            </a>
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
-
-                            {{-- Category Image --}}
-                            <div class="row mb-3">
-                                <label class="col-md-12 col-form-label">Category Image</label>
-
-                                <div class="col-md-12">
-                                    <input type="file" name="image" id="image"
-                                        class="form-control @error('image') is-invalid @enderror">
-                                    @error('image')
-                                        <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
-                                    @enderror
-
-                                    {{-- Hidden field to mark remove on submit --}}
-                                    <input type="hidden" name="remove_image" id="remove_image" value="0">
-
-                                    @if (!empty($category->image))
-                                        <div class="mt-3 text-center">
-                                            <img id="imagePreview"
-                                                src="{{ \Modules\SysAdmin\Helpers\ImageUploader::getFilePath($category->image, $category->created_at, 'thumbnail') }}"
-                                                class="img-fluid mb-2 rounded" alt="Category Image">
-
-                                            <div id="remove-image-block">
-                                                <a href="javascript:void(0)" id="remove-image-btn"
-                                                    class="btn btn-danger btn-sm">
-                                                    Remove
-                                                </a>
-                                            </div>
-                                        </div>
-                                    @else
-                                        <img id="imagePreview" src="" class="img-fluid mb-2 rounded d-none"
-                                            alt="Category Image">
-                                        <div id="remove-image-block" class="d-none text-center">
-                                            <a href="javascript:void(0)" id="remove-image-btn"
-                                                class="btn btn-danger btn-sm">
-                                                Remove
-                                            </a>
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
-
-
-                            {{-- Sort Order --}}
-                            <div class="row mb-3">
-                                <label class="col-md-12 col-form-label">Sort Order</label>
-                                <div class="col-md-12">
-                                    <input type="number" name="sort"
-                                        class="form-control @error('sort') is-invalid @enderror"
-                                        value="{{ old('sort', $category->sort ?? 0) }}">
-                                    @error('sort')
-                                        <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card-footer text-end">
-                            <a href="{{ route('sysadmin.catalog.productcategory.index') }}"
-                                class="btn btn-secondary">Cancel</a>
-                            <button type="submit" class="btn btn-primary mx-2">Update</button>
-                        </div>
-
+            {{-- Errors --}}
+            <div class="col-12">
+                @if ($errors->any())
+                    <div class="alert alert-secondary alert-dismissible fade show">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                        <button class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
-                </div>
+                @endif
+            </div>
 
-                {{-- Right column: status --}}
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-header p-3">
-                            <label class="col-md-12 col-form-label">Status</label>
+            {{-- LEFT --}}
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body p-3">
+
+                        {{-- Name --}}
+                        <div class="mb-3">
+                            <label class="col-form-label">Category Name</label>
+                            <input type="text" name="name" class="form-control"
+                                value="{{ old('name', $category->name) }}" required>
                         </div>
-                        <div class="card-body p-3">
-                            <select class="form-select @error('status') is-invalid @enderror" id="status" name="status">
-                                @foreach ($statuses as $key => $value)
-                                    <option value="{{ $key }}"
-                                        {{ (int) old('status', $category->status) === (int) $key ? 'selected' : '' }}>
-                                        {{ $value }}
+
+                        {{-- Slug --}}
+                        <div class="mb-3">
+                            <label class="col-form-label">Slug</label>
+                            <input type="text" name="slug" class="form-control"
+                                value="{{ old('slug', $category->slug) }}">
+                        </div>
+
+                        {{-- Parent --}}
+                        <div class="mb-3">
+                            <label class="col-form-label">Parent Category</label>
+                            <select name="parent_id" class="form-select select2">
+                                <option value="">None</option>
+                                @foreach ($parents as $k => $v)
+                                    <option value="{{ $k }}"
+                                        {{ (int) old('parent_id', $category->parent_id) === (int) $k ? 'selected' : '' }}>
+                                        {{ $v }}
                                     </option>
                                 @endforeach
                             </select>
-                            @error('status')
-                                <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
-                            @enderror
                         </div>
+
+                        {{-- Description --}}
+                        <div class="mb-3">
+                            <label class="col-form-label">Description</label>
+
+                            <div class="editor"
+                                data-name="description">{!! old('description', $category->description ?? '') !!}</div>
+
+                            <input type="hidden" name="description"
+                                value="{{ old('description', $category->description ?? '') }}">
+                        </div>
+
+                        {{-- BANNER IMAGE --}}
+                        <div class="mb-3">
+                            <label class="col-form-label">Banner Image</label>
+                            <input type="file" name="banner" id="banner-image" class="form-control">
+
+                            <input type="hidden" name="remove_banner" id="remove_banner" value="0">
+
+                            <div class="mt-3 text-center">
+                                @if ($category->banner)
+                                    <img id="bannerPreview"
+                                        src="{{ asset(Modules\SysAdmin\Helpers\ImageUploader::getFilePath(
+                                            $category->banner,
+                                            $category->created_at,
+                                            'thumbnail'
+                                        )) }}"
+                                        class="img-fluid mb-2 rounded">
+                                @else
+                                    <img id="bannerPreview" class="img-fluid mb-2 rounded d-none">
+                                @endif
+
+                                <div id="remove-banner-block"
+                                    class="{{ $category->banner ? '' : 'd-none' }}">
+                                    <button type="button" id="remove-banner"
+                                        class="btn btn-danger btn-sm">
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- CATEGORY IMAGE --}}
+                        <div class="mb-3">
+                            <label class="col-form-label">Category Image</label>
+                            <input type="file" name="image" id="image-input" class="form-control">
+
+                            <input type="hidden" name="remove_image" id="remove_image" value="0">
+
+                            <div class="mt-3 text-center">
+                                @if ($category->image)
+                                    <img id="imagePreview"
+                                        src="{{ Modules\SysAdmin\Helpers\ImageUploader::getFilePath(
+                                            $category->image,
+                                            $category->created_at,
+                                            'thumbnail'
+                                        ) }}"
+                                        class="img-fluid mb-2 rounded">
+                                @else
+                                    <img id="imagePreview" class="img-fluid mb-2 rounded d-none">
+                                @endif
+
+                                <div id="remove-image-block"
+                                    class="{{ $category->image ? '' : 'd-none' }}">
+                                    <button type="button" id="remove-image"
+                                        class="btn btn-danger btn-sm">
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Sort --}}
+                        <div class="mb-3">
+                            <label class="col-form-label">Sort Order</label>
+                            <input type="number" name="sort" class="form-control"
+                                value="{{ old('sort', $category->sort ?? 0) }}">
+                        </div>
+                    </div>
+
+                    <div class="card-footer text-end">
+                        <a href="{{ route('sysadmin.catalog.productcategory.index') }}"
+                            class="btn btn-secondary">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary mx-2">
+                            Update
+                        </button>
                     </div>
                 </div>
             </div>
-        </form>
-    </div>
-@endsection
 
+            {{-- RIGHT --}}
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header p-3">
+                        <label class="col-form-label">Status</label>
+                    </div>
+                    <div class="card-body p-3">
+                        <select name="status" class="form-select">
+                            @foreach ($statuses as $key => $value)
+                                <option value="{{ $key }}"
+                                    {{ (int) old('status', $category->status) === (int) $key ? 'selected' : '' }}>
+                                    {{ $value }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+</div>
+@endsection
 
 @pushOnce('scripts')
-    {!! JsValidator::formRequest('Modules\SysAdmin\Requests\ProductCategoryFormRequest', '#edit-category') !!}
-    <script type="module">
-        // ---------- BANNER ----------
-        const $bannerInput = $('#banner');
-        const $bannerPreview = $('#bannerPreview');
-        const $removeBannerBlock = $('#remove-banner-block');
-        const $removeBannerHidden = $('#remove_banner');
-        const $removeBannerBtn = $('#remove-banner');
+ <script type="module">
+$(function () {
 
-        $bannerInput.on('change', function() {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    $bannerPreview.attr('src', e.target.result).removeClass('d-none');
-                    $removeBannerBlock.removeClass('d-none');
-                    $removeBannerHidden.val(0); // new image selected
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+    // ---------- BANNER ----------
+    $('#banner-image').on('change', function () {
+        const file = this.files[0];
+        if (!file) return;
 
-        $removeBannerBtn.on('click', function() {
-            $bannerInput.val('');
-            $bannerPreview.attr('src', '').addClass('d-none');
-            $removeBannerBlock.addClass('d-none');
-            $removeBannerHidden.val(1); // mark for removal
-        });
+        const reader = new FileReader();
+        reader.onload = e => {
+            $('#bannerPreview').attr('src', e.target.result).removeClass('d-none');
+            $('#remove-banner-block').removeClass('d-none');
+            $('#remove_banner').val(0);
+        };
+        reader.readAsDataURL(file);
+    });
 
+    $('#remove-banner').on('click', function () {
+        $('#banner-image').val('');
+        $('#bannerPreview').attr('src', '').addClass('d-none');
+        $('#remove-banner-block').addClass('d-none');
+        $('#remove_banner').val(1);
+    });
 
-        // ---------- CATEGORY IMAGE ----------
-        const $imageInput = $('#image');
-        const $imagePreview = $('#imagePreview');
-        const $removeImageBlock = $('#remove-image-block');
-        const $removeImageHidden = $('#remove_image');
-        const $removeImageBtn = $('#remove-image-btn');
+    // ---------- CATEGORY IMAGE ----------
+    $('#image-input').on('change', function () {
+        const file = this.files[0];
+        if (!file) return;
 
-        $imageInput.on('change', function() {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    $imagePreview.attr('src', e.target.result).removeClass('d-none');
-                    $removeImageBlock.removeClass('d-none');
-                    $removeImageHidden.val(0); // new image selected
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+        const reader = new FileReader();
+        reader.onload = e => {
+            $('#imagePreview').attr('src', e.target.result).removeClass('d-none');
+            $('#remove-image-block').removeClass('d-none');
+            $('#remove_image').val(0);
+        };
+        reader.readAsDataURL(file);
+    });
 
-        $removeImageBtn.on('click', function() {
-            $imageInput.val('');
-            $imagePreview.attr('src', '').addClass('d-none');
-            $removeImageBlock.addClass('d-none');
-            $removeImageHidden.val(1); // mark for removal
-        });
-    </script>
+    $('#remove-image').on('click', function () {
+        $('#image-input').val('');
+        $('#imagePreview').attr('src', '').addClass('d-none');
+        $('#remove-image-block').addClass('d-none');
+        $('#remove_image').val(1);
+    });
+
+});
+</script>
 @endPushOnce
-
-@section('script')
-    <script type="module" src="{{ asset('admin/js/select2/select2.full.min.js') }}"></script>
-@endsection
