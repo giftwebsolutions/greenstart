@@ -170,6 +170,7 @@ class FrontendServiceProvider extends ServiceProvider
         Blade::component('frontend::new-arrivals', \Modules\Frontend\Http\Components\NewArrivals::class);
         Blade::component('frontend::category-tab-slider', \Modules\Frontend\Http\Components\CategoryTabSlider::class);
         Blade::component('frontend::category-menu', \Modules\Frontend\Http\Components\CategoryMenu::class);
+        Blade::component('frontend::home-blog', \Modules\Frontend\Http\Components\BlogWidget::class);
     }
 
 
