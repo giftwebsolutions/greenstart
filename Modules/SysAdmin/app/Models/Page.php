@@ -97,7 +97,7 @@ class Page extends Model implements Transformable
 
     protected function setParentIdAttribute($value)
     {
-        $this->attributes['parent_id'] = $value ?? NULL;
+        $this->attributes['parent_id'] = $value ?? 0;
     }
 
     public function author()

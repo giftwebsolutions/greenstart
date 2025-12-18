@@ -14,8 +14,7 @@ class PageController extends Controller
 {
     public function __construct(
         protected PageInterface $pageRepository
-    ) {
-    }
+    ) {}
     /**
      * Display a listing of the resource.
      */
@@ -66,6 +65,7 @@ class PageController extends Controller
     public function edit($id)
     {
         $page = $this->pageRepository->findOrFail($id);
+       // dd($page);
         return view('sysadmin::page.edit', compact('page'))->with([
             'parents' => $this->pageRepository->getParents(),
             'statuses' => $this->pageRepository->getStatus()
@@ -77,12 +77,14 @@ class PageController extends Controller
      */
     public function update(PageFormRequest $request, $id): RedirectResponse
     {
+        //dd($request);
         try {
-            //dd($request);
+
             $validatedData = $request->validated();
             $page = $this->pageRepository->saveOrUpdate($validatedData, $id);
             return redirect()->route('sysadmin.cms.page.index');
         } catch (ValidationException $e) {
+            dd($e->validator->errors());
             return back()->withErrors($e->validator->errors());
         }
     }

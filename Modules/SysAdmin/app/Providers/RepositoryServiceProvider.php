@@ -16,6 +16,7 @@ use Modules\SysAdmin\Repository\BlockRepository;
 use Modules\SysAdmin\Repository\BlogCategoryRepository;
 use Modules\SysAdmin\Repository\BlogRepository;
 use Modules\SysAdmin\Repository\SettingRepository;
+use Modules\SysAdmin\Repository\TestimonialRepository;
 use Modules\SysAdmin\Repository\SliderItemRepository;
 use Modules\SysAdmin\Repository\SliderRepository;
 use Modules\SysAdmin\Repository\UserRepository;
@@ -23,6 +24,7 @@ use Modules\SysAdmin\Interfaces\AttributeGroupInterface;
 use Modules\SysAdmin\Interfaces\AttributeInterface;
 use Modules\SysAdmin\Interfaces\AttributeMappingInterface;
 use Modules\SysAdmin\Interfaces\AttributeTypeInterface;
+use Modules\SysAdmin\Interfaces\TestimonialInterface;
 use Modules\SysAdmin\Repository\AttributeGroupRepository;
 use Modules\SysAdmin\Repository\AttributeMappingRepository;
 use Modules\SysAdmin\Repository\AttributeRepository;
@@ -35,6 +37,7 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->bind(TestimonialInterface::class, TestimonialRepository::class);
         $this->app->bind(BlogInterface::class, BlogRepository::class);
         $this->app->bind(BlockInterface::class, BlockRepository::class);
         $this->app->bind(BlogCategoryInterface::class, BlogCategoryRepository::class);

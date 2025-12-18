@@ -168,6 +168,21 @@ Route::prefix('sysadmin')
             });
         });
 
+        // Testimonial
+
+        Route::prefix('testimonial')->as('testimonial.')->group(function () {
+    Route::controller(Modules\SysAdmin\Http\Controllers\TestimonialController::class)->group(function () {
+        Route::get('/', 'index')->name('index');             // List all testimonials
+        Route::get('view/{id}', 'show')->name('view');       // View a single testimonial
+        Route::get('create', 'create')->name('create');      // Form to create
+        Route::post('create', 'store')->name('store');       // Save new testimonial
+        Route::get('edit/{id}', 'edit')->name('edit');       // Form to edit
+        Route::patch('update/{id}', 'update')->name('update'); // Update testimonial
+        Route::get('destroy/{id}', 'destroy')->name('delete'); // Delete testimonial
+    });
+});
+
+
         // ===============================
         // 📰 Blog Management
         // ===============================

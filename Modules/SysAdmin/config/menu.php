@@ -126,6 +126,27 @@ return [
             ]
         ]
     ],
+
+    [
+    'key'      => 'testimonial',
+    'name'     => 'Testimonials',
+    'route'    => 'sysadmin.testimonial.index',
+    'sort'     => 1, // adjust sort order as needed
+    'icon'     => 'stroke-message', // example icon
+    'children' => [
+        [
+            'key'   => 'testimonial.create',
+            'name'  => 'Add Testimonial',
+            'route' => 'sysadmin.testimonial.create',
+        ],
+        [
+            'key'   => 'testimonial.index',
+            'name'  => 'List Testimonials',
+            'route' => 'sysadmin.testimonial.index',
+        ],
+    ],
+],
+
     [
         'key'        => 'blog',
         'name'       => 'Blogs',

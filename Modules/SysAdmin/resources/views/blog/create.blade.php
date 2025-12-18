@@ -1,3 +1,6 @@
+{{-- @php
+    dd($parentCategory);
+@endphp --}}
 @extends('sysadmin::layouts.master')
 
 @section('css')
@@ -177,6 +180,7 @@
                                 <option>Select Category</option>
                                 @foreach ($parentCategory as $category)
                                     <option value="{{ $category['id'] }}"
+                                  
                                         {{ $category['id'] == old('category_id') ? 'selected' : '' }}>
                                         {{ $category['name'] }}
                                     </option>

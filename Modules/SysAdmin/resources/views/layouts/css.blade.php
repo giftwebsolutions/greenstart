@@ -14,6 +14,7 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('admin/css/vendors/scrollbar.css') }}">
 <!-- Bootstrap css-->
 <link rel="stylesheet" type="text/css" href="{{ asset('admin/css/vendors/bootstrap.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ asset('admin/css/vendors/date-time-picker.css') }}">
 <!-- App css
 <link rel="stylesheet" type="text/css" href="{{ asset('admin/css/style.css') }}">-->
 <link id="color" rel="stylesheet" href="{{ asset('admin/css/color-1.css') }}" media="screen">

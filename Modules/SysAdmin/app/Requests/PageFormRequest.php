@@ -40,12 +40,12 @@ class PageFormRequest extends FormRequest
         return [
             'name' => 'required|string|unique:pages|max:120',
             'title' => 'required|string|unique:pages',
-            'parent_id' => 'integer',
+            'parent_id' => 'nullable|integer',
             'content' => 'required|string',
             'keywords' => 'required|string|max:220',
             'description' => 'required|string|max:220',
-            'featured_image' => 'image|mimes:jpg,png,jpeg|max:2048',
-            'banner' => 'image|mimes:jpg,png,jpeg|max:2048',
+            'featured_image' => 'image|mimes:jpg,jpeg,png,webp|max:4096',
+            'banner' => 'image|mimes:jpg,jpeg,png,webp|max:4096',
         ];
     }
 
@@ -59,12 +59,12 @@ class PageFormRequest extends FormRequest
         return [
             'name' => 'required|string|max:120|unique:pages,name,' . $this->id,
             'title' => 'required|string|unique:pages,title,' . $this->id,
-            'parent_id' => 'integer',
+            'parent_id' => 'nullable|integer',
             'content' => 'required|string',
             'keywords' => 'required|string|max:220',
             'description' => 'required|string|max:220',
-            'featured_image' => 'image|mimes:jpg,png,jpeg|max:2048',
-            'banner' => 'image|mimes:jpg,png,jpeg|max:2048',
+            'featured_image' => 'image|mimes:jpg,jpeg,png,webp|max:4096',
+            'banner' => 'image|mimes:jpg,jpeg,png,webp|max:4096',
         ];
     }
 }

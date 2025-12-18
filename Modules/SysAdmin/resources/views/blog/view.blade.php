@@ -46,6 +46,8 @@
                             </div>
                         </div>
                     </div>
+             
+
                     <div class="card-body p-2">
                         @if ($blog['featured_image'] !== null)
                             <div class="text-center">

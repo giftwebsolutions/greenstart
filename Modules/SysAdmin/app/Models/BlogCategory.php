@@ -75,7 +75,7 @@ class BlogCategory extends Model  implements Transformable
     {
         return Attribute::make(
             set: fn (int $value) => $value ?? 1,
-            get: fn (int $value) => $this->statuses[$value]
+            //get: fn (int $value) => $this->statuses[$value]
         );
     }
 

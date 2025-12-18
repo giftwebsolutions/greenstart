@@ -37,6 +37,10 @@ class BlockDataTable extends DataTable
             ->minifiedAjax()
             ->orderBy(1)
             ->selectStyleSingle()
+             ->parameters([
+                'dom'     => 'Bfrtip',
+                'buttons' => ['export', 'print', 'reset', 'reload'],
+            ])
             ->buttons([
                 Button::make('add')->action("window.location = '" . route('sysadmin.cms.block.create') . "';"),
                 Button::make('excel'),

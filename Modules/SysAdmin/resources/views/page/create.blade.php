@@ -4,7 +4,7 @@
 @endsection
 
 @section('style')
-    <link rel="stylesheet" href="{{ asset('vendor/file-manager/css/file-manager.css') }}">
+   
 @endsection
 
 @section('breadcrumb-title')
@@ -184,8 +184,7 @@
     </div>
 @endsection
 @pushOnce('scripts')
-    <script type="module" src="{{ asset('vendor/ckeditor/ckeditor.js') }}"></script>
-    <script type="module" src="{{ asset('vendor/file-manager/js/file-manager.js') }}"></script>
+   
     <script type="module" src="{{ asset('admin/js/select2/select2.full.min.js') }}"></script>
     {!! JsValidator::formRequest('Modules\SysAdmin\Requests\PageFormRequest', '#create-page') !!}
     <script type="module">

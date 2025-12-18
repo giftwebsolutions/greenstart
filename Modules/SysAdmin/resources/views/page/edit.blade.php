@@ -1,10 +1,13 @@
+@php
+    //dd($parents);
+@endphp
+
 @extends('sysadmin::layouts.master')
 
 @section('css')
 @endsection
 
 @section('style')
-    <link rel="stylesheet" href="{{ asset('vendor/file-manager/css/file-manager.css') }}">
 @endsection
 
 @section('breadcrumb-title')
@@ -20,6 +23,18 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
+            <div class="col-12">
+                    @if ($errors->any())
+                        <div class="alert alert-secondary alert-dismissible fade show" role="alert">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                            <button class="btn-close" type="button" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
+                </div>
             <div class="col-md-8">
                 <div class="card">
                     <form class="theme-form" id="update-page" method="POST" enctype="multipart/form-data"
@@ -77,7 +92,8 @@
 
                             <div class="form-group">
                                 <label> Description </label>
-                                <textarea class="form-control" id="description" placeholder="Enter the Description" rows="3" name="description">{{ $page->description }}</textarea>
+                                <textarea class="form-control" id="description" placeholder="Enter the Description" rows="3"
+                                    name="description">{{ $page->description }}</textarea>
                                 @error('description')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -88,9 +104,10 @@
 
                             <div class="form-group">
                                 <label> Content </label>
-                                <textarea class="form-control editor" id="content" placeholder="Enter the Content" rows="8" name="content">
-                                     {{ $page->content }}
-                                </textarea>
+
+                                <div class="editor" data-name="content">{!! old('content', $page->content ?? '') !!}</div>
+                                <input type="hidden" name="content" value="{{ old('content', $page->content ?? '') }}">
+
                                 @error('Content')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -134,7 +151,7 @@
                     <div class="card-body p-3">
                         <div class="mb-3">
                             <select class="form-select" name="parent_id" id="parent_id">
-                                <option>Select Parent</option>
+                                <option value="0">Select Parent</option>
                                 @foreach ($parents as $parent)
                                     <option value="{{ $parent['id'] }}"
                                         {{ $parent['id'] == $page->parent_id ? 'selected' : '' }}>
@@ -158,7 +175,7 @@
                                 </span>
                             @enderror
                             <input type="file" class="form-control @error('featured_image') is-invalid @enderror"
-                                name="featured_image" id ="featured_image" />
+                                name="featured_image" id="featured_image" />
                         </div>
                         <div class="mb-3">
 
@@ -182,7 +199,7 @@
                     </div>
                     <div class="card-body p-3">
                         <div class="mb-3">
-                            <input type="file" class="form-control" name="banner" id ="banner" />
+                            <input type="file" class="form-control" name="banner" id="banner" />
                         </div>
                         <div class="mb-3">
                             @if ($page->banner !== null)
@@ -205,21 +222,18 @@
     </div>
 @endsection
 @pushOnce('scripts')
-    <script type="module" src="{{ asset('vendor/ckeditor/ckeditor.js') }}"></script>
-    <script type="module" src="{{ asset('vendor/file-manager/js/file-manager.js') }}"></script>
-    <script type="module" src="{{ asset('admin/js/select2/select2.full.min.js') }}"></script>
     {!! JsValidator::formRequest('Modules\SysAdmin\Requests\PageFormRequest', '#update-page') !!}
     <script type="module">
         let file;
-        $('a#cancel-button').click(function() {
+        $('a#cancel-button').click(function () {
             window.location.href = "{{ route('sysadmin.cms.page.index') }}";
         });
 
-        $('#featured_image').change(function(e) {
+        $('#featured_image').change(function (e) {
             file = this.files[0];
             if (file) {
                 let reader = new FileReader();
-                reader.onload = function(event) {
+                reader.onload = function (event) {
                     $("#imgPreview")
                         .attr("src", event.target.result);
                 };
@@ -228,18 +242,18 @@
             }
         });
 
-        $('#remove-image').click(function() {
+        $('#remove-image').click(function () {
             file = '';
             $('#featured_image').val('');
             $("#imgPreview").attr("src", '');
             $('#remove-image-block').addClass('d-none')
         });
 
-        $('#banner').change(function(e) {
+        $('#banner').change(function (e) {
             file = this.files[0];
             if (file) {
                 let reader = new FileReader();
-                reader.onload = function(event) {
+                reader.onload = function (event) {
                     $("#bannerPreview")
                         .attr("src", event.target.result);
                 };
@@ -248,13 +262,13 @@
             }
         });
 
-        $('#remove-banner').click(function() {
+        $('#remove-banner').click(function () {
             file = '';
             $('#banner').val('');
             $("#bannerPreview").attr("src", '');
             $('#remove-banner-image').addClass('d-none')
         });
 
-        
+
     </script>
 @endPushOnce

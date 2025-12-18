@@ -33,7 +33,7 @@ class PageRepository extends BaseRepository implements PageInterface
 
     public function getParents()
     {
-        $parents = $this->getModel()->select(['id', 'name'])->where('parent_id', NULL)->get()->toArray();
+        $parents = $this->getModel()->select(['id', 'name'])->where('parent_id', 0)->get()->toArray();
         return $parents;
     }
 
@@ -41,7 +41,7 @@ class PageRepository extends BaseRepository implements PageInterface
     {
         $page = '';
         $data['author_id'] = auth()->user()->id;
-        $data['parent_id'] = ($data['parent_id'] == 0) ? NULL : $data['parent_id'];
+        $data['parent_id'] = $data['parent_id'] ?? 0;
 
         if (isset($data['featured_image'])) {
             $data['featured_image'] = ImageUploader::upload($data['featured_image'], $this->getModel()->created_at);
