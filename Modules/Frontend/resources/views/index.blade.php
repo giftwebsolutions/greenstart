@@ -1,5 +1,12 @@
 @section('css')
 @endsection
+
+@php
+    use Modules\SysAdmin\Helpers\ImageUploader;
+@endphp
+
+
+
 <x-frontend::layouts.master>
         <!-- Slider Start -->
     <div class="slider-area">
@@ -1022,52 +1029,49 @@
                         </div>
                     </div>
                     <!-- Testimonial Start -->
-                    <div class="testimonial-area slider-dot-style-1">
-                        <div class="testimonial-slider-wrapper">
-                            <!-- Testimonial item Start -->
-                            <div class="testimonial-slider-item">
-                                <div class="testimonial-image">
-                                    <img src="{{ asset('assets/images/testimonial-image/1.png') }}" alt="man-image">
-                                </div>
-                                <div class="testimonial-content">
-                                    <a href="#"> This is Photoshops version of Lorem Ipsum. Proin gravida nibh vel
-                                        velit.Lorem ipsum dolor sit amet, consectetur adipiscing elit...</a>
-                                </div>
-                                <div class="testimonial-author">
-                                    <h4>Rebecka Filson</h4>
-                                </div>
-                            </div>
-                            <!-- Testimonial item End -->
-                            <!-- Testimonial item Start -->
-                            <div class="testimonial-slider-item">
-                                <div class="testimonial-image">
-                                    <img src="{{ asset('assets/images/testimonial-image/2.png') }}" alt="man-image">
-                                </div>
-                                <div class="testimonial-content">
-                                    <a href="#"> Mauris blandit, metus a venenatis lacinia, felis enim tincidunt est,
-                                        condimentum vulputate orci augue eu metus. Fusce dictum, nis..</a>
-                                </div>
-                                <div class="testimonial-author">
-                                    <h4>Nathanael Jaworski</h4>
-                                </div>
-                            </div>
-                            <!-- Testimonial item End -->
-                            <!-- Testimonial item Start -->
-                            <div class="testimonial-slider-item">
-                                <div class="testimonial-image">
-                                    <img src="{{ asset('assets/images/testimonial-image/3.png') }}" alt="man-image">
-                                </div>
-                                <div class="testimonial-content">
-                                    <a href="#"> Sed vel urna at dui iaculis gravida. Maecenas pretium, velit vitae
-                                        placerat faucibus, velit quam facilisis elit, sit amet lacinia..</a>
-                                </div>
-                                <div class="testimonial-author">
-                                    <h4>Magdalena Valencia</h4>
-                                </div>
-                            </div>
-                            <!-- Testimonial item End -->
-                        </div>
-                    </div>
+                 <div class="testimonial-area slider-dot-style-1">
+    <div class="testimonial-slider-wrapper">
+
+        @forelse ($testimonials as $testimonial)
+
+            @php
+                $imageUrl = $testimonial->image
+                    ? ImageUploader::getFilePath(
+                        $testimonial->image,
+                        $testimonial->created_at,
+                        'thumbnail'
+                    )
+                    : asset('assets/images/testimonial-image/default.png');
+            @endphp
+
+            <div class="testimonial-slider-item text-center">
+
+                <div class="testimonial-image">
+                    <img
+                        src="{{ $imageUrl }}"
+                        alt="{{ $testimonial->name }}"
+                        class="testimonial-avatar">
+                </div>
+
+                <div class="testimonial-content">
+                    <p>
+                        {{ \Illuminate\Support\Str::limit(strip_tags($testimonial->content), 140) }}
+                    </p>
+                </div>
+
+                <div class="testimonial-author">
+                    <h4>{{ $testimonial->name }}</h4>
+                </div>
+
+            </div>
+
+        @empty
+            <p class="text-center">No testimonials available.</p>
+        @endforelse
+
+    </div>
+</div>
+
                     <!-- Testimonial End -->
                     <!-- Banner Area Start -->
                     <div class="banner-area mtb-60px">

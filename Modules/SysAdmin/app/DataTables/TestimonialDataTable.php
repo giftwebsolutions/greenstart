@@ -41,11 +41,15 @@ class TestimonialDataTable extends DataTable
             ->setTableId('testimonial-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->processing(true)   // ✅ REQUIRED
-            ->serverSide(true)   // ✅ REQUIRED
+            ->processing(true)   
+            ->serverSide(true)   
             ->orderBy(0)
+             ->parameters([
+                'dom'     => 'Bfrtip',
+                'buttons' => ['export', 'print', 'reset', 'reload'],
+            ])
             ->buttons([
-                Button::make('create')
+                Button::make('add')
                     ->action("window.location = '" . route('sysadmin.testimonial.create') . "';"),
                 Button::make('excel'),
                 Button::make('reload'),
