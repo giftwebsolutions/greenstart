@@ -3,6 +3,9 @@
 
 @php
     use Modules\SysAdmin\Helpers\ImageUploader;
+
+    $myTabs = [['category_id' => 7, 'label' => 'Handle'], ['category_id' => 8, 'label' => 'Hinges']];
+
 @endphp
 
 
@@ -193,7 +196,8 @@
     </div>
     <!-- Custom Block Area End -->
     <!-- Category Tab Slider Area Start -->
-    <x-frontend::category-tab-slider />
+    <x-frontend::category-tab-slider title="Featured Products" sub-title="Best quality parts for your vehicle"
+        :banner="asset('assets/images/icons/static-icons-1.png')" :tabs-config="$myTabs" :limit="8" />
     <!-- Category Tab Slider Area End -->
     <x-frontend::home-blog />
 

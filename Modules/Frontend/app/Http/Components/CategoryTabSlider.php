@@ -36,9 +36,9 @@ class CategoryTabSlider extends Component
     public function __construct(
         ProductInterface $productRepository,
         CategoryInterface $categoryRepository,
-        string $title = 'WHEELS',
-        string $subTitle = '& TIRES',
-        string $banner = null,
+        ?string $title = null,
+        ?string $subTitle = null,
+        ?string $banner = null,
         array $tabsConfig = [],
         int $limit = 6
     ) {
