@@ -4,26 +4,22 @@ namespace Modules\Frontend\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Modules\SysAdmin\Models\Page;
+use Modules\SysAdmin\Models\ProductCategory;
 use Modules\SysAdmin\Repository\TestimonialRepository;
 
 class FrontendController extends Controller
 {
-    protected TestimonialRepository $testimonialRepo;
 
-    public function __construct(TestimonialRepository $testimonialRepo)
-    {
-        $this->testimonialRepo = $testimonialRepo;
-    }
+    public function __construct() {}
 
     /**
      * Home Page
      */
-    public function index()
+    public function index(TestimonialRepository $testimonialRepo)
     {
-        $testimonials = $this->testimonialRepo->recentFrontend(6);
-        $about = Page::where('slug', 'about')->first();
-
-        return view('frontend::index', compact('testimonials'));
+        $testimonials = $testimonialRepo->recentFrontend(6);
+        $home = Page::where('slug', 'home')->active()->first();
+        return view('frontend::index', compact('testimonials', 'home'));
     }
 
     public function newarraival()
@@ -34,14 +30,18 @@ class FrontendController extends Controller
     public function about()
     {
         // Testimonials can also be reused here if needed
-        $testimonials = $this->testimonialRepo->recentFrontend(6);
-
-        return view('frontend::pages.about', compact('testimonials'));
+        $about = Page::where('slug', 'about')->active()->first();
+        return view('frontend::pages.about', compact('about'));
     }
 
     public function enquiry()
     {
-        return view('frontend::pages.enquiry');
+        $enquiry = Page::where('slug', 'enquiry')->active()->first();
+        $productCategory = ProductCategory::select(['id', 'name', 'slug', 'parent_id'])
+            ->where('parent_id', 0)->where('status', '1')->get()
+            ->toArray();
+
+        return view('frontend::pages.enquiry')->with(['enquiry' => $enquiry, 'category' => $productCategory]);
     }
 
     public function faqs()

@@ -1,5 +1,6 @@
 <?php
 $menus = Config::get('frontend.menus');
+$settings = Config::get('site-settings');
 //dd($menus);
 ?>    
     <!-- Header Section Start From Here -->
@@ -104,7 +105,7 @@ $menus = Config::get('frontend.menus');
                             </ul>
                         </div>
                         <div class="contact-link">
-                            <a href="tel:(088)1234567">(088)1234567</a>
+                            <a href="tel:{{$settings['mobile']}}">{{$settings['mobile']}}</a>
                         </div>
                     </div>
                 </div>
