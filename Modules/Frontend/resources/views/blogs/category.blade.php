@@ -9,8 +9,8 @@
                 <div class="col-md-12">
                     <div class="breadcrumb-content">
                         <ul class="nav">
-                            <li><a href="{{ route('home') }}">Home</a></li>
-                            <li><a href="{{ route('blog.index') }}">Blog</a></li>
+                            <li><a href="{{ route('frontend.home') }}">Home</a></li>
+                            <li><a href="{{ route('frontend.blog.index') }}">Blog</a></li>
                             <li>{{ $category->name }}</li>
                         </ul>
                     </div>
@@ -33,7 +33,7 @@
                                     <div class="single-blog-post mb-30px blog-grid-post">
                                         <div class="blog-post-media">
                                             <div class="blog-image">
-                                                <a href="{{ route('blog.show', $blog->slug) }}">
+                                                <a href="{{ route('frontend.blog.show', $blog->slug) }}">
                                                     <img
                                                         src="{{ $blog->featured_image ? asset($blog->featured_image) : asset('assets/images/blog-image/1.jpg') }}"
                                                         alt="{{ $blog->title }}"
@@ -45,7 +45,7 @@
 
                                         <div class="blog-post-content-inner mt-30px">
                                             <h4 class="blog-title">
-                                                <a href="{{ route('blog.show', $blog->slug) }}">{{ $blog->title }}</a>
+                                                <a href="{{ route('frontend.blog.show', $blog->slug) }}">{{ $blog->title }}</a>
                                             </h4>
 
                                             <ul class="blog-page-meta">
@@ -59,7 +59,7 @@
 
                                             <p>{{ \Illuminate\Support\Str::limit(strip_tags($blog->description ?? $blog->content), 160) }}</p>
 
-                                            <a class="read-more-btn" href="{{ route('blog.show', $blog->slug) }}">
+                                            <a class="read-more-btn" href="{{ route('frontend.blog.show', $blog->slug) }}">
                                                 Read More <i class="ion-android-arrow-dropright-circle"></i>
                                             </a>
                                         </div>

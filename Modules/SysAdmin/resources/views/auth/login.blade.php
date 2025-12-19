@@ -6,7 +6,7 @@
             <div class="col-12 p-0">
                 <div class="login-card">
                     <div>
-                        <div><a class="logo" href="{{ route('home') }}"><img class="img-fluid for-light"
+                        <div><a class="logo" href="{{ route('frontend.home') }}"><img class="img-fluid for-light"
                                     src="{{ asset('assets/images/logo/login.png') }}" alt="looginpage"><img
                                     class="img-fluid for-dark" src="{{ asset('assets/images/logo/logo_dark.png') }}"
                                     alt="looginpage"></a></div>

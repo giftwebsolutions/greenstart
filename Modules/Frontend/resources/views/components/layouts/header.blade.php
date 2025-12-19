@@ -65,8 +65,8 @@ $menus = Config::get('frontend.menus');
                 <div class="row">
                     <div class="col-md-3 d-flex">
                         <div class="align-self-center">
-                            <a href="{{ route('home') }}"><img class="img-responsive logo"
-                                    src="assets/images/logo/logo.png" alt="logo.png" /></a>
+                            <a href="{{ route('frontend.home') }}"><img class="img-responsive logo"
+                                    src="{{asset('assets/images/logo/logo.png')}}" alt="{{ env('APP_NAME') }}" /></a>
                         </div>
                     </div>
                     <div class="col-md-9 align-self-center">
@@ -139,8 +139,8 @@ $menus = Config::get('frontend.menus');
                         </a>
                     </div>
                     <div class="header-logo  mt-7px">
-                        <a href="{{ route('home') }}"><img class="img-responsive logo"
-                                src="assets/images/logo/logo.png" alt="{{ env('APP_NAME') }}" /></a>
+                        <a href="{{ route('frontend.home') }}"><img class="img-responsive logo"
+                                src="{{ asset('./images/logo/logo.png') }}" /></a>
                     </div>
                 </div>
                 <!-- Header Logo End -->
@@ -454,7 +454,7 @@ $menus = Config::get('frontend.menus');
             </div>
             <div class="offcanvas-menu">
                 <ul>
-                    <li><a href="{{ route('home') }}"><span class="menu-text">Home</span></a>
+                    <li><a href="{{ route('frontend.home') }}"><span class="menu-text">Home</span></a>
 
                     </li>
                     <li><a href="#"><span class="menu-text">Shop</span></a>

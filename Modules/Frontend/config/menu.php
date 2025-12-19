@@ -3,7 +3,7 @@
 return [
     [
         'label' => 'Home',
-        'route' => 'home',
+        'route' => 'frontend.home',
     ],
     [
         'label' => 'New Arrival',
@@ -15,20 +15,20 @@ return [
     ],
     [
         'label' => 'Blog',
-        'route' => 'blog.index',
+        'route' => 'frontend.blog.index',
     ],
     [
         'label' => 'About Page',
-        'route' => 'cms.view',
+        'route' => 'frontend.cms.view',
         'params' => ['slug' => 'about'],
     ],
     [
         'label' => 'Enquiry',
-        'route' => 'enquiry',
+        'route' => 'frontend.enquiry',
     ],
     [
         'label' => 'Contact Us',
-        'route' => 'contact',
+        'route' => 'frontend.contact',
     ],
 
     /* [

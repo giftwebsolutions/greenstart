@@ -414,10 +414,10 @@ $(function() {
 
     $('.testimonial-slider-wrapper').slick({
         infinite: true,
-        slidesToShow: 1,
+        slidesToShow: 4,
         arrows: false,
         loop: true,
-        slidesToScroll: 1,
+        slidesToScroll: 4,
         speed: 800,
         cssEase: 'linear',
         dots: true,

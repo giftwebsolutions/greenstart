@@ -9,7 +9,7 @@
                 <div class="col-md-12">
                     <div class="breadcrumb-content">
                         <ul class="nav">
-                            <li><a href="{{ route('home') }}">Home</a></li>
+                            <li><a href="{{ route('frontend.home') }}">Home</a></li>
                             <li>{{ $blog->title }}</li>
                         </ul>
                     </div>
@@ -37,7 +37,7 @@
 
                             <div class="blog-post-content-inner mt-30px">
                                 <h4 class="blog-title">
-                                    <a href="{{ route('blog.show', $blog->slug) }}">{{ $blog->title }}</a>
+                                    <a href="{{ route('frontend.blog.show', $blog->slug) }}">{{ $blog->title }}</a>
                                 </h4>
 
                                 <ul class="blog-page-meta">
@@ -53,7 +53,7 @@
 
                                     @if (!empty($blog->category))
                                         <li>
-                                            <a href="{{ route('blog.category', $blog->category->slug) }}">
+                                            <a href="{{ route('frontend.blog.category', $blog->category->slug) }}">
                                                 <i class="ion-ios-folder"></i> {{ $blog->category->name }}
                                             </a>
                                         </li>
@@ -87,7 +87,7 @@
 
                                 @forelse($tags as $tag)
                                     <li>
-                                        <a href="{{ route('blog.search', ['q' => $tag]) }}">
+                                        <a href="{{ route('frontend.blog.search', ['q' => $tag]) }}">
                                             {{ $tag }}@if (!$loop->last)
                                                 ,
                                             @endif
@@ -150,7 +150,7 @@
                                     <div class="col-md-4 mb-lm-30px">
                                         <div class="blog-post-media">
                                             <div class="blog-image single-blog">
-                                                <a href="{{ route('blog.show', $rel->slug) }}">
+                                                <a href="{{ route('frontend.blog.show', $rel->slug) }}">
                                                     <img class="img-responsive"
                                                         src="{{ $rel->featured_image ? asset($rel->featured_image) : asset('assets/images/blog-image/1.jpg') }}"
                                                         alt="{{ $rel->title }}" />
@@ -160,7 +160,7 @@
 
                                         <div class="blog-post-content-inner mt-30px">
                                             <h4 class="blog-title">
-                                                <a href="{{ route('blog.show', $rel->slug) }}">
+                                                <a href="{{ route('frontend.blog.show', $rel->slug) }}">
                                                     {{ \Illuminate\Support\Str::limit($rel->title, 55) }}
                                                 </a>
                                             </h4>
@@ -182,59 +182,6 @@
                                     </div>
                                 @endforelse
                             </div>
-                        </div>
-
-                        {{-- Comments UI is static for now (no backend table shared) --}}
-                        {{-- Keep your HTML as-is or we can remove it later --}}
-                        <div class="comment-area">
-                            <h2 class="comment-heading">Comments</h2>
-                            <div class="review-wrapper">
-                                <div class="text-muted">Comment system not configured.</div>
-                            </div>
-                        </div>
-
-                        <div class="blog-comment-form">
-                            <h2 class="comment-heading">Leave a Reply</h2>
-                            <p>Your email address will not be published. Required fields are marked *</p>
-
-                            {{-- Later: connect to your comment controller --}}
-                            <form action="javascript:void(0)">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="single-form">
-                                            <label>Your Review:</label>
-                                            <textarea placeholder="Write a review"></textarea>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="single-form">
-                                            <label>Name:</label>
-                                            <input type="text" placeholder="Name" />
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="single-form">
-                                            <label>Email:</label>
-                                            <input type="email" placeholder="Email" />
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="single-form">
-                                            <label>Website:</label>
-                                            <input type="text" placeholder="Website" />
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-12">
-                                        <div class="single-form">
-                                            <input class="submit" type="submit" value="Submit" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
                         </div>
                     </div>
 

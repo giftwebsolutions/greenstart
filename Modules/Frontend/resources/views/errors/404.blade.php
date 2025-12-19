@@ -10,7 +10,7 @@
                 <div class="col-md-12">
                     <div class="breadcrumb-content">
                         <ul class="nav">
-                            <li><a href="{{ route('home') }}">Home</a></li>
+                            <li><a href="{{ route('frontend.home') }}">Home</a></li>
                             <li>404</li>
                         </ul>
                     </div>
@@ -36,7 +36,7 @@
                                 Sorry, the page you are looking for does not exist or has been moved.
                             </p>
 
-                            <a href="{{ route('home') }}" class="btn btn-primary">
+                            <a href="{{ route('frontend.home') }}" class="btn btn-primary">
                                 <i class="ion-ios-home"></i> Go to Home
                             </a>
                         </div>
