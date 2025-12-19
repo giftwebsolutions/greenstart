@@ -237,7 +237,7 @@
                                         </div>
                                         <div class="cart-btn">
                                             <a href="{{ route('frontend.shop.product.show', $rel->slug ?? $rel->id) }}"
-                                                class="btn btn-primary btn-sm">Buy Now</a>
+                                                class="btn btn-success btn-sm">Buy Now</a>
                                         </div>
                                     </div>
                                 </article>

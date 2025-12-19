@@ -54,7 +54,7 @@
                                                     </div>
                                                     <div class="cart-btn mt-2">
                                                         <a href="{{ route('frontend.shop.product.show', $product->slug ?? $product->id) }}"
-                                                           class="btn btn-primary btn-sm">
+                                                           class="btn btn-success btn-sm">
                                                             Buy Now
                                                         </a>
                                                     </div>

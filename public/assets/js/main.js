@@ -420,7 +420,7 @@ $(function() {
         slidesToScroll: 4,
         speed: 800,
         cssEase: 'linear',
-        dots: true,
+        dots: false,
     });
 
     /*------------------------------

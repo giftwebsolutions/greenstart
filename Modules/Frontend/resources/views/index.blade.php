@@ -116,6 +116,52 @@
     </div>
     <!-- Static Area End -->
 
+    @if (!empty($about))
+        <section class="about-area mb-60px">
+            <div class="container">
+                <div class="container-inner">
+                    <div class="row">
+
+                        {{-- Image --}}
+                        <div class="col-lg-6">
+                            <div class="about-left-image mb-md-30px mb-lm-30px">
+                                @php
+                                    $aboutImage = ImageUploader::getFilePath(
+                                        $about['image'] ?? '',
+                                        $about['created_at'] ?? null,
+                                        'thumbnail',
+                                    );
+                                @endphp
+
+                                @if (!empty($aboutImage))
+                                    <img src="{{ $aboutImage }}" alt="{{ $about['title'] ?? 'About Image' }}"
+                                        class="img-responsive">
+                                @endif
+                            </div>
+                        </div>
+
+                        {{-- Content --}}
+                        <div class="col-lg-6">
+                            <div class="about-content">
+                                @if (!empty($about['title']))
+                                    <div class="about-title">
+                                        <h2>{{ $about['title'] }}</h2>
+                                    </div>
+                                @endif
+
+                                @if (!empty($about['content']))
+                                    <p class="mb-30px">
+                                        {!! nl2br(e($about['content'])) !!}
+                                    </p>
+                                @endif
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    @endif
     <!-- Arrivel Area Start -->
     <x-frontend::new-arrivals />
     <!-- Arrivel Area End -->
@@ -139,62 +185,7 @@
         </div>
     </div>
     <!-- Banner Area End -->
-    <!-- Custom Block Area Start -->
-    <div class="custom-block-area">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 col-md-12 mb-md-60px">
-                    <div class="hot-deal-area">
-                        <div class="section-title">
-                            <h2><span>THIS WEEK’S</span> HOT DEALS</h2>
-                        </div>
 
-                    </div>
-                    <!-- Banner Area Start -->
-                    <div class="testimonial-slider-wrapper">
-
-                        @forelse ($testimonials as $testimonial)
-                            @php
-                                $imageUrl = $testimonial->image
-                                    ? ImageUploader::getFilePath(
-                                        $testimonial->image,
-                                        $testimonial->created_at,
-                                        'thumbnail',
-                                    )
-                                    : asset('assets/images/testimonial-image/default.png');
-                            @endphp
-
-                            <div class="testimonial-slider-item text-center">
-
-                                <div class="testimonial-image">
-                                    <img src="{{ $imageUrl }}" alt="{{ $testimonial->name }}"
-                                        class="testimonial-avatar">
-                                </div>
-
-                                <div class="testimonial-content">
-                                    <p>
-                                        {{ \Illuminate\Support\Str::limit(strip_tags($testimonial->content), 140) }}
-                                    </p>
-                                </div>
-
-                                <div class="testimonial-author">
-                                    <h4>{{ $testimonial->name }}</h4>
-                                </div>
-
-                            </div>
-
-                        @empty
-                            <p class="text-center">No testimonials available.</p>
-                        @endforelse
-
-                    </div>
-                    <!-- Banner Area End -->
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Custom Block Area End -->
     <!-- Category Tab Slider Area Start -->
     <x-frontend::category-tab-slider title="Featured Products" sub-title="Best quality parts for your vehicle"
         :banner="asset('assets/images/icons/static-icons-1.png')" :tabs-config="$myTabs" :limit="8" />
@@ -236,6 +227,56 @@
             </div>
         </div>
     </div>
+
+    <!-- Custom Block Area Start -->
+    <section class="about-area mb-60px">
+        <div class="container">
+            <div class="container-inner">
+                <div class="row">
+                    <!-- Banner Area Start -->
+                    <div class="testimonial-slider-wrapper">
+
+                        @forelse ($testimonials as $testimonial)
+                            @php
+                                $imageUrl = $testimonial->image
+                                    ? ImageUploader::getFilePath(
+                                        $testimonial->image,
+                                        $testimonial->created_at,
+                                        'thumbnail',
+                                    )
+                                    : asset('assets/images/testimonial-image/default.png');
+                            @endphp
+
+                            <div class="testimonial-slider-item text-center">
+
+                                <div class="testimonial-image">
+                                    <img src="{{ $imageUrl }}" alt="{{ $testimonial->name }}"
+                                        class="testimonial-avatar">
+                                </div>
+
+                                <div class="testimonial-content">
+                                    <p>
+                                        {{ \Illuminate\Support\Str::limit(strip_tags($testimonial->content), 140) }}
+                                    </p>
+                                </div>
+
+                                <div class="testimonial-author">
+                                    <h4>{{ $testimonial->name }}</h4>
+                                </div>
+
+                            </div>
+
+                        @empty
+                            <p class="text-center">No testimonials available.</p>
+                        @endforelse
+
+                    </div>
+                    <!-- Banner Area End -->
+                </div>
+            </div>
+        </div>
+        </div>
+    </section> <!-- Custom Block Area End -->
     <!-- Brand area end -->
 </x-frontend::layouts.master>
 @section('js')

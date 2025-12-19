@@ -3,6 +3,7 @@
 namespace Modules\Frontend\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Modules\SysAdmin\Models\Page;
 use Modules\SysAdmin\Repository\TestimonialRepository;
 
 class FrontendController extends Controller
@@ -20,6 +21,7 @@ class FrontendController extends Controller
     public function index()
     {
         $testimonials = $this->testimonialRepo->recentFrontend(6);
+        $about = Page::where('slug', 'about')->first();
 
         return view('frontend::index', compact('testimonials'));
     }
