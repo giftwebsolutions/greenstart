@@ -8,24 +8,24 @@ use Modules\Frontend\Http\Controllers\ProductController;
 use Modules\Frontend\Http\Controllers\ErrorController;
 
 
-Route::get('/', [FrontendController::class, 'index'])->name('home');
+Route::get('/', [FrontendController::class, 'index'])->name('frontend.home');
 
-Route::get('/enquiry', [FrontendController::class, 'enquiry'])->name('enquiry');
-Route::get('/contact', [FrontendController::class, 'contact'])->name('contact');
+Route::get('/enquiry', [FrontendController::class, 'enquiry'])->name('frontend.enquiry');
+Route::get('/contact', [FrontendController::class, 'contact'])->name('frontend.contact');
 
-Route::get('/cms/{slug}', [CmsController::class, 'show'])->name('cms.view');
+Route::get('/cms/{slug}', [CmsController::class, 'show'])->name('frontend.cms.view');
 
 // Blog home / list
-Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog', [BlogController::class, 'index'])->name('frontend.blog.index');
 
 // Search
-Route::get('/blog/search', [BlogController::class, 'search'])->name('blog.search');
+Route::get('/blog/search', [BlogController::class, 'search'])->name('frontend.blog.search');
 
 // List by category (by slug)
-Route::get('/blog/category/{slug}', [BlogController::class, 'category'])->name('blog.category');
+Route::get('/blog/category/{slug}', [BlogController::class, 'category'])->name('frontend.blog.category');
 
 // Single blog (by slug)
-Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('frontend.blog.show');
 
 
 

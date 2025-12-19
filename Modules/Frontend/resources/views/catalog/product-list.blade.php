@@ -9,7 +9,7 @@
                 <div class="col-md-12">
                     <div class="breadcrumb-content">
                         <ul class="nav">
-                            <li><a href="{{ route('home') }}">Home</a></li>
+                            <li><a href="{{ route('frontend.home') }}">Home</a></li>
                             <li>{{ $activeTitle ?? 'Products' }}</li>
                         </ul>
                     </div>

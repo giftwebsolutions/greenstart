@@ -28,7 +28,7 @@ class SitemapController extends Controller
         $sitemap = Sitemap::create();
 
         // Add your site URLs here dynamically
-        $sitemap->add(Url::create(route('home'))->setPriority(1.0)->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY));
+        $sitemap->add(Url::create(route('frontend.home'))->setPriority(1.0)->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY));
         // Add more URLs as needed
 
         // Save sitemap to storage
