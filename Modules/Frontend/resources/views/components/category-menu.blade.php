@@ -1,6 +1,9 @@
 @php
     //dd($verticalCategories);
 @endphp
+@php
+    use Modules\SysAdmin\Helpers\ImageUploader;
+@endphp
 
 <ul class="menu-content display-none">
     @foreach($verticalCategories as $category)

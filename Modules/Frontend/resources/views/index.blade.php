@@ -1025,7 +1025,7 @@
                                         </div>
                                     </div>
                                 </article>
-                            </div>
+                            </div> 
                         </div>
                     </div>
                     <!-- Testimonial Start -->

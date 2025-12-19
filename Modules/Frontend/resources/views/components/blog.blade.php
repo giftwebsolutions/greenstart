@@ -59,7 +59,7 @@
                         // route (change to your real route name)
                         // Example: route('frontend.blog.show', $blog->slug)
                         $url = isset($blog->slug)
-                            ? route('frontend.blog.show', $blog->slug)
+                            ? route('blog.show', $blog->slug)
                             : '#';
 
                         // author (optional)
