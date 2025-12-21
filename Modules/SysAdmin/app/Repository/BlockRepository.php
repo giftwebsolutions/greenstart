@@ -21,7 +21,7 @@ class BlockRepository extends BaseRepository implements BlockInterface
      * @var array
      */
     protected $fillable = [];
-    
+
     /**
      * Specify Model class name
      *
@@ -35,8 +35,13 @@ class BlockRepository extends BaseRepository implements BlockInterface
     public function saveOrUpdate($data, $id = 0)
     {
         $response = '';
+        $createedAt = $this->getModel()->created_at;
+        if ($id !== 0) {
+            $block = $this->find($id);
+            $createedAt = $block->createedAt;
+        }
         if (isset($data['thumbnail'])) {
-            $data['thumbnail'] = ImageUploader::upload($data['thumbnail'], $this->getModel()->created_at);
+            $data['thumbnail'] = ImageUploader::upload($data['thumbnail'], $createedAt);
         }
         if ($id !== 0) {
             $response =  parent::update($data, $id);

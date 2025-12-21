@@ -310,14 +310,14 @@ class ProductController extends Controller
     public function edit(int $id)
     {
         $product = $this->productRepository->find($id);
-
+        //dd($product);
         $attributeSets = $this->attributeRepository->getAttributeSets();
 
         return view('sysadmin::catalog.product.edit', [
             'product'       => $product,
             'statuses'      => $this->productRepository->getStatuses(),
-            'categories'    => $this->productRepository->getCategories(),
-            'subCategories' => $this->productRepository->getSubCategories($product->product_category),
+            'categories'    => $this->productRepository->getCategories() ?? [],
+            'subCategories' => $this->productRepository->getSubCategories($product->product_category) ?? [],
             'attributeSets' => $attributeSets,
         ]);
     }

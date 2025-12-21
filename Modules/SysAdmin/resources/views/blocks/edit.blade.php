@@ -33,7 +33,7 @@
             <div class="col-md-8">
                 <div class="card">
                     <form class="theme-form" id="update-block" method="POST" enctype="multipart/form-data"
-                        action="{{ route('sysadmin.block.update', $block->id) }}">
+                        action="{{ route('sysadmin.cms.block.update', $block->id) }}">
                         @method('PATCH')
                         @csrf
                         <div class="card-body p-3">
@@ -72,8 +72,8 @@
 
                             <div class="form-group">
                                 <label> Value </label>
-                                <textarea class="form-control editor" id="content" placeholder="Enter the Content" rows="8" name="value">
-                                     {{ old('value', $block->value) }}
+                                <div class="editor" data-name="value">{!! old('content', $block->value ?? '') !!}</div>
+                                <input type="hidden" name="value" value="{{ old('content', $block->value ?? '') }}">
                                 </textarea>
                                 @error('value')
                                     <span class="invalid-feedback" role="alert">
@@ -173,7 +173,5 @@
             $("#imgPreview").attr("src", '');
             $('#remove-image-block').addClass('d-none')
         });
-
-        
     </script>
 @endPushOnce

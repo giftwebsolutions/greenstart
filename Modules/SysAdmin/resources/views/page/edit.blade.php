@@ -1,5 +1,5 @@
 @php
-    //dd($parents);
+    // /dd($page);
 @endphp
 
 @extends('sysadmin::layouts.master')
@@ -24,17 +24,17 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                    @if ($errors->any())
-                        <div class="alert alert-secondary alert-dismissible fade show" role="alert">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                            <button class="btn-close" type="button" data-bs-dismiss="alert"></button>
-                        </div>
-                    @endif
-                </div>
+                @if ($errors->any())
+                    <div class="alert alert-secondary alert-dismissible fade show" role="alert">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                        <button class="btn-close" type="button" data-bs-dismiss="alert"></button>
+                    </div>
+                @endif
+            </div>
             <div class="col-md-8">
                 <div class="card">
                     <form class="theme-form" id="update-page" method="POST" enctype="multipart/form-data"
@@ -92,8 +92,7 @@
 
                             <div class="form-group">
                                 <label> Description </label>
-                                <textarea class="form-control" id="description" placeholder="Enter the Description" rows="3"
-                                    name="description">{{ $page->description }}</textarea>
+                                <textarea class="form-control" id="description" placeholder="Enter the Description" rows="3" name="description">{{ $page->description }}</textarea>
                                 @error('description')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -203,6 +202,9 @@
                         </div>
                         <div class="mb-3">
                             @if ($page->banner !== null)
+                                @php
+                                    //echo $page->banner . 'test' . $page->created_at;
+                                @endphp
                                 <img src="{{ asset(Modules\SysAdmin\Helpers\ImageUploader::getFilePath($page->banner, $page->created_at, 'thumbnail')) }}"
                                     id="bannerPreview" class="img-fluid" alt="" />
                             @else
@@ -225,15 +227,15 @@
     {!! JsValidator::formRequest('Modules\SysAdmin\Requests\PageFormRequest', '#update-page') !!}
     <script type="module">
         let file;
-        $('a#cancel-button').click(function () {
+        $('a#cancel-button').click(function() {
             window.location.href = "{{ route('sysadmin.cms.page.index') }}";
         });
 
-        $('#featured_image').change(function (e) {
+        $('#featured_image').change(function(e) {
             file = this.files[0];
             if (file) {
                 let reader = new FileReader();
-                reader.onload = function (event) {
+                reader.onload = function(event) {
                     $("#imgPreview")
                         .attr("src", event.target.result);
                 };
@@ -242,18 +244,18 @@
             }
         });
 
-        $('#remove-image').click(function () {
+        $('#remove-image').click(function() {
             file = '';
             $('#featured_image').val('');
             $("#imgPreview").attr("src", '');
             $('#remove-image-block').addClass('d-none')
         });
 
-        $('#banner').change(function (e) {
+        $('#banner').change(function(e) {
             file = this.files[0];
             if (file) {
                 let reader = new FileReader();
-                reader.onload = function (event) {
+                reader.onload = function(event) {
                     $("#bannerPreview")
                         .attr("src", event.target.result);
                 };
@@ -262,13 +264,11 @@
             }
         });
 
-        $('#remove-banner').click(function () {
+        $('#remove-banner').click(function() {
             file = '';
             $('#banner').val('');
             $("#bannerPreview").attr("src", '');
             $('#remove-banner-image').addClass('d-none')
         });
-
-
     </script>
 @endPushOnce

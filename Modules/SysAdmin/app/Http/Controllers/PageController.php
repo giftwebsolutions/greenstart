@@ -65,7 +65,6 @@ class PageController extends Controller
     public function edit($id)
     {
         $page = $this->pageRepository->findOrFail($id);
-       // dd($page);
         return view('sysadmin::page.edit', compact('page'))->with([
             'parents' => $this->pageRepository->getParents(),
             'statuses' => $this->pageRepository->getStatus()

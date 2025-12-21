@@ -40,18 +40,23 @@ class PageRepository extends BaseRepository implements PageInterface
     public function saveOrUpdate($data, $id = 0)
     {
         $page = '';
+        $createdAt = $this->getModel()->created_at;
         $data['author_id'] = auth()->user()->id;
         $data['parent_id'] = $data['parent_id'] ?? 0;
 
+        if ($id !== 0) {
+            $_page = $this->find($id);
+            $createdAt = $_page->created_at;
+        }
+
         if (isset($data['featured_image'])) {
-            $data['featured_image'] = ImageUploader::upload($data['featured_image'], $this->getModel()->created_at);
+            $data['featured_image'] = ImageUploader::upload($data['featured_image'], $createdAt);
         }
 
         if (isset($data['banner'])) {
-            $data['banner'] = ImageUploader::upload($data['banner'], $this->getModel()->created_at);
+            $data['banner'] = ImageUploader::upload($data['banner'], $createdAt);
         }
 
-        //dd($data);
         if ($id !== 0) {
             $page =  parent::update($data, $id);
         } else {

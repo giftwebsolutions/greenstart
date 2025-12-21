@@ -3,9 +3,10 @@
 
 @php
     use Modules\SysAdmin\Helpers\ImageUploader;
-
+    use Modules\SysAdmin\Models\Blocks;
     $myTabs = [['category_id' => 7, 'label' => 'Handle'], ['category_id' => 8, 'label' => 'Hinges']];
-
+    $home_blocks = ['home-free-shipping', 'home-support'];
+    $homeBlocks = Blocks::whereIn('key', $home_blocks)->get()->toArray();
 @endphp
 
 
@@ -62,14 +63,17 @@
         <div class="container">
             <div class="static-area-wrap">
                 <div class="row">
+                    @php
+                        $freeShipping = collect($homeBlocks)->firstWhere('key', 'home-free-shipping');
+                    @endphp
                     <!-- Static Single Item Start -->
                     <div class="col-lg-3 col-xs-12 col-md-6 col-sm-6 mb-md-30px mb-lm-30px">
                         <div class="single-static">
-                            <img src="{{ asset('assets/images/icons/static-icons-1.png') }}" alt=""
-                                class="img-responsive" />
+                            <img src="{{ asset(ImageUploader::getFilePath($freeShipping['thumbnail'], $freeShipping['created_at'])) }}"
+                                alt="{{ $freeShipping['title'] }}" class="img-responsive" />
                             <div class="single-static-meta">
-                                <h4>Free Shipping</h4>
-                                <p>Free shipping on all US orde</p>
+                                <h4>{{ $freeShipping['title'] }}</h4>
+                                <p>{{ $freeShipping['value'] }}</p>
                             </div>
                         </div>
                     </div>
@@ -228,55 +232,7 @@
         </div>
     </div>
 
-    <!-- Custom Block Area Start -->
-    <section class="about-area mb-60px">
-        <div class="container">
-            <div class="container-inner">
-                <div class="row">
-                    <!-- Banner Area Start -->
-                    <div class="testimonial-slider-wrapper">
-
-                        @forelse ($testimonials as $testimonial)
-                            @php
-                                $imageUrl = $testimonial->image
-                                    ? ImageUploader::getFilePath(
-                                        $testimonial->image,
-                                        $testimonial->created_at,
-                                        'thumbnail',
-                                    )
-                                    : asset('assets/images/testimonial-image/default.png');
-                            @endphp
-
-                            <div class="testimonial-slider-item text-center">
-
-                                <div class="testimonial-image">
-                                    <img src="{{ $imageUrl }}" alt="{{ $testimonial->name }}"
-                                        class="testimonial-avatar">
-                                </div>
-
-                                <div class="testimonial-content">
-                                    <p>
-                                        {{ \Illuminate\Support\Str::limit(strip_tags($testimonial->content), 140) }}
-                                    </p>
-                                </div>
-
-                                <div class="testimonial-author">
-                                    <h4>{{ $testimonial->name }}</h4>
-                                </div>
-
-                            </div>
-
-                        @empty
-                            <p class="text-center">No testimonials available.</p>
-                        @endforelse
-
-                    </div>
-                    <!-- Banner Area End -->
-                </div>
-            </div>
-        </div>
-        </div>
-    </section> <!-- Custom Block Area End -->
+    <x-frontend::testimonials :limit='6' />
     <!-- Brand area end -->
 </x-frontend::layouts.master>
 @section('js')

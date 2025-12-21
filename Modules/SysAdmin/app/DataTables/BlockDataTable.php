@@ -66,8 +66,8 @@ class BlockDataTable extends DataTable
     protected function getActionColumn($data): string
     {
         $showUrl = route('sysadmin.cms.block.view', $data->id);
-        $editUrl = route('sysadmin.block.edit', $data->id);
-        $deleteUrl = route('sysadmin.block.delete', $data->id);
+        $editUrl = route('sysadmin.cms.block.edit', $data->id);
+        $deleteUrl = route('sysadmin.cms.block.delete', $data->id);
         return '
         <ul class="action">
             <li class="edit"> <a href="' . $editUrl . '" data-bs-original-title="edit" title="edit"><i class="icon-pencil-alt"></i></a></li>
