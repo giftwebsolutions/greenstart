@@ -130,19 +130,23 @@ return [
     [
     'key'      => 'testimonial',
     'name'     => 'Testimonials',
-    'route'    => 'sysadmin.testimonial.index',
-    'sort'     => 1, // adjust sort order as needed
-    'icon'     => 'stroke-message', // example icon
+    'route'    => '#',
+    'sort'     => 1, 
+    'icon'       => 'stroke-project',
     'children' => [
         [
             'key'   => 'testimonial.create',
             'name'  => 'Add Testimonial',
             'route' => 'sysadmin.testimonial.create',
+            'sort'       => 1,
+            'icon'       => 'icon-gear',
         ],
         [
             'key'   => 'testimonial.index',
             'name'  => 'List Testimonials',
             'route' => 'sysadmin.testimonial.index',
+            'sort'       => 2,
+            'icon'       => 'icon-gear',
         ],
     ],
 ],

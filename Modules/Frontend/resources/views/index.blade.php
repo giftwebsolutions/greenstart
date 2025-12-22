@@ -78,7 +78,7 @@
                                 alt="{{ $freeShipping['title'] }}" class="img-responsive" />
                             <div class="single-static-meta">
                                 <h4>{{ $freeShipping['title'] }}</h4>
-                                <p>{{ $freeShipping['value'] }}</p>
+                                <p>{!! $freeShipping['value'] !!}</p>
                             </div>
                         </div>
                     </div>
