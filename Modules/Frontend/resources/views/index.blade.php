@@ -7,6 +7,11 @@
     $myTabs = [['category_id' => 7, 'label' => 'Handle'], ['category_id' => 8, 'label' => 'Hinges']];
     $home_blocks = ['home-free-shipping', 'home-support'];
     $homeBlocks = Blocks::whereIn('key', $home_blocks)->get()->toArray();
+
+
+
+    
+
 @endphp
 
 
