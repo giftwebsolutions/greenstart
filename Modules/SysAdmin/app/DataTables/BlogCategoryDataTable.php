@@ -19,7 +19,7 @@ class BlogCategoryDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->addColumn('parent', fn ($row) => $row->parent?->name ?? '—')
-            ->editColumn('status', fn ($row) => ($row->Status == 0) ? 'Active' : 'In Active')
+            ->editColumn('status', fn ($row) =>$this->renderStatus($row->status))
             ->editColumn('updated_at', fn ($row) => $row->updated_at?->format('d-m-Y H:i'))
             ->addColumn('action', fn ($row) => $this->getActionColumn($row))
             ->rawColumns(['status', 'action'])
@@ -86,7 +86,7 @@ class BlogCategoryDataTable extends DataTable
         return match ((int) $status) {
             1       => '<span class="badge bg-success">Active</span>',
             0       => '<span class="badge bg-danger">Inactive</span>',
-            default => '<span class="badge bg-secondary">Unknown</span>',
+            2 => '<span class="badge bg-secondary">Draft</span>',
         };
     }
 

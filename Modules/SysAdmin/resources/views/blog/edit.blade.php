@@ -1,3 +1,6 @@
+@php
+    //dd($parentCategory);
+@endphp
 @extends('sysadmin::layouts.master')
 
 
@@ -77,7 +80,8 @@
 
                             <div class="form-group">
                                 <label> Description </label>
-                                <textarea class="form-control" id="description" placeholder="Enter the Description" rows="3" name="description">{{ old('description', $blog->description) }}</textarea>
+                                <textarea class="form-control" id="description" placeholder="Enter the Description" rows="3"
+                                    name="description">{{ old('description', $blog->description) }}</textarea>
                                 @error('description')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -86,12 +90,11 @@
                             </div>
 
 
-                            <div class="form-group">
-                                <label> Content </label>
-                                <textarea class="form-control editor" id="content" placeholder="Enter the Content" rows="8" name="content">
-                                     {{ old('content', $blog->content) }}
-                                </textarea>
-                                @error('Content')
+                            <div class="form-group mb-3">
+                                <label class="col-md-12 col-form-label">Content</label>
+                                <div class="editor" data-name="content">{!! old('content', $blog->content ?? '') !!}</div>
+                                <input type="hidden" name="content" value="{{ old('content', $blog->content ?? '') }}">
+                                @error('content')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -163,8 +166,7 @@
                             <select class="form-select" name="category_id" id="category_id">
                                 <option>Select Category</option>
                                 @foreach ($parentCategory as $category)
-                                    <option value="{{ $category['id'] }}"
-                                        {{ $category['id'] == old('category_id', $blog->category_id) ? 'selected' : '' }}>
+                                    <option value="{{ $category['id'] }}" {{ $category['id'] == old('category_id', $blog->category_id) ? 'selected' : '' }}>
                                         {{ $category['name'] }}
                                     </option>
                                 @endforeach
@@ -185,7 +187,7 @@
                                 </span>
                             @enderror
                             <input type="file" class="form-control @error('featured_image') is-invalid @enderror"
-                                name="featured_image" id ="featured_image" />
+                                name="featured_image" id="featured_image" />
                         </div>
                         <div class="mb-3">
 
@@ -216,12 +218,12 @@
         let published_at = '{{ $blog->published_at ?? date('d/m/Y h:m') }}';
         window.datetimepicker = new tempusDominus.TempusDominus(
             document.getElementById('datetimepicker'), {
-                defaultDate: published_at,
-                localization: {
-                    locale: 'en',
-                    format: 'dd/MM/yyyy HH:mm',
-                }
+            defaultDate: published_at,
+            localization: {
+                locale: 'en',
+                format: 'dd/MM/yyyy HH:mm',
             }
+        }
         );
 
         $('#tag-select').select2({
@@ -234,9 +236,9 @@
                 dataType: 'json',
                 delay: 250, // Delay search requests to avoid overwhelming server
                 cache: false,
-                processResults: function(data) {
+                processResults: function (data) {
                     return {
-                        results: data.items.map(function(item) {
+                        results: data.items.map(function (item) {
                             return {
                                 id: item.id,
                                 text: item.text
@@ -246,7 +248,7 @@
                 },
                 minimumInputLength: 3, // Minimum characters to trigger search
             },
-            createTag: function(params) {
+            createTag: function (params) {
                 var term = $.trim(params.term);
                 if (term === '') {
                     return null;
@@ -259,15 +261,15 @@
             }
         });
 
-        $('a#cancel-button').click(function() {
+        $('a#cancel-button').click(function () {
             window.location.href = "{{ route('sysadmin.blog.index') }}";
         });
 
-        $('#featured_image').change(function(e) {
+        $('#featured_image').change(function (e) {
             file = this.files[0];
             if (file) {
                 let reader = new FileReader();
-                reader.onload = function(event) {
+                reader.onload = function (event) {
                     $("#imgPreview")
                         .attr("src", event.target.result);
                 };
@@ -276,14 +278,14 @@
             }
         });
 
-        $('#remove-image').click(function() {
+        $('#remove-image').click(function () {
             file = '';
             $('#featured_image').val('');
             $("#imgPreview").attr("src", '');
             $('#remove-image-block').addClass('d-none')
         });
 
-        
+
     </script>
 @endPushOnce
 @section('script')

@@ -40,7 +40,7 @@ class BlogCategoryRepository extends BaseRepository implements BlogCategoryInter
 
     public function getParents()
     {
-        $data = $this->getModel()->select(['id', 'name'])->where('parent_id', NULL)->active()->get()->toArray();
+        $data = $this->getModel()->select(['id', 'name'])->where('parent_id', 0)->active()->get()->toArray();
         return $data;
     }
 
