@@ -18,25 +18,8 @@
         </div>
     </div>
 
-    <div class="shop-category-area pt-60px pb-60px">
+    <div class="shop-category-area pt-30px pb-60px">
         <div class="container">
-
-            {{-- Search bar on top (optional) --}}
-            <div class="row mb-4">
-                <div class="col-md-8">
-                    <h3 class="mb-0">{{ $activeTitle ?? 'Products' }}</h3>
-                </div>
-                <div class="col-md-4">
-                    <form method="GET" action="{{ route('frontend.shop.search') }}">
-                        <div class="input-group">
-                            <input type="text" name="q" class="form-control" value="{{ $q ?? request('q') }}"
-                                placeholder="Search products...">
-                            <button class="btn btn-primary" type="submit">Search</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
             <div class="row">
                 @forelse ($products as $product)
                     <div class="col-lg-3 col-md-4 col-sm-6 mb-30px">

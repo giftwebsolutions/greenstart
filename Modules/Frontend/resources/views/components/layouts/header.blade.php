@@ -61,31 +61,48 @@ $settings = Config::get('site-settings');
         </div>
         <!-- Mobile Header Nav End -->
         <!-- Header Nav End -->
-        <div class="header-top bg-white ptb-30px d-lg-block d-none">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-3 d-flex">
-                        <div class="align-self-center">
-                            <a href="{{ route('frontend.home') }}"><img class="img-responsive logo"
-                                    src="{{asset('assets/images/logo/logo.png')}}" alt="{{ env('APP_NAME') }}" /></a>
-                        </div>
-                    </div>
-                    <div class="col-md-9 align-self-center">
-                        <div class="header-right-element d-flex justify-content-between">
-                            <div class="search-element media-body me-20px">
-                                <form class="d-flex" action="#">
-                                    <input type="text" placeholder="Search entire store here ..." />
-                                    <button><i class="icon-search"></i></button>
-                                </form>
-                            </div>
-                            <!--Cart info Start -->
+       <div class="header-top bg-white ptb-30px d-lg-block d-none">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 d-flex">
+                <div class="align-self-center">
+                    <a href="{{ route('frontend.home') }}">
+                        <img class="img-responsive logo"
+                             src="{{ asset('assets/images/logo/logo.png') }}"
+                             alt="{{ env('APP_NAME') }}" />
+                    </a>
+                </div>
+            </div>
 
-                        </div>
-                        <!--Cart info End -->
+            <div class="col-md-9 align-self-center">
+                <div class="header-right-element d-flex justify-content-between">
+
+                    <!-- Updated Search Form -->
+                    <div class="search-element media-body me-20px">
+                        <form class="d-flex" method="GET" action="{{ route('frontend.shop.search') }}">
+                            <input 
+                                type="text" 
+                                name="q"
+                                class="form-control"
+                                value="{{ $q ?? request('q') }}"
+                                placeholder="Search entire store here ..."
+                            />
+                            <button class="btn btn-primary" type="submit">
+                                <i class="icon-search"></i>
+                            </button>
+                        </form>
                     </div>
+
+                    <!--Cart info Start-->
+                    <!-- Your cart code here -->
+                    <!--Cart info End-->
+
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
         <!-- Header Nav End -->
         <div class="header-menu bg-red sticky-nav d-lg-block d-none padding-0px">
             <div class="container">
@@ -165,162 +182,58 @@ $settings = Config::get('site-settings');
 
     <!-- Search Category Start -->
     <div class="mobile-search-area d-lg-none mb-15px">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="search-element media-body">
-                        <form class="d-flex" action="#">
-                            <input type="text" placeholder="Enter your search key ... " />
-                            <button><i class="icon-search"></i></button>
-                        </form>
-                    </div>
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="search-element media-body">
+                    <form method="GET" action="{{ route('frontend.shop.search') }}" class="d-flex">
+                        <input 
+                            type="text" 
+                            name="q"
+                            class="form-control"
+                            value="{{ $q ?? request('q') }}"
+                            placeholder="Search products..."
+                        />
+                        <button class="btn btn-primary" type="submit">
+                            <i class="icon-search"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
     <!-- Search Category End -->
-    <div class="mobile-category-nav d-lg-none mb-15px">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
+   <div class="mobile-category-nav d-lg-none mb-15px">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
 
-                    <!--=======  category menu  =======-->
-                    <div class="hero-side-category">
-                        <!-- Category Toggle Wrap -->
-                        <div class="category-toggle-wrap">
-                            <!-- Category Toggle -->
-                            <button class="category-toggle"><i class="fa fa-bars"></i> All Categories</button>
-                        </div>
+                <!--=======  category menu  =======-->
+                <div class="hero-side-category">
 
-                        <!-- Category Menu -->
-                        <nav class="category-menu">
-                            <ul>
-                                <li class="menu-item-has-children menu-item-has-children-1">
-                                    <a href="#">Brake Parts<i class="ion-ios-arrow-down"></i></a>
-                                    <!-- category submenu -->
-                                    <ul class="category-mega-menu category-mega-menu-1">
-                                        <li><a href="#">Brake Tools</a></li>
-                                        <li><a href="#">Drive shafts</a></li>
-                                        <li><a href="#">Emergency Brake</a></li>
-                                        <li><a href="#">Spools</a></li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item-has-children menu-item-has-children-2">
-                                    <a href="#">Wheel Bearing<i class="ion-ios-arrow-down"></i></a>
-                                    <!-- category submenu -->
-                                    <ul class="category-mega-menu category-mega-menu-2">
-                                        <li><a href="#">Bower</a></li>
-                                        <li><a href="#">Celestron</a></li>
-                                        <li><a href="#">Flipbac</a></li>
-                                        <li><a href="#">Gary Fong</a></li>
-                                        <li><a href="#">GigaPan</a></li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item-has-children menu-item-has-children-3">
-                                    <a href="#">Wheel Rim Screws <i class="ion-ios-arrow-down"></i></a>
-                                    <!-- category submenu -->
-                                    <ul class="category-mega-menu category-mega-menu-3">
-                                        <li><a href="#">Camera Lenses</a></li>
-                                        <li><a href="#">DSLR Lenses</a></li>
-                                        <li><a href="#">Lens Accessories</a></li>
-                                        <li><a href="#">Lowepro</a></li>
-                                        <li><a href="#">SanDisk</a></li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item-has-children menu-item-has-children-4">
-                                    <a href="#">Wheel Simulators <i class="ion-ios-arrow-down"></i></a>
-                                    <!-- category submenu -->
-                                    <ul class="category-mega-menu category-mega-menu-4">
-                                        <li><a href="#">Bags & Cases</a></li>
-                                        <li><a href="#">Binoculars & Scopes</a></li>
-                                        <li><a href="#">Digital Cameras</a></li>
-                                        <li><a href="#">Film Photography</a></li>
-                                        <li><a href="#">Lighting & Studio</a></li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item-has-children menu-item-has-children-5">
-                                    <a href="#">Moto Oil <i class="ion-ios-arrow-down"></i></a>
-                                    <!-- category submenu -->
-                                    <ul class="category-mega-menu category-mega-menu-5">
-                                        <li><a href="#">2-Stroke</a></li>
-                                        <li><a href="#">4-Stroke</a></li>
-                                        <li><a href="#">Diesel</a></li>
-                                        <li><a href="#">Gasoline</a></li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item-has-children menu-item-has-children-6">
-                                    <a href="#">Turbo System <i class="ion-ios-arrow-down"></i></a>
-                                    <!-- category submenu -->
-                                    <ul class="category-mega-menu category-mega-menu-6">
-                                        <li><a href="#">Turbo Blanket </a></li>
-                                        <li><a href="#">Turbo Kits</a></li>
-                                        <li><a href="#">Turbo Wrap</a></li>
-                                        <li><a href="#">Turbocharger</a></li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item-has-children menu-item-has-children-7">
-                                    <a href="#">Lighting<i class="ion-ios-arrow-down"></i></a>
-                                    <!-- category submenu -->
-                                    <ul class="category-mega-menu category-mega-menu-7">
-                                        <li><a href="#">Bulbs</a></li>
-                                        <li><a href="#">Headlights</a></li>
-                                        <li><a href="#">Light Bars</a></li>
-                                        <li><a href="#">Light Kits</a></li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item-has-children menu-item-has-children-8">
-                                    <a href="#">Handbag<i class="ion-ios-arrow-down"></i></a>
-                                    <!-- category submenu -->
-                                    <ul class="category-mega-menu category-mega-menu-8">
-                                        <li><a href="#">CD Players & Turntables</a></li>
-                                        <li><a href="#">Home Theater Systems</a></li>
-                                        <li><a href="#">Receivers & Amplifiers</a></li>
-                                        <li><a href="#">Speakers</a></li>
-                                        <li><a href="#">Stereo Shelf Systems</a></li>
-                                        <li><a href="#">Wireless & Multiroom Audio</a></li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item-has-children menu-item-has-children-9">
-                                    <a href="#">Shoes<i class="ion-ios-arrow-down"></i></a>
-                                    <!-- category submenu -->
-                                    <ul class="category-mega-menu category-mega-menu-9">
-                                        <li><a href="#">4K Media Players</a></li>
-                                        <li><a href="#">Apple TV</a></li>
-                                        <li><a href="#">Fire TV</a></li>
-                                        <li><a href="#">Google Chromecast</a></li>
-                                        <li><a href="#">NVIDIA Shield</a></li>
-                                        <li><a href="#">Roku</a></li>
-                                        <li><a href="#">Blu-ray Players</a></li>
-                                        <li><a href="#">Streaming Media Player</a></li>
-                                        <li><a href="#">TiVo</a></li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item-has-children menu-item-has-children-10">
-                                    <a href="#">Engine Parts<i class="ion-ios-arrow-down"></i></a>
-                                    <!-- category submenu -->
-                                    <ul class="category-mega-menu category-mega-menu-10">
-                                        <li><a href="#">Calculators</a></li>
-                                        <li><a href="#">Check Trousers</a></li>
-                                        <li><a href="#">Ink & Toner</a></li>
-                                        <li><a href="#">Low-Cut Jeans</a></li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item"><a href="#">Accessories</a></li>
-                                <li class="menu-item hidden"><a href="#">Seals & Hubs</a></li>
-                                <li>
-                                    <a href="#" id="more-btn"><i class="ion-ios-plus-empty"
-                                            aria-hidden="true"></i> More
-                                        Categories</a>
-                                </li>
-                            </ul>
-                        </nav>
+                    <!-- Category Toggle Wrap -->
+                    <div class="category-toggle-wrap">
+                        <button class="category-toggle">
+                            <i class="fa fa-bars"></i> All Categories
+                        </button>
                     </div>
 
-                    <!--=======  End of category menu =======-->
+                    <!-- Dynamic Category Menu -->
+                    <nav class="category-menu">
+                        <x-frontend::category-menu />
+                    </nav>
+
                 </div>
+                <!--=======  End of category menu =======-->
+
             </div>
         </div>
     </div>
+</div>
+
+
     <!-- Mobile Header Section End -->
     <!-- OffCanvas Wishlist Start -->
     <div id="offcanvas-wishlist" class="offcanvas offcanvas-wishlist">
@@ -441,131 +354,54 @@ $settings = Config::get('site-settings');
     <!-- OffCanvas Cart End -->
 
     <!-- OffCanvas Search Start -->
-    <div id="offcanvas-mobile-menu" class="offcanvas offcanvas-mobile-menu">
-        <div class="inner customScroll">
-            <div class="head">
-                <span class="title">&nbsp;</span>
-                <button class="offcanvas-close">×</button>
-            </div>
-            <div class="offcanvas-menu-search-form">
-                <form action="#">
-                    <input type="text" placeholder="Search...">
-                    <button><i class="lnr lnr-magnifier"></i></button>
-                </form>
-            </div>
-            <div class="offcanvas-menu">
-                <ul>
-                    <li><a href="{{ route('frontend.home') }}"><span class="menu-text">Home</span></a>
+   <div id="offcanvas-mobile-menu" class="offcanvas offcanvas-mobile-menu">
+    <div class="inner customScroll">
 
-                    </li>
-                    <li><a href="#"><span class="menu-text">Shop</span></a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a href="#"><span class="menu-text">Shop Grid</span></a>
-                                <ul class="sub-menu">
-                                    <li><a href="shop-3-column.html">Shop Grid 3 Column</a></li>
-                                    <li><a href="shop-4-column.html">Shop Grid 4 Column</a></li>
-                                    <li><a href="shop-left-sidebar.html">Shop Grid Left Sidebar</a></li>
-                                    <li><a href="shop-right-sidebar.html">Shop Grid Right Sidebar</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="#"><span class="menu-text">Shop List</span></a>
-                                <ul class="sub-menu">
-                                    <li><a href="shop-list.html">Shop List</a></li>
-                                    <li><a href="shop-list-left-sidebar.html">Shop List Left Sidebar</a></li>
-                                    <li><a href="shop-list-right-sidebar.html">Shop List Right Sidebar</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="#"><span class="menu-text">Shop Single</span></a>
-                                <ul class="sub-menu">
-                                    <li><a href="single-product.html">Shop Single</a></li>
-                                    <li><a href="single-product-variable.html">Shop Variable</a></li>
-                                    <li><a href="single-product-affiliate.html">Shop Affiliate</a></li>
-                                    <li><a href="single-product-group.html">Shop Group</a></li>
-                                    <li><a href="single-product-tabstyle-2.html">Shop Tab 2</a></li>
-                                    <li><a href="single-product-tabstyle-3.html">Shop Tab 3</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="#"><span class="menu-text">Shop Single</span></a>
-                                <ul class="sub-menu">
-                                    <li><a href="single-product-slider.html">Shop Slider</a></li>
-                                    <li><a href="single-product-gallery-left.html">Shop Gallery Left</a></li>
-                                    <li><a href="single-product-gallery-right.html">Shop Gallery Right</a></li>
-                                    <li><a href="single-product-sticky-left.html">Shop Sticky Left</a></li>
-                                    <li><a href="single-product-sticky-right.html">Shop Sticky Right</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                    <li><a href="#"><span class="menu-text">Pages</span></a>
-                        <ul class="sub-menu">
-                            <li><a href="about.html">About Page</a></li>
-                            <li><a href="cart.html">Cart Page</a></li>
-                            <li><a href="checkout.html">Checkout Page</a></li>
-                            <li><a href="compare.html">Compare Page</a></li>
-                            <li><a href="login.html">Login & Register Page</a></li>
-                            <li><a href="my-account.html">Account Page</a></li>
-
-                            <li><a href="empty-cart.html">Empty Cart Page</a></li>
-                            <li><a href="404.html">404 Page</a></li>
-                            <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                            <li><a href="faq.html">Faq Page</a></li>
-                            <li><a href="coming-soon.html">Coming Page</a></li>
-                            <li><a href="wishlist.html">Wishlist Page</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="#"><span class="menu-text">Blog</span></a>
-                        <ul class="sub-menu">
-                            <li><a href="#"><span class="menu-text">Blog Grid</span></a>
-                                <ul class="sub-menu">
-                                    <li><a href="blog-grid-left-sidebar.html">Blog Grid Left Sidebar</a></li>
-                                    <li><a href="blog-grid-right-sidebar.html">Blog Grid Right Sidebar</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="#"><span class="menu-text">Blog List</span></a>
-                                <ul class="sub-menu">
-                                    <li><a href="blog-list-left-sidebar.html">Blog List Left Sidebar</a></li>
-                                    <li><a href="blog-list-right-sidebar.html">Blog List Right Sidebar</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="#"><span class="menu-text">Blog Single</span></a>
-                                <ul class="sub-menu">
-                                    <li><a href="blog-single-left-sidebar.html">Blog Single Left Sidebar</a></li>
-                                    <li><a href="blog-single-right-sidebar.html">Blog Single Right Sidbar</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                    <li><a href="contact.html">Contact Us</a></li>
-                </ul>
-            </div>
-            <!-- OffCanvas Menu End -->
-            <div class="offcanvas-social mt-30px">
-                <ul>
-                    <li>
-                        <a href="#"><i class="ion-social-facebook"></i></a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="ion-social-twitter"></i></a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="ion-social-google"></i></a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="ion-social-youtube"></i></a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="ion-social-instagram"></i></a>
-                    </li>
-                </ul>
-            </div>
+        <!-- Header -->
+        <div class="head d-flex justify-content-between align-items-center">
+            <span class="title">&nbsp;</span>
+            <button class="offcanvas-close">×</button>
         </div>
+
+        <!-- Search -->
+        <div class="offcanvas-menu-search-form">
+            <form method="GET" action="{{ route('frontend.shop.search') }}">
+                <input 
+                    type="text" 
+                    name="q"
+                    value="{{ $q ?? request('q') }}"
+                    placeholder="Search products..."
+                >
+                <button type="submit"><i class="lnr lnr-magnifier"></i></button>
+            </form>
+        </div>
+
+     
+
+        <!-- Dynamic Menu (Matches Desktop Menu) -->
+        <div class="offcanvas-menu">
+            <ul class="menu-content">
+                @include('frontend::components.menu-recursive', ['items' => $menus])
+            </ul>
+        </div>
+
+        <!-- Social Icons -->
+        <div class="offcanvas-social mt-30px">
+            <ul>
+                <li><a href="#"><i class="ion-social-facebook"></i></a></li>
+                <li><a href="#"><i class="ion-social-twitter"></i></a></li>
+                <li><a href="#"><i class="ion-social-google"></i></a></li>
+                <li><a href="#"><i class="ion-social-youtube"></i></a></li>
+                <li><a href="#"><i class="ion-social-instagram"></i></a></li>
+            </ul>
+        </div>
+
     </div>
-    <!-- OffCanvas Search End -->
-    <div class="contact-link d-lg-none">
-        <a href="tel:(088)1234567">(088)1234567</a>
-    </div>
+</div>
+
+<!-- Mobile Contact -->
+<div class="contact-link d-lg-none">
+    <a href="tel:{{ $settings['mobile'] }}">{{ $settings['mobile'] }}</a>
+</div>
+
     <div class="offcanvas-overlay"></div>
