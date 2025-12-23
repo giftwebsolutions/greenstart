@@ -54,11 +54,15 @@
                                         </ul>
                                     </div>
                                 </div>
+
                                 <div class="cart-btn mt-2">
-                                    <a href="{{ route('frontend.shop.product.show', $product->slug ?? $product->id) }}"
-                                        class="btn btn-success btn-sm">
+                                    <button type="button" class="btn btn-success btn-sm js-enquiry-open"
+                                        data-product-id="{{ $product->id }}"
+                                        data-category-id="{{ $product->category_id ?? 0 }}"
+                                        data-price="{{ $product->price ?? 0 }}"
+                                        data-product-name="{{ $product->name ?? ($product->title ?? '') }}">
                                         Buy Now
-                                    </a>
+                                    </button>
                                 </div>
                             </div>
                         </article>
@@ -76,5 +80,5 @@
 
         </div>
     </div>
-
+    @include('frontend::catalog.modal');
 </x-frontend::layouts.master>

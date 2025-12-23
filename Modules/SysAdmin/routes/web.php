@@ -77,6 +77,19 @@ Route::prefix('sysadmin')
             Route::get('destroy/{id}', 'destroy')->name('delete');
         });
 
+    Route::prefix('enquiry')
+        ->as('enquiry.')
+        ->controller(Modules\SysAdmin\Http\Controllers\EnquiryController::class)
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('view/{id}', 'show')->name('view');
+            Route::get('create', 'create')->name('create');
+            Route::post('create', 'store')->name('store');
+            Route::get('edit/{id}', 'edit')->name('edit');
+            Route::patch('update/{id}', 'update')->name('update');
+            Route::get('destroy/{id}', 'destroy')->name('delete');
+        });
+
         // ===============================
         // 📄 CMS (Pages + Blocks)
         // ===============================

@@ -3,6 +3,7 @@
 namespace Modules\Frontend\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Modules\SysAdmin\Interfaces\EnquiryInterface;
 use Modules\SysAdmin\Models\Page;
 use Modules\SysAdmin\Models\ProductCategory;
 use Modules\SysAdmin\Repository\TestimonialRepository;
@@ -42,6 +43,23 @@ class FrontendController extends Controller
             ->toArray();
 
         return view('frontend::pages.enquiry')->with(['enquiry' => $enquiry, 'category' => $productCategory]);
+    }
+
+    public function storeEnquiry(\Modules\SysAdmin\Requests\EnquiryFormRequest $request, EnquiryInterface $enquiry)
+    {
+        $data = $request->validated();
+
+        // Ensure defaults if not present
+        $data['category_id'] = $data['category_id'] ?? 0;
+        $data['product_id']  = $data['product_id'] ?? 0;
+        $data['status']      = $data['status'] ?? 1;
+
+        $enquiry->saveOrUpdate($data);
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Thanks! We received your enquiry. Our team will contact you soon.',
+        ]);
     }
 
     public function faqs()

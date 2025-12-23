@@ -11,6 +11,9 @@ use Modules\Frontend\Http\Controllers\ErrorController;
 Route::get('/', [FrontendController::class, 'index'])->name('frontend.home');
 
 Route::get('/enquiry', [FrontendController::class, 'enquiry'])->name('frontend.enquiry');
+
+Route::post('enquiry/store', [FrontendController::class, 'storeEnquiry'])->name('frontend.enquiry.store');
+
 Route::get('/contact', [FrontendController::class, 'contact'])->name('frontend.contact');
 
 Route::get('/cms/{slug}', [CmsController::class, 'show'])->name('frontend.cms.view');

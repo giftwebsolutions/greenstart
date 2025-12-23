@@ -75,11 +75,11 @@
                                     <li class="cuttent-price">
                                         ₹{{ number_format($product->sales_price ?? 0, 2) }}
                                     </li>
-                                   <li class="cuttent-price">
-    <del class="text-muted fs-6">
-        ₹{{ number_format($product->mrp ?? 0, 2) }}
-    </del>
-</li>
+                                    <li class="cuttent-price">
+                                        <del class="text-muted fs-6">
+                                            ₹{{ number_format($product->mrp ?? 0, 2) }}
+                                        </del>
+                                    </li>
 
                                 </ul>
                             </div>
@@ -99,8 +99,13 @@
                             {{-- Simple "Buy Now" for overall product --}}
                             <div class="pro-details-quality mt-0px mb-3">
                                 <div class="pro-details-cart btn-hover">
-                                    <a href="#" onclick="alert('Implement Buy Now flow'); return false;">Buy
-                                        Now</a>
+                                    <button type="button" class="btn btn-lg btn-success btn-sm js-enquiry-open"
+                                        data-product-id="{{ $product->id }}"
+                                        data-category-id="{{ $product->category_id ?? 0 }}"
+                                        data-price="{{ $product->price ?? 0 }}"
+                                        data-product-name="{{ $product->name ?? ($product->title ?? '') }}">
+                                        Buy Now
+                                    </button>
                                 </div>
                             </div>
 
@@ -150,10 +155,15 @@
                                                     @endforeach
 
                                                     <td>
-                                                        <a href="#" class="btn btn-sm btn-primary"
-                                                            onclick="alert('Implement Buy Now for variant {{ $variant->sku }}'); return false;">
+
+                                                        <button type="button"
+                                                            class="btn btn-sm btn-primary btn-sm js-enquiry-open"
+                                                            data-product-id="{{ $product->id }}"
+                                                            data-category-id="{{ $product->category_id ?? 0 }}"
+                                                            data-price="{{ $product->price ?? 0 }}"
+                                                            data-product-name="{{ $product->name ?? ($product->title ?? '') }}">
                                                             Buy Now
-                                                        </a>
+                                                        </button>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -211,34 +221,40 @@
                                 <article class="list-product text-left">
                                     <div class="product-inner">
                                         <div class="img-block">
-                                            <a href="{{ route('frontend.shop.product.show', $rel->slug ?? $rel->id) }}"
+                                            <a href="{{ route('frontend.shop.product.show', $product->slug ?? $product->id) }}"
                                                 class="thumbnail">
                                                 @php
                                                     $relThumb = ImageUploader::getFilePath(
-                                                        $rel->thumb ?? '',
-                                                        $rel->created_at ?? null,
+                                                        $product->thumb ?? '',
+                                                        $product->created_at ?? null,
                                                         'thumbnail',
                                                     );
                                                 @endphp
 
                                                 <img class="first-img" src="{{ $relThumb }}"
-                                                    alt="{{ $rel->title }}">
+                                                    alt="{{ $product->title }}">
                                             </a>
                                         </div>
                                         <div class="product-decs">
-                                            <h2><a href="{{ route('frontend.shop.product.show', $rel->slug ?? $rel->id) }}"
-                                                    class="product-link">{{ $rel->title }}</a></h2>
+                                            <h2><a href="{{ route('frontend.shop.product.show', $product->slug ?? $product->id) }}"
+                                                    class="product-link">{{ $product->title }}</a></h2>
                                             <div class="pricing-meta">
                                                 <ul>
-                                                    <li class="current-price">₹{{ number_format($rel->price ?? 0, 2) }}
+                                                    <li class="current-price">₹{{ number_format($product->price ?? 0, 2) }}
                                                     </li>
                                                 </ul>
                                             </div>
                                         </div>
                                         <div class="cart-btn">
-                                            <a href="{{ route('frontend.shop.product.show', $rel->slug ?? $rel->id) }}"
-                                                class="btn btn-success btn-sm">Buy Now</a>
+                                            <button type="button" class="btn btn-success btn-sm js-enquiry-open"
+                                                data-product-id="{{ $product->id }}"
+                                                data-category-id="{{ $product->category_id ?? 0 }}"
+                                                data-price="{{ $product->price ?? 0 }}"
+                                                data-product-name="{{ $product->name ?? ($product->title ?? '') }}">
+                                                Buy Now
+                                            </button>
                                         </div>
+
                                     </div>
                                 </article>
                             </div>
@@ -248,5 +264,5 @@
             </div>
         </div>
     @endif
-
+    @include('frontend::catalog.modal');
 </x-frontend::layouts.master>

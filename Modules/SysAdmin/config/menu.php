@@ -72,7 +72,7 @@ return [
                 'sort'       => 1,
                 'icon'       => 'icon-gear',
             ],
-             [
+            [
                 'key'        => 'attribute-type',
                 'name'       => 'Attribute Type',
                 'route'      => 'sysadmin.catalog.attribute.type.index',
@@ -93,7 +93,7 @@ return [
                 'sort'       => 1,
                 'icon'       => 'icon-gear',
             ]
-            
+
         ]
     ],
     [
@@ -128,28 +128,51 @@ return [
     ],
 
     [
-    'key'      => 'testimonial',
-    'name'     => 'Testimonials',
-    'route'    => '#',
-    'sort'     => 1, 
-    'icon'       => 'stroke-project',
-    'children' => [
-        [
-            'key'   => 'testimonial.create',
-            'name'  => 'Add Testimonial',
-            'route' => 'sysadmin.testimonial.create',
-            'sort'       => 1,
-            'icon'       => 'icon-gear',
-        ],
-        [
-            'key'   => 'testimonial.index',
-            'name'  => 'List Testimonials',
-            'route' => 'sysadmin.testimonial.index',
-            'sort'       => 2,
-            'icon'       => 'icon-gear',
+        'key'      => 'enquiry',
+        'name'     => 'Enquiry',
+        'route'    => '#',
+        'sort'     => 1,
+        'icon'       => 'stroke-project',
+        'children' => [
+            [
+                'key'   => 'enquiry.create',
+                'name'  => 'Add Enquiry',
+                'route' => 'sysadmin.enquiry.create',
+                'sort'       => 1,
+                'icon'       => 'icon-gear',
+            ],
+            [
+                'key'   => 'enquiry.index',
+                'name'  => 'List Enquiry',
+                'route' => 'sysadmin.enquiry.index',
+                'sort'       => 2,
+                'icon'       => 'icon-gear',
+            ],
         ],
     ],
-],
+    [
+        'key'      => 'testimonial',
+        'name'     => 'Testimonials',
+        'route'    => '#',
+        'sort'     => 1,
+        'icon'       => 'stroke-project',
+        'children' => [
+            [
+                'key'   => 'testimonial.create',
+                'name'  => 'Add Testimonial',
+                'route' => 'sysadmin.testimonial.create',
+                'sort'       => 1,
+                'icon'       => 'icon-gear',
+            ],
+            [
+                'key'   => 'testimonial.index',
+                'name'  => 'List Testimonials',
+                'route' => 'sysadmin.testimonial.index',
+                'sort'       => 2,
+                'icon'       => 'icon-gear',
+            ],
+        ],
+    ],
 
     [
         'key'        => 'blog',

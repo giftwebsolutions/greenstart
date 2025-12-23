@@ -24,9 +24,9 @@ class EnquiryRepository extends BaseRepository implements EnquiryInterface
         return Enquiry::class;
     }
 
-    public function getStatus()
+    public function getStatuses()
     {
-        return $this->getModel()->statuses;
+        return Enquiry::$statuses;
     }
 
     public function saveOrUpdate($data, $id = 0)
@@ -38,6 +38,20 @@ class EnquiryRepository extends BaseRepository implements EnquiryInterface
             $query = parent::create($data);
         }
         return $query;
+    }
+
+
+    /**
+     * Optional: common filters
+     */
+    public function getByCategory(int $categoryId)
+    {
+        return $this->model->where('category_id', $categoryId)->latest()->get();
+    }
+
+    public function getByProduct(int $productId)
+    {
+        return $this->model->where('product_id', $productId)->latest()->get();
     }
 
     /**

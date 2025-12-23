@@ -72,6 +72,8 @@ class RepositoryServiceProvider extends ServiceProvider
             \Modules\SysAdmin\Interfaces\ProductVariantValueInterface::class,
             \Modules\SysAdmin\Repository\ProductVariantValueRepository::class
         );
+
+        $this->app->bind(\Modules\SysAdmin\Interfaces\EnquiryInterface::class, \Modules\SysAdmin\Repository\EnquiryRepository::class);
     }
 
 
