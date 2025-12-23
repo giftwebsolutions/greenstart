@@ -9978,3 +9978,34 @@ offcanvas-menu > ul > li .menu-expand {
     margin: 0 auto 10px;      /* 🔹 center align */
     border: 4px solid #4ab033;   /* 🔹 optional */
 }
+
+
+
+
+.social-info{
+    /* width: 100%; */
+ 
+}
+
+.social-info .link-follow{
+    display: flex;          
+    gap: 50px;              
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  
+}
+
+.social-info .link-follow li{
+    width: auto;
+}
+
+.social-info .link-follow li a{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+ 
+    white-space: nowrap;    
+}
+
+

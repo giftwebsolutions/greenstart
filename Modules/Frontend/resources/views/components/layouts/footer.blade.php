@@ -1,5 +1,6 @@
 @php
     $settings = Config::get('site-settings');
+    // dd($settings);
     $menus = Config::get('frontend.menus');
 @endphp
 
@@ -61,16 +62,36 @@
                        
                             <h4 class="footer-herading">Follow Us:</h4>
                             <div class="social-info">
-                                <ul class="link-follow">
-                                    <li><a class="facebook ion-social-facebook" title="Facebook"
-                                            href="#"><span>facebook</span></a></li>
-                                    <li><a class="twitter ion-social-twitter" title="Twitter"
-                                            href="#"><span>twitter</span></a></li>
-                                    <li><a class="google ion-social-googleplus-outline" title="Google"
-                                            href="#"><span>google </span></a></li>
-                                    <li><a class="youtube ion-social-youtube" title="Youtube"
-                                            href="#"><span>youtube
-                                            </span></a></li>
+                                <ul class="link-follow">                        
+                                  <li>
+                                      <a class="fa-brands fa-whatsapp"
+                                         title="WhatsApp"
+                                          href="https://wa.me/{{ $settings['whatsapp'] ?? '' }}"
+                                         target="_blank">
+                                          <span>Whatsapp</span>
+                                      </a>
+                                 </li>
+
+
+                                    <li><a class="fa-brands fa-facebook-f" title="Facebook"
+                                              href="{{ $settings['facebook'] ?? '' }}" 
+                                                ><span>Facebook</span>
+                                        </a>
+                                    </li>
+
+                                    <li><a class="fa-brands fa-instagram" title="Facebook"
+                                              href="{{ $settings['instagram'] ?? '' }}" 
+                                                ><span>Instagram</span>
+                                        </a>
+                                    </li>
+
+                                          <li><a class="fa-brands fa-youtube" title="Facebook"
+                                              href="{{ $settings['youtube'] ?? '' }}" 
+                                                ><span>Youtube</span>
+                                        </a>
+                                    </li>
+
+
                                 </ul>
                             </div>
                         </div>

@@ -26,7 +26,7 @@
                              <div class="testimonial-content">
                                  <p>
                                      {{ \Illuminate\Support\Str::limit(strip_tags($testimonial->content), 140) }}
-                                 </p>
+                                 </p> 
                              </div>
 
                              <div class="testimonial-author">

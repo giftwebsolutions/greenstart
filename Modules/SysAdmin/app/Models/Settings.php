@@ -46,7 +46,7 @@ class Settings extends Model implements Transformable
         if (Cache::has(self::$cache_key)) {
             return Cache::get(self::$cache_key);
         } else {
-            $datas = Settings::where('type', 'system')->select(['key', 'value'])->get()->toArray();
+            $datas = Settings::select(['key', 'value'])->get()->toArray();
             $settings = [];
             if (!empty($datas)) {
                 foreach ($datas as $data) {
