@@ -1019,3 +1019,32 @@ $(function() {
 
 
 });
+
+var swiper = new Swiper(".testimonial-swiper", {
+    loop: true,
+    spaceBetween: 25,
+    speed: 800,
+
+    autoplay: {
+        delay: 3000,
+        disableOnInteraction: false,
+    },
+
+    pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+    },
+
+    navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+    },
+
+    breakpoints: {
+        320: { slidesPerView: 1 },      // Mobile
+        640: { slidesPerView: 1 },      // Small Devices
+        768: { slidesPerView: 2 },      // Tablets
+        1024: { slidesPerView: 3 },     // Laptop
+        1400: { slidesPerView: 3 },     // Large Screens
+    }
+});

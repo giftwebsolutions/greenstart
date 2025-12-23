@@ -60,6 +60,8 @@
                         </div>
 
                         {{-- IMAGE --}}
+
+                           
                         <div class="mb-3">
                             <label class="col-form-label">Image</label>
                             <input type="file"
