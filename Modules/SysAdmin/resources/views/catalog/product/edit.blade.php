@@ -263,7 +263,7 @@
                                 @foreach ($attributeSets as $k => $b)
                                     <option value="{{ $k }}"
                                         {{ (int) old('attribute_set_id', $product->attribute_set_id) === (int) $k ? 'selected' : '' }}>
-                                        {{ $v }}
+                                        {{ $b }}
                                     </option>
                                 @endforeach
                             </select>

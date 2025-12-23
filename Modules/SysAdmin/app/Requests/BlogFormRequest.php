@@ -21,10 +21,10 @@ class BlogFormRequest extends FormRequest
     public function rules()
     {
         return match (request()->route()->action['as']) {
-            'sysadmin.blog.category.create',  => $this->store(),
+            'sysadmin.blog.create',  => $this->store(),
             
-            'sysadmin.blog.category.edit' => $this->update(),
-            'sysadmin.blog.category.update' => $this->update(),
+            'sysadmin.blog.edit' => $this->update(),
+            'sysadmin.blog.update' => $this->update(),
             default => $this->store()
         };
     }

@@ -140,8 +140,8 @@ $settings = Config::get('site-settings');
                         </a>
                     </div>
                     <div class="header-logo  mt-7px">
-                        <a href="{{ route('frontend.home') }}"><img class="img-responsive logo"
-                                src="{{ asset('./images/logo/logo.png') }}" /></a>
+                      <a href="{{ route('frontend.home') }}"><img class="img-responsive logo"
+                                    src="{{asset('assets/images/logo/logo.png')}}" alt="{{ env('APP_NAME') }}" /></a>
                     </div>
                 </div>
                 <!-- Header Logo End -->

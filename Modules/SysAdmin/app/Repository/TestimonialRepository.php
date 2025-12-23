@@ -7,6 +7,8 @@ use Prettus\Repository\Criteria\RequestCriteria;
 use Modules\SysAdmin\Models\Testimonial;
 use Modules\SysAdmin\Interfaces\TestimonialInterface;
 use Modules\SysAdmin\Helpers\ImageUploader;
+use Carbon\Carbon;
+use Illuminate\Http\UploadedFile;
 
 class TestimonialRepository extends BaseRepository implements TestimonialInterface
 {
@@ -15,30 +17,46 @@ class TestimonialRepository extends BaseRepository implements TestimonialInterfa
         return Testimonial::class;
     }
 
-    public function saveOrUpdate(array $data, int $id = 0)
+     public function saveOrUpdate($data, $id = 0)
     {
-        if ($id > 0) {
+        $testimonial = null;
+         $createdAt = $this->getModel()->created_at;
+        if ($id !== 0) {
+            // Editing existing product
             $testimonial = $this->find($id);
 
-            if (!empty($data['image'])) {
+            // Handle image upload only if a new file is provided
+            if (isset($data['image']) && $data['image'] instanceof UploadedFile) {
+              
+                // Remove old image (original + thumbnail)
+                if ($testimonial->image && $testimonial->created_at) {
+                    //ImageUploader::remove($testimonial->image, $createdAt);
+                }
+
+                // Upload new one using existing created_at date
                 $data['image'] = ImageUploader::upload(
                     $data['image'],
-                    $testimonial->created_at
+                    $createdAt
                 );
+            } else {
+                // Don't touch the current image if no new file is uploaded
+                unset($data['image']);
+            }
+            //dd($data);
+            $testimonial = parent::update($data, $id);
+        } else {
+            // Creating new product
+
+            if (isset($data['image']) && $data['image'] instanceof UploadedFile) {
+                // For create, pass null date -> ImageUploader will use now()
+                $data['image'] = ImageUploader::upload($data['image'], $createdAt);
             }
 
-            return $this->update($data, $id);
+            $testimonial = parent::create($data);
         }
-
-        if (!empty($data['image'])) {
-            $data['image'] = ImageUploader::upload(
-                $data['image'],
-                now()
-            );
-        }
-
-        return $this->create($data);
+        return $testimonial;
     }
+   
 
     public function boot()
     {

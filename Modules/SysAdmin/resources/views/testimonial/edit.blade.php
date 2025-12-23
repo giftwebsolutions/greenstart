@@ -1,3 +1,4 @@
+
 @extends('sysadmin::layouts.master')
 
 @section('breadcrumb-title')
@@ -61,28 +62,34 @@
                         </div>
 
                         {{-- IMAGE --}}
-                        <div class="mb-3">
-                            <label class="col-form-label">Image</label>
-                            <input type="file"
-                                   name="image"
-                                   class="form-control @error('image') is-invalid @enderror"
-                                   accept="image/*">
-                            @error('image')<span class="invalid-feedback">{{ $message }}</span>@enderror
-                        </div>
 
-                        {{-- IMAGE PREVIEW --}}
-                        <div class="mb-3 text-center">
-                            @if ($testimonial->image)
-                                <img id="imagePreview"
-                                     src="{{ asset('storage/'.$testimonial->image) }}"
-                                     class="img-fluid rounded"
-                                     style="max-height:150px;">
-                            @else
-                                <img id="imagePreview"
-                                     class="img-fluid rounded d-none"
-                                     style="max-height:150px;">
-                            @endif
+                        <div class="card-body p-3">
+                        <div class="mb-3">
+                            
+                            @error('image')
+                            
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                            <input type="file" class="form-control @error('image') is-invalid @enderror"
+                                name="image" id="image" />
                         </div>
+                        <div class="mb-3">
+
+                            @if ($testimonial->image !== null)
+                                <img src="{{ asset(Modules\SysAdmin\Helpers\ImageUploader::getFilePath($testimonial->image, $testimonial->created_at, 'thumbnail')) }}"
+                                    id="imgPreview" class="img-fluid" alt="" />
+                            @else
+                                <img src="" id="imgPreview" class="img-fluid" alt="" />
+                            @endif
+
+                            <div id="remove-image-block" class="my-2 text-center">
+                                <a href="javascript:void(0)" id="remove-image" class="btn btn-danger">Remove</a>
+                            </div>
+                        </div>
+                    </div>
+                    
 
                     </div>
 
@@ -111,24 +118,27 @@
 ) !!}
 
 {{-- IMAGE PREVIEW SCRIPT --}}
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const input = document.querySelector('input[name="image"]');
-        const preview = document.getElementById('imagePreview');
-
-        if (!input || !preview) return;
-
-        input.addEventListener('change', function () {
-            const file = this.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                preview.src = e.target.result;
-                preview.classList.remove('d-none');
-            };
-            reader.readAsDataURL(file);
+ <script type="module">
+   
+      $('#image').change(function (e) {
+           var file = this.files[0];
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = function (event) {
+                    $("#imgPreview")
+                        .attr("src", event.target.result);
+                };
+                reader.readAsDataURL(file);
+                $('#remove-image-block').removeClass('d-none');
+            }
         });
-    });
+
+        $('#remove-image').click(function () {
+            file = '';
+            $('#image').val('');
+            $("#imgPreview").attr("src", '');
+            $('#remove-image-block').addClass('d-none')
+        });
+
 </script>
 @endPushOnce

@@ -313,6 +313,8 @@ class ProductController extends Controller
         //dd($product);
         $attributeSets = $this->attributeRepository->getAttributeSets();
 
+        //dd($attributeSets);
+
         return view('sysadmin::catalog.product.edit', [
             'product'       => $product,
             'statuses'      => $this->productRepository->getStatuses(),

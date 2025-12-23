@@ -142,17 +142,17 @@ Route::prefix('sysadmin')
                 Route::patch('update/{id}', 'update')->name('update');
                 Route::get('destroy/{id}', 'destroy')->name('delete');
 
-                Route::post('catalog/products/load-attributes', 'loadAttributeSetAttributes')
+                Route::post('load-attributes', 'loadAttributeSetAttributes')
                     ->name('load-attributes');
 
-                Route::get('catalog/products/{product}/attributes', 'attributes')
+                Route::get('{product}/attributes', 'attributes')
                     ->name('attributes');
 
-                Route::post('catalog/products/{product}/attributes', 'storeAttributes')
+                Route::post('{product}/attributes', 'storeAttributes')
                     ->name('attributes.store');
 
                 Route::get(
-                    'catalog/productcategory/sub-categories',
+                    'sub-categories',
                     'subCategories'
                 )->name('subcategories');
             });

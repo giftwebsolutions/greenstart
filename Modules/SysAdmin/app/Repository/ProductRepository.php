@@ -30,11 +30,11 @@ class ProductRepository extends BaseRepository implements ProductInterface
         if ($id !== 0) {
             // Editing existing product
             $product = $this->find($id);
-
+            $createdAt = Carbon::createFromTimestamp($product->created_at);
+             // Remove old image (original + thumbnail)
             // Handle thumb upload only if a new file is provided
             if (isset($data['thumb']) && $data['thumb'] instanceof UploadedFile) {
-                $createdAt = Carbon::createFromTimestamp($product->created_at);
-                // Remove old image (original + thumbnail)
+               
                 if ($product->thumb && $product->created_at) {
                     ImageUploader::remove($product->thumb, $createdAt);
                 }
@@ -46,7 +46,10 @@ class ProductRepository extends BaseRepository implements ProductInterface
                 );
             } else {
                 // Don't touch the current thumb if no new file is uploaded
-                unset($data['thumb']);
+                $data['thumb'] = null;
+                if ($product->thumb && $product->created_at) {
+                    ImageUploader::remove($product->thumb, $createdAt);
+                }
             }
             //dd($data);
             $product = parent::update($data, $id);

@@ -37,12 +37,12 @@
                          * - content column: $blog->short_description OR $blog->description
                          */
 
-                        $imageValue = $blog->thumb ?? $blog->image ?? $blog->banner ?? null;
+                        $imageValue = $blog->featured_image ?? null;
 
                         // ImageUploader format similar to your product code:
                         // getFilePath(file, created_at, 'thumbnail')
-                        $img = ImageUploader::getFilePath($imageValue ?? '', $blog->created_at, 'thumbnail');
-                        $img = $img ?: $fallback;
+                        $img = ImageUploader::getFilePath($imageValue, $blog->created_at, 'thumbnail');
+                        //dd($img);
 
                         $date = $blog->published_at ?? $blog->created_at;
                         $day   = \Carbon\Carbon::parse($date)->format('d');
