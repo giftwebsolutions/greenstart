@@ -17,6 +17,9 @@
 
     // Allow old() to override if there was a validation error
     $thumbPath = old('thumb_path', $thumbPath);
+
+    //dd($categories);
+
 @endphp
 
 @extends('sysadmin::layouts.master')
@@ -227,10 +230,10 @@
                         </div>
                         <div class="card-body p-3">
                             <select class="form-select" name="product_category" id="product_category">
-                                <option value="">Select Category</option>
+                                <option value="0">Select Category</option>
+
                                 @foreach ($categories as $k => $v)
-                                    <option value="{{ $k }}"
-                                        {{ (int) old('product_category', $product->product_category) === (int) $k ? 'selected' : '' }}>
+                                    <option value="{{ $k }}" @selected($product->product_category == $k)>
                                         {{ $v }}
                                     </option>
                                 @endforeach
@@ -260,9 +263,9 @@
                         <div class="card-body p-3">
                             <select id="attribute_set_id" name="attribute_set_id" class="form-select select2">
                                 <option value="">Select Attribute Set</option>
-                                @foreach ($attributeSets as $k => $b)
-                                    <option value="{{ $k }}"
-                                        {{ (int) old('attribute_set_id', $product->attribute_set_id) === (int) $k ? 'selected' : '' }}>
+                                @foreach ($attributeSets as $a => $b)
+                                    <option value="{{ $a }}"
+                                        {{ (int) $product->attribute_set_id == (int) $a ? 'selected' : '' }}>
                                         {{ $b }}
                                     </option>
                                 @endforeach
@@ -364,7 +367,6 @@
 
 
             $('#remove-image').click(function() {
-                file = '';
                 $('#thumb-image').val('');
                 $("#imgPreview").attr("src", '');
                 $('#remove-image-block').addClass('d-none')
