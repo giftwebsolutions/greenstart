@@ -150,7 +150,7 @@ class GalleryController extends Controller
     public function removeItem($id)
     {
         $item = $this->galleryItemRepository->findOrFail($id);
-        ImageUploader::remove($item->path, $item->timestamp);
+        ImageUploader::remove($item->timestamp, $item->path);
         $this->galleryItemRepository->delete($id);
         return true;
     }

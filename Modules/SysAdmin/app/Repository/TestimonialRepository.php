@@ -30,7 +30,7 @@ class TestimonialRepository extends BaseRepository implements TestimonialInterfa
               
                 // Remove old image (original + thumbnail)
                 if ($testimonial->image && $testimonial->created_at) {
-                    //ImageUploader::remove($testimonial->image, $createdAt);
+                    ImageUploader::remove($createdAt, $testimonial->image);
                 }
 
                 // Upload new one using existing created_at date

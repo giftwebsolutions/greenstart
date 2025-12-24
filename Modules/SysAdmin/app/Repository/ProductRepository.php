@@ -36,7 +36,7 @@ class ProductRepository extends BaseRepository implements ProductInterface
             if (isset($data['thumb']) && $data['thumb'] instanceof UploadedFile) {
                
                 if ($product->thumb && $product->created_at) {
-                    ImageUploader::remove($product->thumb, $createdAt);
+                    ImageUploader::remove($createdAt, $product->thumb);
                 }
 
                 // Upload new one using existing created_at date
@@ -48,7 +48,7 @@ class ProductRepository extends BaseRepository implements ProductInterface
                 // Don't touch the current thumb if no new file is uploaded
                 $data['thumb'] = null;
                 if ($product->thumb && $product->created_at) {
-                    ImageUploader::remove($product->thumb, $createdAt);
+                    ImageUploader::remove($createdAt, $product->thumb);
                 }
             }
             //dd($data);
