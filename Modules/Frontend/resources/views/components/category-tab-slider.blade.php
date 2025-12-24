@@ -10,8 +10,11 @@
                 {{-- Section title + tabs --}}
                 <div class="section-title">
                     <h2>
-                        <span>{{ $title }}</span> {{ $subTitle }}
+                        <span>{{ $title }}</span> 
                     </h2>
+                    {{-- <h2>
+                        <span>{{ $title }}</span> {{ $subTitle }}
+                    </h2> --}}
 
                     <div class="box-tab">
                         <ul class="tab-heading tabs-categorys nav nav-tabs">

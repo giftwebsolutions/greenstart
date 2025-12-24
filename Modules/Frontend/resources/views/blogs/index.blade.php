@@ -1,6 +1,19 @@
 @section('css')
 @endsection
 
+@php
+    use Modules\SysAdmin\Helpers\ImageUploader;
+    use Illuminate\Support\Str;
+
+    // fallback image if blog image is empty
+    $fallback = asset('assets/images/blog-image/1.jpg');
+
+    // title split (LATEST + BLOGS) like your HTML
+    $titleParts = explode(' ', trim($title ?? ''), 2);
+    $titleFirst = $titleParts[0] ?? 'LATEST';
+    $titleRest  = $titleParts[1] ?? 'BLOGS';
+@endphp
+
 <x-frontend::layouts.master>
     <!-- Breadcrumb Area Start -->
     <div class="breadcrumb-area">
@@ -29,13 +42,28 @@
                         <div class="row">
 
                             @forelse($blogs as $blog)
+                                @php
+                                    // Generate blog image using ImageUploader
+                                    $img = $blog->featured_image
+                                        ? ImageUploader::getFilePath($blog->featured_image, $blog->created_at, 'thumbnail')
+                                        : $fallback;
+
+                                    // Author name
+                                    $authorName = $blog->author->name ?? 'Admin';
+
+                                    // Published date
+                                    $publishedAt = $blog->published_at ?? $blog->created_at;
+
+                                    // Blog excerpt
+                                    $excerpt = Str::limit(strip_tags($blog->description ?? $blog->content ?? ''), 160);
+                                @endphp
+
                                 <div class="col-md-6 mb-res-sm-30px">
                                     <div class="single-blog-post mb-30px blog-grid-post">
                                         <div class="blog-post-media">
                                             <div class="blog-image">
                                                 <a href="{{ route('frontend.blog.show', $blog->slug) }}">
-                                                    <img src="{{ $blog->featured_image ? asset($blog->featured_image) : asset('assets/images/blog-image/1.jpg') }}"
-                                                        alt="{{ $blog->title }}" class="img-responsive" />
+                                                    <img src="{{ $img }}" alt="{{ $blog->title }}" class="img-responsive" />
                                                 </a>
                                             </div>
                                         </div>
@@ -51,20 +79,18 @@
                                                 <li>
                                                     <a href="#">
                                                         <i class="ion-person"></i>
-                                                        {{ $blog->author->name ?? 'Admin' }}
+                                                        {{ $authorName }}
                                                     </a>
                                                 </li>
                                                 <li>
                                                     <a href="#">
                                                         <i class="ion-calendar"></i>
-                                                        {{ optional($blog->published_at)->format('d M, Y') ?? optional($blog->created_at)->format('d M, Y') }}
+                                                        {{ \Carbon\Carbon::parse($publishedAt)->format('d M, Y') }}
                                                     </a>
                                                 </li>
                                             </ul>
 
-                                            <p>
-                                                {{ \Illuminate\Support\Str::limit(strip_tags($blog->description ?? $blog->content), 160) }}
-                                            </p>
+                                            <p>{{ $excerpt }}</p>
 
                                             <a class="read-more-btn" href="{{ route('frontend.blog.show', $blog->slug) }}">
                                                 Read More <i class="ion-android-arrow-dropright-circle"></i>
@@ -87,7 +113,6 @@
                     @if ($blogs instanceof \Illuminate\Pagination\LengthAwarePaginator && $blogs->hasPages())
                         <div class="pro-pagination-style blog-pagination text-center mb-md-30px mb-lm-30px">
                             <div class="pages">
-                                {{-- Keep your theme HTML but output Laravel links --}}
                                 {!! $blogs->links() !!}
                             </div>
                         </div>

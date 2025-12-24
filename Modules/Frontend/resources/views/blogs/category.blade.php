@@ -1,6 +1,13 @@
 @section('css')
 @endsection
 
+@php
+    use Modules\SysAdmin\Helpers\ImageUploader;
+
+    // fallback image if blog image is empty
+    $fallback = asset('assets/images/blog-image/1.jpg');
+@endphp
+
 <x-frontend::layouts.master>
     <!-- Breadcrumb Area Start -->
     <div class="breadcrumb-area">
@@ -29,16 +36,23 @@
                         <div class="row">
 
                             @forelse($blogs as $blog)
+                                @php
+                                    // Use ImageUploader to get the correct path
+                                    $img = $blog->featured_image
+                                        ? ImageUploader::getFilePath($blog->featured_image, $blog->created_at, 'thumbnail')
+                                        : $fallback;
+
+                                    $authorName = $blog->author->name ?? 'Admin';
+                                    $publishedAt = $blog->published_at ?? $blog->created_at;
+                                    $excerpt = \Illuminate\Support\Str::limit(strip_tags($blog->description ?? $blog->content ?? ''), 160);
+                                @endphp
+
                                 <div class="col-md-6 mb-res-sm-30px">
                                     <div class="single-blog-post mb-30px blog-grid-post">
                                         <div class="blog-post-media">
                                             <div class="blog-image">
                                                 <a href="{{ route('frontend.blog.show', $blog->slug) }}">
-                                                    <img
-                                                        src="{{ $blog->featured_image ? asset($blog->featured_image) : asset('assets/images/blog-image/1.jpg') }}"
-                                                        alt="{{ $blog->title }}"
-                                                        class="img-responsive"
-                                                    />
+                                                    <img src="{{ $img }}" alt="{{ $blog->title }}" class="img-responsive" />
                                                 </a>
                                             </div>
                                         </div>
@@ -49,15 +63,13 @@
                                             </h4>
 
                                             <ul class="blog-page-meta">
-                                                <li><a href="#"><i class="ion-person"></i> {{ $blog->author->name ?? 'Admin' }}</a></li>
+                                                <li><a href="#"><i class="ion-person"></i> {{ $authorName }}</a></li>
                                                 <li>
-                                                    <a href="#"><i class="ion-calendar"></i>
-                                                        {{ optional($blog->published_at)->format('d M, Y') ?? optional($blog->created_at)->format('d M, Y') }}
-                                                    </a>
+                                                    <a href="#"><i class="ion-calendar"></i> {{ \Carbon\Carbon::parse($publishedAt)->format('d M, Y') }}</a>
                                                 </li>
                                             </ul>
 
-                                            <p>{{ \Illuminate\Support\Str::limit(strip_tags($blog->description ?? $blog->content), 160) }}</p>
+                                            <p>{{ $excerpt }}</p>
 
                                             <a class="read-more-btn" href="{{ route('frontend.blog.show', $blog->slug) }}">
                                                 Read More <i class="ion-android-arrow-dropright-circle"></i>

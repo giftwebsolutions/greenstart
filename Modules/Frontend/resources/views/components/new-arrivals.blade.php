@@ -2,7 +2,7 @@
     use Modules\SysAdmin\Helpers\ImageUploader;
 @endphp
 
-<div class="arrival-area">
+<div class="arrival-area mtb-60px">
     <div class="container">
 
         <div class="row">

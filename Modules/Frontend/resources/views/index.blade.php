@@ -175,7 +175,7 @@
     <x-frontend::new-arrivals />
     <!-- Arrivel Area End -->
     <!-- Banner Area Start -->
-    <div class="banner-area mtb-60px">
+    {{-- <div class="banner-area mtb-60px">
         <div class="container">
             <div class="row">
                 <div class="col-md-6 mb-lm-30px">
@@ -192,7 +192,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     <!-- Banner Area End -->
 
     <!-- Category Tab Slider Area Start -->
@@ -202,7 +202,7 @@
     <x-frontend::home-blog />
 
     <!-- Brand area start -->
-    <div class="brand-area mb-60px">
+    <div class="brand-area mb-20px">
         <div class="container">
             <div class="brand-slider">
                 <div class="brand-slider-item">

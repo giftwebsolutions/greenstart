@@ -10080,3 +10080,77 @@ offcanvas-menu > ul > li .menu-expand {
         font-size: 14px;
     }
 }
+ .contact-area {
+            padding: 40px 0;
+        }
+
+        .contact-form-style input,
+        .contact-form-style select,
+        .contact-form-style textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            background: #fff;
+        }
+
+        .contact-form-style textarea {
+            height: 140px;
+            resize: none;
+        }
+
+        .contact-form-style .submit {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 6px;
+        }
+
+        .contact-info-wrap {
+            background: #f8f8f8;
+            padding: 25px;
+            border-radius: 8px;
+        }
+
+        /* RESPONSIVE DESIGN */
+
+        /* Tablets */
+        @media (max-width: 991px) {
+            .contact-area .col-lg-4,
+            .contact-area .col-lg-8 {
+                margin-bottom: 25px;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 767px) {
+
+            .contact-form-style input,
+            .contact-form-style select {
+                font-size: 13px;
+                padding: 10px 12px;
+            }
+
+            .contact-form-style textarea {
+                font-size: 13px;
+            }
+
+            .contact-info-wrap h3 {
+                font-size: 20px;
+            }
+
+            .breadcrumb-area {
+                padding: 20px 0;
+            }
+
+            .breadcrumb-content ul.nav li {
+                font-size: 14px;
+            }
+
+            /* Make spacing consistent on mobile */
+            .contact-form .row > div {
+                margin-bottom: 12px !important;
+            }
+        }

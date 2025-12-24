@@ -164,16 +164,7 @@ $settings = Config::get('site-settings');
                 <!-- Header Logo End -->
 
                 <!-- Header Tools Start -->
-                <div class="col-auto">
-                    <div class="header-tools justify-content-end">
-                        <div class="cart-info d-flex align-self-center">
-                            <a title="wishlist" href="#offcanvas-wishlist" class="heart offcanvas-toggle"
-                                data-number="3"><i class="icon-heart"></i></a>
-                            <a title="cart" href="#offcanvas-cart" class="bag offcanvas-toggle" data-number="3"><i
-                                    class="icon-shopping-cart"></i><span>£30.00</span></a>
-                        </div>
-                    </div>
-                </div>
+               
                 <!-- Header Tools End -->
 
             </div>
