@@ -10154,3 +10154,19 @@ offcanvas-menu > ul > li .menu-expand {
                 margin-bottom: 12px !important;
             }
         }
+
+
+        .offcanvas-social{
+          display: flex;
+          justify-content: center;
+        }
+
+      
+.cart-info a[data-number]::after,
+.cart-info a[data-number]::before {
+    content: none !important;
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: none !important;
+}

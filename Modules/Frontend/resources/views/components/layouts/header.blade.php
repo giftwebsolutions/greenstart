@@ -15,12 +15,12 @@ $settings = Config::get('site-settings');
                             <div class="follow d-flex">
                                 <label>Follow Us:</label>
                                 <ul class="link-follow">
-                                    <li><a class="facebook ion-social-facebook" title="Facebook" href="#"></a></li>
-                                    <li><a class="twitter ion-social-twitter" title="Twitter" href="#"></a></li>
-                                    <li><a class="google ion-social-googleplus-outline" title="Google"
-                                            href="#"></a>
-                                    </li>
-                                    <li><a class="youtube ion-social-youtube" title="Youtube" href="#"></a></li>
+                                    <li><a class="fa-brands fa-whatsapp" title="WhatsApp" href="https://wa.me/{{ $settings['whatsapp'] ?? '' }}"  target="_blank"></a></li>
+                                  <li><a class="fa-brands fa-facebook-f" title="Facebook" href="{{ $settings['facebook'] ?? '' }}"> </a></li>
+
+                                     <li><a class="fa-brands fa-instagram" title="Facebook" href="{{ $settings['instagram'] ?? '' }}" ></a></li>
+                               
+                                      <li><a class="fa-brands fa-youtube" title="Facebook"   href="{{ $settings['youtube'] ?? '' }}"> </a></li>
                                 </ul>
                             </div>
                         </div>
@@ -164,7 +164,34 @@ $settings = Config::get('site-settings');
                 <!-- Header Logo End -->
 
                 <!-- Header Tools Start -->
-               
+                <div class="col-auto">
+                    <div class="header-tools justify-content-end">
+                        <div class="cart-info d-flex align-self-center">
+<a title="WhatsApp"
+   href="https://wa.me/{{ $settings['whatsapp'] ?? '' }}"
+   class="heart"
+   data-number="3"
+   target="_blank">
+   <i class="fa-brands fa-whatsapp"></i>
+</a>
+
+<a title="Call Us"
+   href="tel:{{ $settings['mobile-1'] ?? '' }}"
+   class="bag"
+   data-number="8">
+   <i class="fa-solid fa-phone"></i>
+</a>
+
+ 
+
+
+                
+              
+</a>
+
+                </div>
+                    </div>
+                </div>
                 <!-- Header Tools End -->
 
             </div>
@@ -379,11 +406,10 @@ $settings = Config::get('site-settings');
         <!-- Social Icons -->
         <div class="offcanvas-social mt-30px">
             <ul>
-                <li><a href="#"><i class="ion-social-facebook"></i></a></li>
-                <li><a href="#"><i class="ion-social-twitter"></i></a></li>
-                <li><a href="#"><i class="ion-social-google"></i></a></li>
-                <li><a href="#"><i class="ion-social-youtube"></i></a></li>
-                <li><a href="#"><i class="ion-social-instagram"></i></a></li>
+                <li><a class="fa-brands fa-whatsapp" href="https://wa.me/{{ $settings['whatsapp'] ?? '' }}"></a></li>
+                <li><a class="fa-brands fa-facebook-f" href="{{$settings['facebook'] ?? ' ' }}"></a></li>
+                <li><a  class="ion-social-youtube" href="{{$settings['youtube'] ?? ' ' }}"></a></li>
+                <li><a class="ion-social-instagram" href="{{$settings['instagram'] ?? ' ' }}"></a></li>
             </ul>
         </div>
 

@@ -1,3 +1,6 @@
+@php
+    $settings = Config::get('site-settings');
+@endphp
 @section('css')
 @endsection
 <x-frontend::layouts.master>
@@ -29,8 +32,8 @@
                                 <i class="ion-android-call"></i>
                             </div>
                             <div class="contact-info-dec">
-                                <p><a href="tel://+012 345 678 102">+012 345 678 102</a></p>
-                                <p><a href="tel://+012 345 678 102">+012 345 678 102</a></p>
+                               <p><a href="tel:{{ $settings['mobile-1'] ?? '' }}">{{ $settings['mobile-1'] ?? '' }}</a></p>
+                               <p><a href="tel:{{ $settings['mobile-1'] ?? '' }}">{{ $settings['mobile-1'] ?? '' }}</a></p>
                             </div>
                         </div>
                         <div class="single-contact-info">
@@ -38,8 +41,8 @@
                                 <i class="ion-android-globe"></i>
                             </div>
                             <div class="contact-info-dec">
-                                <p><a href="mailto://urname@email.com">urname@email.com</a></p>
-                                <p><a href="mailto://urwebsitenaem.com">urwebsitenaem.com</a></p>
+                              <a href="mailto:{{ $settings['email'] ?? '' }}">{{ $settings['email'] ?? '' }}</a>
+                              <a href="mailto:{{ $settings['username'] ?? '' }}">{{ $settings['username'] ?? '' }}</a>
                             </div>
                         </div>
                         <div class="single-contact-info">
@@ -47,29 +50,26 @@
                                 <i class="ion-android-pin"></i>
                             </div>
                             <div class="contact-info-dec">
-                                <p>Address goes here,</p>
-                                <p>street, Crossroad 123.</p>
+                              <p>{{$settings['address']}}</p>
                             </div>
                         </div>
                         <div class="contact-social">
                             <h3>Follow Us</h3>
                             <div class="social-info">
-                                <ul>
+                            <ul>
                                     <li>
-                                        <a href="#"><i class="ion-social-facebook"></i></a>
+                                        <a class="fa-brands fa-whatsapp" title="WhatsApp" href="https://wa.me/{{ $settings['whatsapp'] ?? '' }}" target="_blank">  </a>
                                     </li>
                                     <li>
-                                        <a href="#"><i class="ion-social-twitter"></i></a>
+                                        <a class="fa-brands fa-facebook-f" title="Facebook" href="{{ $settings['facebook'] ?? '' }}"> </a>
                                     </li>
                                     <li>
-                                        <a href="#"><i class="ion-social-youtube"></i></a>
+                                         <li><a class="fa-brands fa-instagram" title="Facebook" href="{{ $settings['instagram'] ?? '' }}" ></a></li>
                                     </li>
                                     <li>
-                                        <a href="#"><i class="ion-social-google"></i></a>
+                                        <a class="fa-brands fa-youtube" title="Facebook"   href="{{ $settings['youtube'] ?? '' }}"> </a>
                                     </li>
-                                    <li>
-                                        <a href="#"><i class="ion-social-instagram"></i></a>
-                                    </li>
+                                 
                                 </ul>
                             </div>
                         </div>
