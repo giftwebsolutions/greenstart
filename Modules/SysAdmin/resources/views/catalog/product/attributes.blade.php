@@ -59,7 +59,8 @@
                             @foreach ($group->attributes as $attribute)
                                 @php
                                     $existing = $productAttributeValues->get($attribute->id) ?? null;
-                                    $currentValue = old("attributes.{$attribute->id}", $existing->value ?? null);
+                                    $existingValue = $existing->attribute_value_id ?? ($existing->value ?? null);
+                                    $currentValue = old("attributes.{$attribute->id}", $existingValue);
 
                                     $isConfigurableAttr = in_array(
                                         $attribute->id,
@@ -161,61 +162,92 @@
                                                     }
                                                 @endphp
 
-                                                <tr id="variant-template" class="d-none">
+                                                <tr>
                                                     <td>
-                                                        <input type="text" name="__NAME__" class="form-control"
-                                                            value="">
+                                                        <input type="hidden" name="variants[{{ $rowIndex }}][id]"
+                                                            class="form-control"
+                                                            value="{{ old("variants.$rowIndex.id", $variant->id) }}">
+
+                                                        <input type="text" name="variants[{{ $rowIndex }}][name]"
+                                                            class="form-control"
+                                                            value="{{ old("variants.$rowIndex.name", $variant->name) }}">
                                                     </td>
                                                     <td>
-                                                        <input type="text" name="__SKU__" class="form-control"
-                                                            value="">
+                                                        <input type="text" name="variants[{{ $rowIndex }}][sku]"
+                                                            class="form-control"
+                                                            value="{{ old("variants.$rowIndex.sku", $variant->sku) }}">
                                                     </td>
                                                     <td>
-                                                        <input type="text" name="__PRICE__" class="form-control"
-                                                            value="">
+                                                        <input type="text" name="variants[{{ $rowIndex }}][price]"
+                                                            class="form-control"
+                                                            value="{{ old("variants.$rowIndex.price", $variant->price) }}">
                                                     </td>
                                                     <td>
-                                                        <input type="number" name="__STOCK__" class="form-control"
-                                                            value="0">
+                                                        <input type="number" name="variants[{{ $rowIndex }}][stock]"
+                                                            class="form-control"
+                                                            value="{{ old("variants.$rowIndex.stock", $variant->stock) }}">
                                                     </td>
+
+                                                    {{-- ✅ NEW: Variant Image + remove flag --}}
                                                     <td>
-                                                        <input type="file" name="__THUMB__"
+                                                        <input type="file" name="variants[{{ $rowIndex }}][thumb]"
                                                             class="form-control form-control-sm variant-thumb-input"
                                                             accept=".jpg,.jpeg,.png,.gif,.webp">
 
-                                                        <input type="hidden" name="__REMOVE_THUMB__"
+                                                        <input type="hidden"
+                                                            name="variants[{{ $rowIndex }}][remove_thumb]"
                                                             class="variant-remove-flag" value="0">
 
                                                         <div class="d-flex gap-2 align-items-center mt-2">
-                                                            <img src=""
-                                                                class="img-fluid border rounded variant-thumb-preview d-none"
+                                                            <img src="{{ $variantThumbUrl ?? '' }}"
+                                                                class="img-fluid border rounded variant-thumb-preview {{ $variantThumbUrl ? '' : 'd-none' }}"
                                                                 style="width:60px;height:60px;object-fit:cover;"
                                                                 alt="variant">
                                                             <button type="button"
-                                                                class="btn btn-outline-danger btn-sm variant-remove-thumb d-none">
+                                                                class="btn btn-outline-danger btn-sm variant-remove-thumb {{ $variantThumbUrl ? '' : 'd-none' }}">
                                                                 Remove
                                                             </button>
                                                         </div>
 
-                                                        {{-- ✅ keep an element to show current image filename, but empty for template --}}
                                                         <small
-                                                            class="text-muted d-block mt-1 current-thumb-text d-none"></small>
+                                                            class="text-muted d-block mt-1 current-thumb-text {{ !empty($variant->thumb) ? '' : 'd-none' }}">
+                                                            @if (!empty($variant->thumb))
+                                                                Current: {{ $variant->thumb }}
+                                                            @endif
+                                                        </small>
                                                     </td>
+
                                                     <td>
-                                                        <select name="__STATUS__" class="form-select">
-                                                            <option value="1" selected>Active</option>
-                                                            <option value="0">Inactive</option>
+                                                        <select name="variants[{{ $rowIndex }}][status]"
+                                                            class="form-select">
+                                                            <option value="1"
+                                                                {{ old("variants.$rowIndex.status", $variant->status) == 1 ? 'selected' : '' }}>
+                                                                Active</option>
+                                                            <option value="0"
+                                                                {{ old("variants.$rowIndex.status", $variant->status) == 0 ? 'selected' : '' }}>
+                                                                Inactive</option>
                                                         </select>
                                                     </td>
 
                                                     @foreach ($variantAttributes as $attr)
+                                                        @php
+                                                            $selectedVal = optional($valueMap->get($attr->id))
+                                                                ->attribute_value_id;
+                                                            $selectedVal = old(
+                                                                "variants.$rowIndex.attributes.{$attr->id}",
+                                                                $selectedVal,
+                                                            );
+                                                        @endphp
                                                         <td>
-                                                            <select name="__ATTR__{{ $attr->id }}__"
+                                                            <select
+                                                                name="variants[{{ $rowIndex }}][attributes][{{ $attr->id }}]"
                                                                 class="form-select">
                                                                 <option value="">Select {{ $attr->name }}</option>
                                                                 @foreach ($attr->values as $v)
-                                                                    <option value="{{ $v->id }}">
-                                                                        {{ $v->value }}</option>
+                                                                    <option value="{{ $v->id }}"
+                                                                        {{ (string) $selectedVal === (string) $v->id ? 'selected' : '' }}>
+                                                                        {{ $v->value }}
+                                                                    </option>
                                                                 @endforeach
                                                             </select>
                                                         </td>
@@ -223,7 +255,9 @@
 
                                                     <td class="text-center">
                                                         <button type="button"
-                                                            class="btn btn-sm btn-outline-danger remove-variant-row">&times;</button>
+                                                            class="btn btn-sm btn-outline-danger remove-variant-row">
+                                                            &times;
+                                                        </button>
                                                     </td>
                                                 </tr>
                                                 @php $rowIndex++; @endphp
@@ -336,107 +370,129 @@
     </div>
 @endsection
 
-
 @pushOnce('scripts')
-<script>
-(function () {
-    const tableBody = document.querySelector('#variants-table tbody');
-    const addBtn    = document.querySelector('#add-variant-row');
-    const tpl       = document.querySelector('#variant-template');
+    <script>
+        (function() {
+            const tableBody = document.querySelector('#variants-table tbody');
+            const addBtn = document.querySelector('#add-variant-row');
 
-    if (!tableBody || !addBtn || !tpl) return;
+            if (!tableBody || !addBtn) return;
 
-    // Compute next index based on max existing index in names (safer than row count)
-    function getNextIndex() {
-        let max = -1;
-        tableBody.querySelectorAll('input[name^="variants["], select[name^="variants["]').forEach(el => {
-            const m = el.name.match(/^variants\[(\d+)\]/);
-            if (m) max = Math.max(max, parseInt(m[1], 10));
-        });
-        return max + 1;
-    }
+            function replaceVariantIndex(name, newIndex) {
+                return name.replace(/variants\[\d+]/g, 'variants[' + newIndex + ']');
+            }
 
-    addBtn.addEventListener('click', function () {
-        const idx = getNextIndex();
+            // ✅ always compute next index from DOM (safe after delete)
+            function getNextVariantIndex() {
+                let max = -1;
+                tableBody.querySelectorAll('input[name^="variants["], select[name^="variants["]').forEach(el => {
+                    const m = el.name.match(/^variants\[(\d+)\]/);
+                    if (m) max = Math.max(max, parseInt(m[1], 10));
+                });
+                return max + 1;
+            }
 
-        const newRow = tpl.cloneNode(true);
-        newRow.id = '';
-        newRow.classList.remove('d-none');
+            // ✅ preview image when selected
+            tableBody.addEventListener('change', function(e) {
+                const input = e.target.closest('.variant-thumb-input');
+                if (!input) return;
 
-        // Replace placeholder names with proper names
-        newRow.querySelector('input[name="__NAME__"]').name = `variants[${idx}][name]`;
-        newRow.querySelector('input[name="__SKU__"]').name  = `variants[${idx}][sku]`;
-        newRow.querySelector('input[name="__PRICE__"]').name= `variants[${idx}][price]`;
-        newRow.querySelector('input[name="__STOCK__"]').name= `variants[${idx}][stock]`;
-        newRow.querySelector('input[name="__THUMB__"]').name= `variants[${idx}][thumb]`;
-        newRow.querySelector('input[name="__REMOVE_THUMB__"]').name= `variants[${idx}][remove_thumb]`;
-        newRow.querySelector('select[name="__STATUS__"]').name= `variants[${idx}][status]`;
+                const tr = input.closest('tr');
+                const img = tr.querySelector('.variant-thumb-preview');
+                const btn = tr.querySelector('.variant-remove-thumb');
+                const flag = tr.querySelector('.variant-remove-flag');
+                const cur = tr.querySelector('.current-thumb-text');
 
-        // attr selects
-        newRow.querySelectorAll('select[name^="__ATTR__"]').forEach(sel => {
-            const attrId = sel.name.replace('__ATTR__','').replace('__','');
-            sel.name = `variants[${idx}][attributes][${attrId}]`;
-        });
+                if (input.files && input.files[0]) {
+                    img.src = URL.createObjectURL(input.files[0]);
+                    img.classList.remove('d-none');
+                    btn.classList.remove('d-none');
+                    if (flag) flag.value = '0';
+                    if (cur) {
+                        cur.textContent = '';
+                        cur.classList.add('d-none');
+                    }
+                }
+            });
 
-        // Make sure preview/remove/current are clean
-        const img = newRow.querySelector('.variant-thumb-preview');
-        const btn = newRow.querySelector('.variant-remove-thumb');
-        const cur = newRow.querySelector('.current-thumb-text');
-        if (img) { img.src=''; img.classList.add('d-none'); }
-        if (btn) btn.classList.add('d-none');
-        if (cur) { cur.textContent=''; cur.classList.add('d-none'); }
+            // ✅ remove thumb (set remove_thumb=1)
+            tableBody.addEventListener('click', function(e) {
+                const btn = e.target.closest('.variant-remove-thumb');
+                if (!btn) return;
 
-        tableBody.appendChild(newRow);
-    });
+                const tr = btn.closest('tr');
+                const input = tr.querySelector('.variant-thumb-input');
+                const img = tr.querySelector('.variant-thumb-preview');
+                const flag = tr.querySelector('.variant-remove-flag');
+                const cur = tr.querySelector('.current-thumb-text');
 
-    // Remove row
-    tableBody.addEventListener('click', function (e) {
-        const btn = e.target.closest('.remove-variant-row');
-        if (!btn) return;
+                if (input) input.value = '';
+                if (img) {
+                    img.src = '';
+                    img.classList.add('d-none');
+                }
+                if (flag) flag.value = '1';
+                if (cur) {
+                    cur.textContent = '';
+                    cur.classList.add('d-none');
+                }
 
-        const rows = tableBody.querySelectorAll('tr:not(#variant-template)');
-        if (rows.length > 1) btn.closest('tr').remove();
-    });
+                btn.classList.add('d-none');
+            });
 
-    // Image preview
-    tableBody.addEventListener('change', function (e) {
-        const input = e.target.closest('.variant-thumb-input');
-        if (!input) return;
+            // ✅ add row (clean clone)
+            addBtn.addEventListener('click', function() {
+                const lastRow = tableBody.querySelector('tr:last-child');
+                if (!lastRow) return;
 
-        const tr = input.closest('tr');
-        const img = tr.querySelector('.variant-thumb-preview');
-        const btn = tr.querySelector('.variant-remove-thumb');
-        const flag= tr.querySelector('.variant-remove-flag');
-        const cur = tr.querySelector('.current-thumb-text');
+                const newIndex = getNextVariantIndex();
+                const newRow = lastRow.cloneNode(true);
 
-        if (input.files && input.files[0]) {
-            img.src = URL.createObjectURL(input.files[0]);
-            img.classList.remove('d-none');
-            btn.classList.remove('d-none');
-            if (flag) flag.value = '0';
-            if (cur) { cur.textContent=''; cur.classList.add('d-none'); }
-        }
-    });
+                // ✅ remove hidden id so it creates new variant
+                newRow.querySelectorAll('input[name$="[id]"]').forEach(el => el.remove());
 
-    // Remove thumb
-    tableBody.addEventListener('click', function (e) {
-        const btn = e.target.closest('.variant-remove-thumb');
-        if (!btn) return;
+                newRow.querySelectorAll('input, select, textarea').forEach(function(el) {
+                    if (el.name) el.name = replaceVariantIndex(el.name, newIndex);
 
-        const tr = btn.closest('tr');
-        const input = tr.querySelector('.variant-thumb-input');
-        const img = tr.querySelector('.variant-thumb-preview');
-        const flag= tr.querySelector('.variant-remove-flag');
-        const cur = tr.querySelector('.current-thumb-text');
+                    // force remove_thumb = 0
+                    if (el.classList && el.classList.contains('variant-remove-flag')) {
+                        el.value = '0';
+                        return;
+                    }
 
-        if (input) input.value = '';
-        if (img) { img.src=''; img.classList.add('d-none'); }
-        if (flag) flag.value = '1';
-        if (cur) { cur.textContent=''; cur.classList.add('d-none'); }
+                    if (el.tagName === 'INPUT') {
+                        if (el.type === 'file') el.value = '';
+                        else if (el.type === 'number') el.value = 0;
+                        else el.value = '';
+                    }
 
-        btn.classList.add('d-none');
-    });
+                    if (el.tagName === 'SELECT') el.selectedIndex = 0;
+                    if (el.tagName === 'TEXTAREA') el.value = '';
+                });
 
-})();
-</script>
+                // clear preview + current filename
+                newRow.querySelectorAll('.variant-thumb-preview').forEach(img => {
+                    img.src = '';
+                    img.classList.add('d-none');
+                });
+                newRow.querySelectorAll('.variant-remove-thumb').forEach(btn => btn.classList.add('d-none'));
+                newRow.querySelectorAll('.current-thumb-text').forEach(el => {
+                    el.textContent = '';
+                    el.classList.add('d-none');
+                });
+
+                tableBody.appendChild(newRow);
+            });
+
+            // ✅ remove row UI
+            tableBody.addEventListener('click', function(e) {
+                const btn = e.target.closest('.remove-variant-row');
+                if (!btn) return;
+
+                const rows = tableBody.querySelectorAll('tr');
+                if (rows.length > 1) btn.closest('tr').remove();
+            });
+        })
+        ();
+    </script>
 @endPushOnce
