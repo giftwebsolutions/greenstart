@@ -23,26 +23,30 @@ class ProductVariantValue extends Model
     protected $table = 'product_variant_values';
 
     protected $casts = [
-        'product_id' => 'int',
-        'attribute_id'       => 'int',
-        'attribute_value_id' => 'int',
+        'variant_id'          => 'int',
+        'attribute_id'        => 'int',
+        'attribute_value_id'  => 'int',
     ];
 
     protected $fillable = [
-        'product_id',
+        'variant_id',
         'attribute_id',
         'attribute_value_id',
-        'value'
+        'value',
     ];
+
+    public function variant()
+    {
+        return $this->belongsTo(ProductVariant::class, 'variant_id', 'id');
+    }
 
     public function attribute()
     {
-        return $this->belongsTo(Attribute::class, 'attribute_id');
+        return $this->belongsTo(Attribute::class, 'attribute_id', 'id');
     }
 
-
-    public function product()
+    public function attributeValue()
     {
-        return $this->belongsTo(Product::class, 'product_id', 'id');
+        return $this->belongsTo(AttributeValue::class, 'attribute_value_id', 'id');
     }
 }

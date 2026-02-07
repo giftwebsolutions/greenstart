@@ -10,61 +10,81 @@ use Modules\SysAdmin\Models\ProductCategory;
 use Modules\SysAdmin\Helpers\ImageUploader;
 use Illuminate\Http\UploadedFile;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ProductRepository extends BaseRepository implements ProductInterface
 {
-    protected $fillable = [];
-
     public function model()
     {
         return Product::class;
     }
 
     /**
-     * Create or update a product
+     * Create or update a product (base + thumb only)
+     * Gallery handled separately using syncGallery()
      */
     public function saveOrUpdate($data, $id = 0)
     {
-        $product = null;
-
         if ($id !== 0) {
-            // Editing existing product
             $product = $this->find($id);
             $createdAt = Carbon::createFromTimestamp($product->created_at);
-             // Remove old image (original + thumbnail)
-            // Handle thumb upload only if a new file is provided
+
+            // Only update thumb if a new file is uploaded
             if (isset($data['thumb']) && $data['thumb'] instanceof UploadedFile) {
-               
-                if ($product->thumb && $product->created_at) {
+                if ($product->thumb) {
                     ImageUploader::remove($createdAt, $product->thumb);
                 }
 
-                // Upload new one using existing created_at date
-                $data['thumb'] = ImageUploader::upload(
-                    $data['thumb'],
-                    $createdAt
-                );
+                $data['thumb'] = ImageUploader::upload($data['thumb'], $createdAt);
             } else {
-                // Don't touch the current thumb if no new file is uploaded
-                $data['thumb'] = null;
-                if ($product->thumb && $product->created_at) {
-                    ImageUploader::remove($createdAt, $product->thumb);
-                }
-            }
-            //dd($data);
-            $product = parent::update($data, $id);
-        } else {
-            // Creating new product
-
-            if (isset($data['thumb']) && $data['thumb'] instanceof UploadedFile) {
-                // For create, pass null date -> ImageUploader will use now()
-                $data['thumb'] = ImageUploader::upload($data['thumb'], null);
+                // Do not touch existing thumb
+                unset($data['thumb']);
             }
 
-            $product = parent::create($data);
+            return parent::update($data, $id);
         }
 
-        return $product;
+        // Create
+        if (isset($data['thumb']) && $data['thumb'] instanceof UploadedFile) {
+            $data['thumb'] = ImageUploader::upload($data['thumb'], null);
+        } else {
+            unset($data['thumb']);
+        }
+
+        return parent::create($data);
+    }
+
+    /**
+     * Product Gallery Sync
+     * - Uploads new images into product_image table
+     * - Optional: if you want "replace", clear old first
+     */
+    public function syncGallery(Product $product, array $files = [], bool $replace = false): void
+    {
+        if (empty($files)) {
+            return;
+        }
+
+        // If replacing: delete old rows + files (optional file removal if you store created_at)
+        if ($replace) {
+            DB::table('product_image')->where('product_id', $product->id)->delete();
+        }
+
+        $createdAt = Carbon::createFromTimestamp($product->created_at);
+
+        foreach ($files as $file) {
+            if (!($file instanceof UploadedFile)) {
+                continue;
+            }
+
+            $filename = ImageUploader::upload($file, $createdAt);
+
+            DB::table('product_image')->insert([
+                'product_id'  => $product->id,
+                'image'       => $filename,
+                'sort_order'  => 0,
+            ]);
+        }
     }
 
     public function getStatuses(): array
@@ -82,13 +102,7 @@ class ProductRepository extends BaseRepository implements ProductInterface
 
     public function getSubCategories(int $parentId = null): array
     {
-        $query = ProductCategory::query()->orderBy('name');
-
-        if ($parentId) {
-            $query->where('parent_id', $parentId);
-        }
-
-        return []; //$query->pluck('name', 'id')->toArray();
+        return [];
     }
 
     public function boot()

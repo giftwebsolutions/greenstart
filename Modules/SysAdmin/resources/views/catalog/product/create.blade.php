@@ -18,15 +18,20 @@
 
 @section('content')
     <div class="container-fluid">
-        <form id="create-product" class="theme-form" method="POST" enctype="multipart/form-data"
-            action="{{ route('sysadmin.catalog.product.store') }}">
+        <form id="create-product"
+              class="theme-form"
+              method="POST"
+              enctype="multipart/form-data"
+              action="{{ route('sysadmin.catalog.product.store') }}">
             @csrf
+
             <div class="row">
+
                 {{-- Error Handling --}}
                 <div class="col-12">
                     @if ($errors->any())
                         <div class="alert alert-secondary alert-dismissible fade show" role="alert">
-                            <ul>
+                            <ul class="mb-0">
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>
                                 @endforeach
@@ -36,18 +41,16 @@
                     @endif
                 </div>
 
+                {{-- LEFT PANEL --}}
                 <div class="col-md-8">
                     <div class="card">
-
-
                         <div class="card-body p-3">
 
                             {{-- Title --}}
                             <div class="row mb-3">
-                                <label class="col-md-12 col-form-label">Product Title</label>
+                                <label class="col-md-12 col-form-label">Product Title <span class="text-danger">*</span></label>
                                 <div class="col-md-12">
-                                    <input type="text" name="title" class="form-control" value="{{ old('title') }}"
-                                        required>
+                                    <input type="text" name="title" class="form-control" value="{{ old('title') }}" required>
                                 </div>
                             </div>
 
@@ -55,24 +58,23 @@
                             <div class="row mb-3">
                                 <label class="col-md-12 col-form-label">Keywords</label>
                                 <div class="col-md-12">
-                                    <input type="text" name="keywords" class="form-control"
-                                        value="{{ old('keywords') }}">
+                                    <input type="text" name="keywords" class="form-control" value="{{ old('keywords') }}">
                                 </div>
                             </div>
 
-                            {{-- Short Description --}}
-
-                            <div class="form-group mb-3">
-                                <label class="col-md-12 col-form-label">Description</label>
-                                <div class="editor" data-name="description">{!! old('description') !!}</div>
-                                <input type="hidden" name="description" value="{{ old('description') }}">
+                            <div class="row mb-3">
+                                <label class="col-md-12 col-form-label">Short Description</label>
+                                <div class="col-md-12">
+                                    <textarea name="short_description" class="form-control" rows="3">{{ old('short_description') }}</textarea>
+                                </div>
                             </div>
 
-
                             {{-- Description --}}
-                            <div class="form-group mb-3">
+                            <div class="row mb-3">
                                 <label class="col-md-12 col-form-label">Description</label>
-                                <textarea name="description" class="form-control editor" rows="8">{{ old('description') }}</textarea>
+                                <div class="col-md-12">
+                                    <textarea name="description" class="form-control" rows="8">{{ old('description') }}</textarea>
+                                </div>
                             </div>
 
                             {{-- SKU --}}
@@ -80,17 +82,18 @@
                                 <label class="col-md-12 col-form-label">SKU</label>
                                 <div class="col-md-12">
                                     <input type="text" name="sku" class="form-control" value="{{ old('sku') }}">
+                                    <small class="text-muted">For variable products, variant SKUs are mandatory. Parent SKU is optional.</small>
                                 </div>
                             </div>
 
-                            {{-- Product Type --}}
+                            {{-- Product Type (AUTO) --}}
                             <div class="row mb-3">
                                 <label class="col-md-12 col-form-label">Product Type</label>
                                 <div class="col-md-12">
-                                    <select class="form-select" name="type">
-                                        <option value="1">Simple</option>
-                                        <option value="2">Variable</option>
-                                    </select>
+                                    <input type="text" class="form-control" value="Auto (based on Attribute Set)" readonly>
+                                    <small class="text-muted">
+                                        Type will be determined automatically after selecting Attribute Set (Configurable attributes → Variants).
+                                    </small>
                                 </div>
                             </div>
 
@@ -114,7 +117,18 @@
                             <div class="row mb-3">
                                 <label class="col-md-12 col-form-label">Thumbnail Image</label>
                                 <div class="col-md-12">
-                                    <input type="file" name="thumb" class="form-control">
+                                    <input type="file" name="thumb" class="form-control" accept=".jpg,.jpeg,.png,.gif,.webp">
+                                    <small class="text-muted">Used as base image fallback. Variants can have their own image later.</small>
+                                </div>
+                            </div>
+
+                            {{-- Gallery Images (NEW) --}}
+                            <div class="row mb-3">
+                                <label class="col-md-12 col-form-label">Product Gallery Images</label>
+                                <div class="col-md-12">
+                                    <input type="file" name="gallery_images[]" class="form-control" multiple
+                                           accept=".jpg,.jpeg,.png,.gif,.webp">
+                                    <small class="text-muted">Upload multiple images (optional). Used after variant image in priority.</small>
                                 </div>
                             </div>
 
@@ -124,43 +138,43 @@
                             <a href="{{ route('sysadmin.catalog.product.index') }}" class="btn btn-secondary">Cancel</a>
                             <button type="submit" class="btn btn-primary mx-2">Submit</button>
                         </div>
-
-
                     </div>
                 </div>
 
-                {{-- Right Panel --}}
+                {{-- RIGHT PANEL --}}
                 <div class="col-md-4">
 
+                    {{-- MRP --}}
                     <div class="card">
                         <div class="card-header p-3">
-                            <label class="col-md-12 col-form-label">MRP Price</label>
+                            <label class="col-md-12 col-form-label">MRP Price <span class="text-danger">*</span></label>
                         </div>
                         <div class="card-body p-3">
-                            <input type="number" name="mrp" class="form-control" value="{{ old('mrp') }}" required>
+                            <input type="number" name="mrp" class="form-control" value="{{ old('mrp') }}" required step="0.01" min="0">
                         </div>
                     </div>
 
-                    <div class="card">
+                    {{-- Sales Price --}}
+                    <div class="card mt-3">
                         <div class="card-header p-3">
-                            <label class="col-md-12 col-form-label">Sales Price</label>
+                            <label class="col-md-12 col-form-label">Sales Price <span class="text-danger">*</span></label>
                         </div>
                         <div class="card-body p-3">
-                            <input type="number" name="sales_price" class="form-control"
-                                value="{{ old('sales_price') }}" required>
+                            <input type="number" name="sales_price" class="form-control" value="{{ old('sales_price') }}" required step="0.01" min="0">
                         </div>
                     </div>
 
                     {{-- Status --}}
-                    <div class="card">
+                    <div class="card mt-3">
                         <div class="card-header p-3">
                             <label class="col-md-12 col-form-label">Status</label>
                         </div>
                         <div class="card-body p-3">
                             <select class="form-select" name="status">
                                 @foreach ($statuses as $key => $value)
-                                    <option value="{{ $key }}" {{ $key == 1 ? 'selected' : '' }}>
-                                        {{ $value }}</option>
+                                    <option value="{{ $key }}" {{ (string)old('status', 1) === (string)$key ? 'selected' : '' }}>
+                                        {{ $value }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -175,7 +189,7 @@
                             <select class="form-select" name="product_category" id="product_category">
                                 <option value="">Select Category</option>
                                 @foreach ($categories as $k => $v)
-                                    <option value="{{ $k }}" @selected(old('product_category', $product->product_category ?? '') == $k)>
+                                    <option value="{{ $k }}" @selected(old('product_category') == $k)>
                                         {{ $v }}
                                     </option>
                                 @endforeach
@@ -189,8 +203,10 @@
                             <label class="col-md-12 col-form-label">Sub Category</label>
                         </div>
                         <div class="card-body p-3">
-                            <select class="form-select" name="sub_product_category" id="sub_product_category"
-                                data-selected="{{ old('sub_product_category', $product->sub_product_category ?? '') }}">
+                            <select class="form-select"
+                                    name="sub_product_category"
+                                    id="sub_product_category"
+                                    data-selected="{{ old('sub_product_category') }}">
                                 <option value="">Select Sub Category</option>
                             </select>
                         </div>
@@ -205,17 +221,18 @@
                             <select id="attribute_set_id" name="attribute_set_id" class="form-select select2">
                                 <option value="">Select Attribute Set</option>
                                 @foreach ($attributeSets as $id => $name)
-                                    <option value="{{ $id }}"
-                                        {{ old('attribute_set_id') == $id ? 'selected' : '' }}>
+                                    <option value="{{ $id }}" {{ (string)old('attribute_set_id') === (string)$id ? 'selected' : '' }}>
                                         {{ $name }}
                                     </option>
                                 @endforeach
                             </select>
+
                             <small class="text-muted d-block mt-1">
-                                After saving, you can fill attribute values in the next step.
+                                After saving, you can fill attribute values & variants in the next step.
                             </small>
                         </div>
                     </div>
+
                 </div>
             </div>
         </form>
@@ -224,11 +241,17 @@
 
 @pushOnce('scripts')
     {!! JsValidator::formRequest('Modules\SysAdmin\Requests\ProductFormRequest', '#create-product') !!}
+
+    {{-- If your template already loads select2 + jQuery globally, keep only below --}}
     <script type="module">
-        // ─────────────────────────────────────────────
-        //  Load Sub Categories When Main Category Changes
-        // ─────────────────────────────────────────────
         $(function() {
+            // Select2
+            if ($.fn.select2) {
+                $('.select2').select2({
+                    width: '100%'
+                });
+            }
+
             const $categorySelect = $('#product_category');
             const $subCategorySelect = $('#sub_product_category');
             const subCategoryUrl = "{{ route('sysadmin.catalog.product.subcategories') }}";
@@ -246,46 +269,40 @@
                 $.ajax({
                     url: subCategoryUrl,
                     type: 'GET',
-                    data: {
-                        parent_id: parentId
-                    },
+                    data: { parent_id: parentId },
                     dataType: 'json',
                     success: function(response) {
                         clearSubCategories();
 
-                        if (!response.success || $.isEmptyObject(response.data)) {
+                        if (!response || !response.success || $.isEmptyObject(response.data)) {
                             return;
                         }
 
                         $.each(response.data, function(id, name) {
-                            const $opt = $('<option>', {
-                                value: id,
-                                text: name
-                            });
-
+                            const $opt = $('<option>', { value: id, text: name });
                             if (preselectedId && String(preselectedId) === String(id)) {
                                 $opt.prop('selected', true);
                             }
-
                             $subCategorySelect.append($opt);
                         });
                     },
                     error: function(err) {
                         console.error('Error loading sub categories:', err);
+                        clearSubCategories();
                     }
                 });
             }
 
-            // Change (and optionally blur) handler
-            $categorySelect.on('change blur', function() {
+            // Load on change
+            $categorySelect.on('change', function() {
                 const parentId = $(this).val();
                 clearSubCategories();
                 loadSubCategories(parentId);
             });
 
-            // 🔥 Initial load after refresh / validation error / edit
-            const initialParentId = $categorySelect.val(); // old()/edit
-            const preselectedSubId = $subCategorySelect.data('selected') || null; // old()/edit
+            // Initial load (when validation fails / old input exists)
+            const initialParentId = $categorySelect.val();
+            const preselectedSubId = $subCategorySelect.data('selected') || null;
 
             if (initialParentId) {
                 loadSubCategories(initialParentId, preselectedSubId);

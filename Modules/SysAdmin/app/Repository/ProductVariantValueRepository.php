@@ -19,21 +19,26 @@ class ProductVariantValueRepository extends BaseRepository implements ProductVar
     public function saveOrUpdate(array $data, ?int $id = null)
     {
         if ($id) {
-            $value = ProductVariantValue::findOrFail($id);
-            $value->update($data);
+            $value = $this->model->newQuery()->findOrFail($id);
+            $value->fill($data);
+            $value->save();
+
             return $value;
         }
 
-        return ProductVariantValue::create($data);
-    }
-
-    public function boot()
-    {
-        $this->pushCriteria(app(RequestCriteria::class));
+        return $this->model->newQuery()->create($data);
     }
 
     public function getByVariantId(int $variantId)
     {
-        return $this->model->where('product_id', $variantId)->get();
+        return $this->model
+            ->where('variant_id', $variantId)
+            ->get();
+    }
+
+
+    public function boot()
+    {
+        $this->pushCriteria(app(RequestCriteria::class));
     }
 }
