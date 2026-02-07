@@ -14,7 +14,10 @@
 
 @section('content')
     <div class="container-fluid">
-        <form method="POST" action="{{ route('sysadmin.catalog.product.attributes.store', $product->id) }}">
+
+        {{-- ✅ enctype required for variant image upload --}}
+        <form method="POST" enctype="multipart/form-data"
+            action="{{ route('sysadmin.catalog.product.attributes.store', $product->id) }}">
             @csrf
 
             <div class="row">
@@ -55,31 +58,26 @@
                         <div class="card-body p-3">
                             @foreach ($group->attributes as $attribute)
                                 @php
-                                    $existing      = $productAttributeValues->get($attribute->id) ?? null;
-                                    $currentValue  = old("attributes.{$attribute->id}", $existing->value ?? null);
+                                    $existing = $productAttributeValues->get($attribute->id) ?? null;
+                                    $currentValue = old("attributes.{$attribute->id}", $existing->value ?? null);
 
-                                    // already selected as configurable for this product?
                                     $isConfigurableAttr = in_array(
                                         $attribute->id,
                                         old('configurable_attributes', $existingConfigurable),
                                     );
 
-                                    // Attribute can be used for variants ONLY if:
-                                    // DB column configurable = 1 AND type = 3 (dropdown)
-                                    $canBeVariant = (int) $attribute->configurable === 1 && (int) $attribute->type === 3;
+                                    $canBeVariant =
+                                        (int) $attribute->configurable === 1 && (int) $attribute->type === 3;
                                 @endphp
 
                                 <div class="border rounded p-3 mb-3">
                                     <div class="row">
-                                        {{-- Label --}}
                                         <label class="col-md-12 col-form-label mb-2">
                                             {{ $attribute->name }}
                                         </label>
 
-                                        {{-- VALUE INPUT --}}
                                         <div class="col-md-12 mb-2">
                                             @if ($attribute->type == 3 && $attribute->values->count())
-                                                {{-- type 3 = DROPDOWN --}}
                                                 <select name="attributes[{{ $attribute->id }}]" class="form-select">
                                                     <option value="">Select {{ $attribute->name }}</option>
                                                     @foreach ($attribute->values as $v)
@@ -90,29 +88,20 @@
                                                     @endforeach
                                                 </select>
                                             @else
-                                                {{-- type 2 (or others) = TEXT --}}
-                                                <input
-                                                    type="text"
-                                                    name="attributes[{{ $attribute->id }}]"
-                                                    class="form-control"
-                                                    value="{{ $currentValue }}"
-                                                >
+                                                <input type="text" name="attributes[{{ $attribute->id }}]"
+                                                    class="form-control" value="{{ $currentValue }}">
                                             @endif
                                         </div>
 
-                                        {{-- VARIANT CHECKBOX – only for configurable dropdown attributes --}}
                                         @if ($canBeVariant)
                                             <div class="col-md-12">
                                                 <div class="form-check">
-                                                    <input
-                                                        class="form-check-input"
-                                                        type="checkbox"
-                                                        name="configurable_attributes[]"
-                                                        value="{{ $attribute->id }}"
+                                                    <input class="form-check-input" type="checkbox"
+                                                        name="configurable_attributes[]" value="{{ $attribute->id }}"
                                                         id="configurable_{{ $attribute->id }}"
-                                                        {{ $isConfigurableAttr ? 'checked' : '' }}
-                                                    >
-                                                    <label class="form-check-label" for="configurable_{{ $attribute->id }}">
+                                                        {{ $isConfigurableAttr ? 'checked' : '' }}>
+                                                    <label class="form-check-label"
+                                                        for="configurable_{{ $attribute->id }}">
                                                         Use this attribute for variants (configurable)
                                                     </label>
                                                 </div>
@@ -124,7 +113,7 @@
                         </div>
                     </div>
 
-                    {{-- VARIANTS CARD (same page) --}}
+                    {{-- VARIANTS CARD --}}
                     @if ((int) $product->type === 2 && isset($variantAttributes) && $variantAttributes->count())
                         <div class="card mt-4">
                             <div class="card-header p-3">
@@ -143,6 +132,10 @@
                                                 <th>SKU</th>
                                                 <th>Price</th>
                                                 <th>Stock</th>
+
+                                                {{-- ✅ NEW --}}
+                                                <th style="min-width:220px;">Image</th>
+
                                                 <th>Status</th>
                                                 @foreach ($variantAttributes as $attr)
                                                     <th>{{ $attr->name }}</th>
@@ -155,81 +148,117 @@
 
                                             @forelse ($existingVariants as $variant)
                                                 @php
-                                                    // Map variant values by attribute_id
                                                     $valueMap = $variant->values->keyBy('attribute_id');
+
+                                                    // existing thumb preview url
+                                                    $variantThumbUrl = null;
+                                                    if (!empty($variant->thumb)) {
+                                                        $variantThumbUrl = \Modules\SysAdmin\Helpers\ImageUploader::getFilePath(
+                                                            $variant->thumb,
+                                                            $product->created_at,
+                                                            'thumbnail',
+                                                        );
+                                                    }
                                                 @endphp
-                                                <tr>
+
+                                                <tr id="variant-template" class="d-none">
                                                     <td>
-                                                        <input type="text"
-                                                               name="variants[{{ $rowIndex }}][name]"
-                                                               class="form-control"
-                                                               value="{{ old("variants.$rowIndex.name", $variant->name) }}">
+                                                        <input type="text" name="__NAME__" class="form-control"
+                                                            value="">
                                                     </td>
                                                     <td>
-                                                        <input type="text"
-                                                               name="variants[{{ $rowIndex }}][sku]"
-                                                               class="form-control"
-                                                               value="{{ old("variants.$rowIndex.sku", $variant->sku) }}">
+                                                        <input type="text" name="__SKU__" class="form-control"
+                                                            value="">
                                                     </td>
                                                     <td>
-                                                        <input type="text"
-                                                               name="variants[{{ $rowIndex }}][price]"
-                                                               class="form-control"
-                                                               value="{{ old("variants.$rowIndex.price", $variant->price) }}">
+                                                        <input type="text" name="__PRICE__" class="form-control"
+                                                            value="">
                                                     </td>
                                                     <td>
-                                                        <input type="number"
-                                                               name="variants[{{ $rowIndex }}][stock]"
-                                                               class="form-control"
-                                                               value="{{ old("variants.$rowIndex.stock", $variant->stock) }}">
+                                                        <input type="number" name="__STOCK__" class="form-control"
+                                                            value="0">
                                                     </td>
                                                     <td>
-                                                        <select name="variants[{{ $rowIndex }}][status]" class="form-select">
-                                                            <option value="1" {{ old("variants.$rowIndex.status", $variant->status) == 1 ? 'selected' : '' }}>Active</option>
-                                                            <option value="0" {{ old("variants.$rowIndex.status", $variant->status) == 0 ? 'selected' : '' }}>Inactive</option>
+                                                        <input type="file" name="__THUMB__"
+                                                            class="form-control form-control-sm variant-thumb-input"
+                                                            accept=".jpg,.jpeg,.png,.gif,.webp">
+
+                                                        <input type="hidden" name="__REMOVE_THUMB__"
+                                                            class="variant-remove-flag" value="0">
+
+                                                        <div class="d-flex gap-2 align-items-center mt-2">
+                                                            <img src=""
+                                                                class="img-fluid border rounded variant-thumb-preview d-none"
+                                                                style="width:60px;height:60px;object-fit:cover;"
+                                                                alt="variant">
+                                                            <button type="button"
+                                                                class="btn btn-outline-danger btn-sm variant-remove-thumb d-none">
+                                                                Remove
+                                                            </button>
+                                                        </div>
+
+                                                        {{-- ✅ keep an element to show current image filename, but empty for template --}}
+                                                        <small
+                                                            class="text-muted d-block mt-1 current-thumb-text d-none"></small>
+                                                    </td>
+                                                    <td>
+                                                        <select name="__STATUS__" class="form-select">
+                                                            <option value="1" selected>Active</option>
+                                                            <option value="0">Inactive</option>
                                                         </select>
                                                     </td>
 
                                                     @foreach ($variantAttributes as $attr)
-                                                        @php
-                                                            $selectedVal = optional($valueMap->get($attr->id))->attribute_value_id;
-                                                            $selectedVal = old("variants.$rowIndex.attributes.{$attr->id}", $selectedVal);
-                                                        @endphp
                                                         <td>
-                                                            <select name="variants[{{ $rowIndex }}][attributes][{{ $attr->id }}]" class="form-select">
+                                                            <select name="__ATTR__{{ $attr->id }}__"
+                                                                class="form-select">
                                                                 <option value="">Select {{ $attr->name }}</option>
                                                                 @foreach ($attr->values as $v)
-                                                                    <option value="{{ $v->id }}"
-                                                                        {{ (string) $selectedVal === (string) $v->id ? 'selected' : '' }}>
-                                                                        {{ $v->value }}
-                                                                    </option>
+                                                                    <option value="{{ $v->id }}">
+                                                                        {{ $v->value }}</option>
                                                                 @endforeach
                                                             </select>
                                                         </td>
                                                     @endforeach
 
                                                     <td class="text-center">
-                                                        <button type="button" class="btn btn-sm btn-outline-danger remove-variant-row">
-                                                            &times;
-                                                        </button>
+                                                        <button type="button"
+                                                            class="btn btn-sm btn-outline-danger remove-variant-row">&times;</button>
                                                     </td>
                                                 </tr>
                                                 @php $rowIndex++; @endphp
                                             @empty
-                                                {{-- one empty row by default --}}
+                                                {{-- one empty row --}}
                                                 <tr>
+                                                    <td><input type="text" name="variants[0][name]"
+                                                            class="form-control"></td>
+                                                    <td><input type="text" name="variants[0][sku]"
+                                                            class="form-control"></td>
+                                                    <td><input type="text" name="variants[0][price]"
+                                                            class="form-control"></td>
+                                                    <td><input type="number" name="variants[0][stock]"
+                                                            class="form-control" value="0"></td>
+
+                                                    {{-- ✅ NEW --}}
                                                     <td>
-                                                        <input type="text" name="variants[0][name]" class="form-control">
+                                                        <input type="file" name="variants[0][thumb]"
+                                                            class="form-control form-control-sm variant-thumb-input"
+                                                            accept=".jpg,.jpeg,.png,.gif,.webp">
+                                                        <input type="hidden" name="variants[0][remove_thumb]"
+                                                            class="variant-remove-flag" value="0">
+
+                                                        <div class="d-flex gap-2 align-items-center mt-2">
+                                                            <img src=""
+                                                                class="img-fluid border rounded variant-thumb-preview d-none"
+                                                                style="width:60px;height:60px;object-fit:cover;"
+                                                                alt="variant">
+                                                            <button type="button"
+                                                                class="btn btn-outline-danger btn-sm variant-remove-thumb d-none">
+                                                                Remove
+                                                            </button>
+                                                        </div>
                                                     </td>
-                                                    <td>
-                                                        <input type="text" name="variants[0][sku]" class="form-control">
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" name="variants[0][price]" class="form-control">
-                                                    </td>
-                                                    <td>
-                                                        <input type="number" name="variants[0][stock]" class="form-control" value="0">
-                                                    </td>
+
                                                     <td>
                                                         <select name="variants[0][status]" class="form-select">
                                                             <option value="1" selected>Active</option>
@@ -239,17 +268,20 @@
 
                                                     @foreach ($variantAttributes as $attr)
                                                         <td>
-                                                            <select name="variants[0][attributes][{{ $attr->id }}]" class="form-select">
+                                                            <select name="variants[0][attributes][{{ $attr->id }}]"
+                                                                class="form-select">
                                                                 <option value="">Select {{ $attr->name }}</option>
                                                                 @foreach ($attr->values as $v)
-                                                                    <option value="{{ $v->id }}">{{ $v->value }}</option>
+                                                                    <option value="{{ $v->id }}">
+                                                                        {{ $v->value }}</option>
                                                                 @endforeach
                                                             </select>
                                                         </td>
                                                     @endforeach
 
                                                     <td class="text-center">
-                                                        <button type="button" class="btn btn-sm btn-outline-danger remove-variant-row">
+                                                        <button type="button"
+                                                            class="btn btn-sm btn-outline-danger remove-variant-row">
                                                             &times;
                                                         </button>
                                                     </td>
@@ -266,13 +298,15 @@
                         </div>
                     @endif
 
-                    {{-- GLOBAL FORM FOOTER --}}
+                    {{-- Footer --}}
                     <div class="mt-3 text-end">
                         <a href="{{ route('sysadmin.catalog.product.index') }}" class="btn btn-secondary">
                             Cancel
                         </a>
                         <button type="submit" class="btn btn-primary mx-2">
-                            Save Attributes @if((int)$product->type === 2) & Variants @endif
+                            Save Attributes @if ((int) $product->type === 2)
+                                & Variants
+                            @endif
                         </button>
                     </div>
                 </div>
@@ -302,58 +336,107 @@
     </div>
 @endsection
 
+
 @pushOnce('scripts')
-    <script>
-        (function () {
-            const tableBody = document.querySelector('#variants-table tbody');
-            const addBtn    = document.querySelector('#add-variant-row');
+<script>
+(function () {
+    const tableBody = document.querySelector('#variants-table tbody');
+    const addBtn    = document.querySelector('#add-variant-row');
+    const tpl       = document.querySelector('#variant-template');
 
-            if (!tableBody || !addBtn) {
-                return;
-            }
+    if (!tableBody || !addBtn || !tpl) return;
 
-            // start index = last existing row index + 1
-            let variantIndex = tableBody.querySelectorAll('tr').length;
-            if (variantIndex === 0) variantIndex = 1; // safety
+    // Compute next index based on max existing index in names (safer than row count)
+    function getNextIndex() {
+        let max = -1;
+        tableBody.querySelectorAll('input[name^="variants["], select[name^="variants["]').forEach(el => {
+            const m = el.name.match(/^variants\[(\d+)\]/);
+            if (m) max = Math.max(max, parseInt(m[1], 10));
+        });
+        return max + 1;
+    }
 
-            // Add new variant row
-            addBtn.addEventListener('click', function () {
-                const lastRow = tableBody.querySelector('tr:last-child');
-                if (!lastRow) return;
+    addBtn.addEventListener('click', function () {
+        const idx = getNextIndex();
 
-                const newRow = lastRow.cloneNode(true);
+        const newRow = tpl.cloneNode(true);
+        newRow.id = '';
+        newRow.classList.remove('d-none');
 
-                newRow.querySelectorAll('input, select').forEach(function (el) {
-                    if (el.name) {
-                        el.name = el.name.replace(/\[\d+]/, '[' + variantIndex + ']');
-                    }
+        // Replace placeholder names with proper names
+        newRow.querySelector('input[name="__NAME__"]').name = `variants[${idx}][name]`;
+        newRow.querySelector('input[name="__SKU__"]').name  = `variants[${idx}][sku]`;
+        newRow.querySelector('input[name="__PRICE__"]').name= `variants[${idx}][price]`;
+        newRow.querySelector('input[name="__STOCK__"]').name= `variants[${idx}][stock]`;
+        newRow.querySelector('input[name="__THUMB__"]').name= `variants[${idx}][thumb]`;
+        newRow.querySelector('input[name="__REMOVE_THUMB__"]').name= `variants[${idx}][remove_thumb]`;
+        newRow.querySelector('select[name="__STATUS__"]').name= `variants[${idx}][status]`;
 
-                    if (el.tagName === 'INPUT') {
-                        if (el.type === 'number') {
-                            el.value = 0;
-                        } else {
-                            el.value = '';
-                        }
-                    }
+        // attr selects
+        newRow.querySelectorAll('select[name^="__ATTR__"]').forEach(sel => {
+            const attrId = sel.name.replace('__ATTR__','').replace('__','');
+            sel.name = `variants[${idx}][attributes][${attrId}]`;
+        });
 
-                    if (el.tagName === 'SELECT') {
-                        el.selectedIndex = 0;
-                    }
-                });
+        // Make sure preview/remove/current are clean
+        const img = newRow.querySelector('.variant-thumb-preview');
+        const btn = newRow.querySelector('.variant-remove-thumb');
+        const cur = newRow.querySelector('.current-thumb-text');
+        if (img) { img.src=''; img.classList.add('d-none'); }
+        if (btn) btn.classList.add('d-none');
+        if (cur) { cur.textContent=''; cur.classList.add('d-none'); }
 
-                tableBody.appendChild(newRow);
-                variantIndex++;
-            });
+        tableBody.appendChild(newRow);
+    });
 
-            // Remove variant row
-            tableBody.addEventListener('click', function (e) {
-                if (e.target.classList.contains('remove-variant-row')) {
-                    const rows = tableBody.querySelectorAll('tr');
-                    if (rows.length > 1) {
-                        e.target.closest('tr').remove();
-                    }
-                }
-            });
-        })();
-    </script>
+    // Remove row
+    tableBody.addEventListener('click', function (e) {
+        const btn = e.target.closest('.remove-variant-row');
+        if (!btn) return;
+
+        const rows = tableBody.querySelectorAll('tr:not(#variant-template)');
+        if (rows.length > 1) btn.closest('tr').remove();
+    });
+
+    // Image preview
+    tableBody.addEventListener('change', function (e) {
+        const input = e.target.closest('.variant-thumb-input');
+        if (!input) return;
+
+        const tr = input.closest('tr');
+        const img = tr.querySelector('.variant-thumb-preview');
+        const btn = tr.querySelector('.variant-remove-thumb');
+        const flag= tr.querySelector('.variant-remove-flag');
+        const cur = tr.querySelector('.current-thumb-text');
+
+        if (input.files && input.files[0]) {
+            img.src = URL.createObjectURL(input.files[0]);
+            img.classList.remove('d-none');
+            btn.classList.remove('d-none');
+            if (flag) flag.value = '0';
+            if (cur) { cur.textContent=''; cur.classList.add('d-none'); }
+        }
+    });
+
+    // Remove thumb
+    tableBody.addEventListener('click', function (e) {
+        const btn = e.target.closest('.variant-remove-thumb');
+        if (!btn) return;
+
+        const tr = btn.closest('tr');
+        const input = tr.querySelector('.variant-thumb-input');
+        const img = tr.querySelector('.variant-thumb-preview');
+        const flag= tr.querySelector('.variant-remove-flag');
+        const cur = tr.querySelector('.current-thumb-text');
+
+        if (input) input.value = '';
+        if (img) { img.src=''; img.classList.add('d-none'); }
+        if (flag) flag.value = '1';
+        if (cur) { cur.textContent=''; cur.classList.add('d-none'); }
+
+        btn.classList.add('d-none');
+    });
+
+})();
+</script>
 @endPushOnce

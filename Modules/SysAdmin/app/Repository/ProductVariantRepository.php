@@ -19,12 +19,14 @@ class ProductVariantRepository extends BaseRepository implements ProductVariantI
     public function saveOrUpdate(array $data, ?int $id = null)
     {
         if ($id) {
-            $variant = ProductVariant::findOrFail($id);
-            $variant->update($data);
+            $variant = $this->model->newQuery()->findOrFail($id);
+            $variant->fill($data);
+            $variant->save();
+
             return $variant;
         }
 
-        return ProductVariant::create($data);
+        return $this->model->newQuery()->create($data);
     }
 
     public function boot()
@@ -34,6 +36,16 @@ class ProductVariantRepository extends BaseRepository implements ProductVariantI
 
     public function getByProductId(int $productId)
     {
-        return $this->model->where('product_id', $productId)->get();
+        return $this->model->newQuery()
+            ->where('product_id', $productId)
+            ->get();
+    }
+
+    /**
+     * Fetch a single variant by its primary key (id).
+     */
+    public function findById(int $id): ProductVariant
+    {
+        return $this->model->newQuery()->findOrFail($id);
     }
 }

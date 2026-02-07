@@ -6,28 +6,28 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\ValidationException;
-
+use Illuminate\Support\Facades\DB;
 use Modules\SysAdmin\Interfaces\ProductInterface;
 use Modules\SysAdmin\Interfaces\ProductVariantInterface;
 use Modules\SysAdmin\Interfaces\ProductConfigurableAttributeInterface;
 use Modules\SysAdmin\Requests\ProductFormRequest;
 use Modules\SysAdmin\Models\Product;
 use Modules\SysAdmin\Models\AttributeGroup;
-use Modules\SysAdmin\Models\ProductVariant;
-use Modules\SysAdmin\Models\ProductVariantValue;
 use Modules\SysAdmin\DataTables\ProductDataTable;
-use Modules\SysAdmin\Interfaces\ProductVariantValueInterface;
+use Modules\SysAdmin\Interfaces\ProductAttributeValueInterface;
 use Modules\SysAdmin\Repository\AttributeRepository;
 use Modules\SysAdmin\Repository\ProductCategoryRepository;
+use Modules\SysAdmin\Models\ProductImage;
+
 class ProductController extends Controller
 {
     public function __construct(
         protected ProductInterface $productRepository,
         protected ProductVariantInterface $variantRepository,
         protected ProductConfigurableAttributeInterface $configAttrRepository,
-        protected ProductVariantValueInterface    $productAttributeValueRepository,
+        protected ProductAttributeValueInterface    $productAttributeValueRepository,
         protected AttributeRepository $attributeRepository,
-        protected ProductCategoryRepository $categoryRepository,
+        protected ProductCategoryRepository $categoryRepository
     ) {}
 
     /**
@@ -62,64 +62,83 @@ class ProductController extends Controller
         try {
             $validated = $request->validated();
 
-            // Step 1 only saves basic product fields, not attributes
-            unset($validated['attributes'], $validated['configurable_attributes']);
+            unset($validated['attributes'], $validated['configurable_attributes'], $validated['variants']);
+
+            unset($validated['type']);
 
             /** @var Product $product */
             $product = $this->productRepository->saveOrUpdate($validated);
 
+            // attribute_set_id
             if ($request->filled('attribute_set_id')) {
                 $product->attribute_set_id = (int) $request->input('attribute_set_id');
-                $product->save(); // this is still via Eloquent object returned by repo
+            }
+            $product->type = $this->determineProductTypeFromAttributeSet($product->attribute_set_id);
+            $product->save();
+
+            if ($request->hasFile('gallery_images')) {
+                $this->productRepository->syncGallery($product, $request->file('gallery_images'), false);
             }
 
             return redirect()
                 ->route('sysadmin.catalog.product.attributes', $product->id)
-                ->with('success', 'Product basic details saved. Now fill attributes.');
+                ->with('success', 'Product saved. Now fill attributes & variants.');
         } catch (ValidationException $e) {
             return back()->withErrors($e->validator->errors());
         }
     }
 
-    public function attributes(int $productId)
+    private function determineProductTypeFromAttributeSet(?int $attributeSetId): int
     {
-        // Product via repository
-        $product = $this->productRepository->find($productId);
-
-        if (! $product) {
-            abort(404);
+        if (empty($attributeSetId) || (int) $attributeSetId <= 0) {
+            return 1; // Simple
         }
 
-        if (! $product->attribute_set_id) {
+        $hasConfigurable = AttributeGroup::query()
+            ->where('id', (int) $attributeSetId)
+            ->whereHas('attributes', function ($q) {
+                $q->where('configurable', 1)
+                    ->where('type', 3); // dropdown
+            })
+            ->exists();
+
+        return $hasConfigurable ? 2 : 1;
+    }
+
+    public function attributes(int $productId)
+    {
+        $product = $this->productRepository->find($productId);
+        if (!$product) abort(404);
+
+        if (!$product->attribute_set_id) {
             return redirect()
                 ->route('sysadmin.catalog.product.edit', $product->id)
                 ->with('error', 'Please select an Attribute Set for this product first.');
         }
 
-    // Load attribute group (family)
         /** @var AttributeGroup $group */
         $group = AttributeGroup::with(['attributes.values'])
             ->findOrFail($product->attribute_set_id);
 
-        // Product attribute values (EAV) via repository
+        //  Product-level attribute values only (product_id = product.id)
         $productAttributeValues = $this->productAttributeValueRepository
             ->findWhere(['product_id' => $product->id])
             ->keyBy('attribute_id');
 
-        // Existing configurable attributes for this product
+        //  Existing configurable attributes for this product
         $existingConfigurable = $this->configAttrRepository
             ->findWhere(['product_id' => $product->id])
             ->pluck('attribute_id')
             ->toArray();
 
-        // Attributes that can be used as variant options: configurable=1 and type=3 (dropdown)
+        // Variant attributes (dropdown + configurable)
         $variantAttributes = $group->attributes->filter(function ($attr) {
             return (int)$attr->configurable === 1 && (int)$attr->type === 3;
         });
 
-        // Existing variants (if editing), including their values
-        $existingVariants = $this->variantRepository
-            ->with(['values'])  // assumes relation `values` on ProductVariant
+        //  Existing variants with their values
+        // Use Eloquent/Repo method that REALLY eager loads `values`
+        $existingVariants = $this->variantRepository->with(['values'])
             ->findWhere(['product_id' => $product->id]);
 
         return view('sysadmin::catalog.product.attributes', [
@@ -133,142 +152,210 @@ class ProductController extends Controller
     }
 
 
+
     // already in your code
 
     public function storeAttributes(Request $request, int $productId): RedirectResponse
     {
-        // Product via repository
         $product = $this->productRepository->find($productId);
-
-        if (! $product) {
-            abort(404);
-        }
+        if (!$product) abort(404);
 
         $attributes             = $request->input('attributes', []);
         $configurableAttributes = $request->input('configurable_attributes', []);
         $variantsData           = $request->input('variants', []);
 
-        /**
-         * 1) Load attribute meta (to know type for each attribute)
-         */
-        if (! $product->attribute_set_id) {
+        if (!$product->attribute_set_id) {
             return redirect()
                 ->route('sysadmin.catalog.product.edit', $product->id)
-                ->with('error', 'Please select an Attribute Set before saving attributes.');
+                ->with('error', 'Please select an Attribute Set first.');
         }
 
-        /** @var AttributeGroup $group */
-        $group = AttributeGroup::with('attributes')
-            ->findOrFail($product->attribute_set_id);
-
+        $group = AttributeGroup::with(['attributes.values'])->findOrFail($product->attribute_set_id);
         $attributeMeta = $group->attributes->keyBy('id');
 
-        /**
-         * 2) Clear old product attribute values (EAV)
-         */
-        $this->productAttributeValueRepository->deleteWhere([
-            'product_id' => $product->id,
-        ]);
+        /* ============================================================
+     * 1) Product-level attributes
+     * ============================================================ */
+        $this->productAttributeValueRepository->deleteWhere(['product_id' => $product->id]);
 
-        /**
-         * 3) Save product attributes:
-         *    - type 2 (text)  → value column
-         *    - type 3 (dropdown) → attribute_value_id column
-         */
         foreach ($attributes as $attributeId => $rawValue) {
-            if ($rawValue === null || $rawValue === '') {
-                continue;
-            }
+            if ($rawValue === null || $rawValue === '') continue;
 
-            $attributeId  = (int) $attributeId;
+            $attributeId  = (int)$attributeId;
             $attributeDef = $attributeMeta->get($attributeId);
-
-            if (! $attributeDef) {
-                continue;
-            }
+            if (!$attributeDef) continue;
 
             $data = [
                 'product_id'   => $product->id,
                 'attribute_id' => $attributeId,
             ];
 
-            if ((int) $attributeDef->type === 3) {
-                // DROPDOWN → selected value id to attribute_value_id
-                $data['attribute_value_id'] = (int) $rawValue;
-                $data['value']              = null;
+            if ((int)$attributeDef->type === 3) {
+                $data['attribute_value_id'] = (int)$rawValue;
+                $data['value'] = null;
             } else {
-                // TEXT (type 2 or anything else) → plain text to value
                 $data['attribute_value_id'] = null;
-                $data['value']              = is_array($rawValue) ? json_encode($rawValue) : $rawValue;
+                $data['value'] = is_array($rawValue) ? json_encode($rawValue) : $rawValue;
             }
 
             $this->productAttributeValueRepository->create($data);
         }
 
-        /**
-         * 4) Save configurable attributes (for variants)
-         */
+        /* ============================================================
+     * 2) Configurable attributes
+     * ============================================================ */
         $this->configAttrRepository->deleteWhere(['product_id' => $product->id]);
 
-        if (is_array($configurableAttributes)) {
-            foreach ($configurableAttributes as $attributeId) {
-                $attributeId = (int) $attributeId;
-                if ($attributeId <= 0) {
-                    continue;
-                }
+        $configurableAttributes = is_array($configurableAttributes)
+            ? array_values(array_filter(array_map('intval', $configurableAttributes)))
+            : [];
 
-                $this->configAttrRepository->create([
-                    'product_id'   => $product->id,
-                    'attribute_id' => $attributeId,
-                ]);
+        foreach ($configurableAttributes as $attributeId) {
+            $this->configAttrRepository->create([
+                'product_id'   => $product->id,
+                'attribute_id' => $attributeId,
+            ]);
+        }
+
+        /* ============================================================
+     * 3) Filter variants WITHOUT reindexing (IMPORTANT for file upload)
+     * ============================================================ */
+        $variantsData = is_array($variantsData) ? $variantsData : [];
+
+        $filteredVariants = [];
+        foreach ($variantsData as $key => $row) {
+            $name = trim((string)($row['name'] ?? ''));
+            $sku  = trim((string)($row['sku'] ?? ''));
+
+            $attrs = $row['attributes'] ?? [];
+            $hasAttrs = is_array($attrs) && count(array_filter($attrs, fn($v) => $v !== null && $v !== '')) > 0;
+
+            // valid row
+            if ($name !== '' || $sku !== '' || $hasAttrs) {
+                $filteredVariants[$key] = $row; // ✅ keep original key
             }
         }
 
-        /**
-         * 5) If variable product, save variants on the SAME submit
-         */
+        $product->type = count($filteredVariants) > 0 ? 2 : 1;
+        $product->save();
 
-        // Clear old variants
-        $this->variantRepository->deleteWhere(['product_id' => $product->id]);
+        if ((int)$product->type === 2 && empty($filteredVariants)) {
+            return redirect()
+                ->route('sysadmin.catalog.product.attributes', $product->id)
+                ->with('error', 'Please add at least one variant.');
+        }
 
-        foreach ($variantsData as $row) {
+        /* ============================================================
+     * 4) UPSERT variants + image upload
+     * ============================================================ */
+        $keptVariantIds = [];
 
-            // Create variant via repository
-            $variant = $this->variantRepository->create([
-                'product_id' => $product->id,
-                'name'       => $row['name'] ?? null,
-                'sku'        => $row['sku'] ?? null,
-                'price'      => $row['price'] ?? 0,
-                'thumb'      => $row['thumb'] ?? null, // handle file upload later if needed
-                'stock'      => $row['stock'] ?? 0,
-                'status'     => $row['status'] ?? 1,
-            ]);
+        foreach ($filteredVariants as $key => $row) {
 
-            //dd($variant);
+            $variantId = isset($row['id']) ? (int)$row['id'] : 0;
 
-            // Variant attribute values (Color, Size, etc.)
-            if (! empty($row['attributes']) && is_array($row['attributes'])) {
+            $existingVariant = null;
+            if ($variantId > 0) {
+                $existingVariant = $this->variantRepository->find($variantId);
+                if (!$existingVariant || (int)$existingVariant->product_id !== (int)$product->id) {
+                    $existingVariant = null;
+                    $variantId = 0;
+                }
+            }
+
+            // thumb defaults to existing on update
+            $thumb = $existingVariant ? $existingVariant->thumb : null;
+
+            // remove thumb only if remove_thumb=1
+            $removeThumb = isset($row['remove_thumb']) && (int)$row['remove_thumb'] === 1;
+            if ($existingVariant && $removeThumb) {
+                $thumb = null;
+            }
+
+            //  file upload must use ORIGINAL KEY
+            if ($request->hasFile("variants.$key.thumb")) {
+                $thumb = \Modules\SysAdmin\Helpers\ImageUploader::upload(
+                    $request->file("variants.$key.thumb"),
+                    $product->created_at
+                );
+            }
+
+            // upsert variant
+            if ($existingVariant) {
+                $this->variantRepository->update([
+                    'name'   => $row['name'] ?? null,
+                    'sku'    => $row['sku'] ?? null,
+                    'price'  => $row['price'] ?? 0,
+                    'thumb'  => $thumb,
+                    'stock'  => $row['stock'] ?? 0,
+                    'status' => $row['status'] ?? 1,
+                ], $existingVariant->id);
+
+                $variantId = (int)$existingVariant->id;
+            } else {
+                $variant = $this->variantRepository->create([
+                    'product_id' => $product->id,
+                    'name'       => $row['name'] ?? null,
+                    'sku'        => $row['sku'] ?? null,
+                    'price'      => $row['price'] ?? 0,
+                    'thumb'      => $thumb,
+                    'stock'      => $row['stock'] ?? 0,
+                    'status'     => $row['status'] ?? 1,
+                ]);
+
+                $variantId = (int)$variant->id;
+            }
+
+            $keptVariantIds[] = $variantId;
+
+            // replace variant attribute values (your schema: product_id = variant_id)
+            $this->productAttributeValueRepository->deleteWhere(['product_id' => $variantId]);
+
+            if (!empty($row['attributes']) && is_array($row['attributes'])) {
                 foreach ($row['attributes'] as $attributeId => $attributeValueId) {
-                    if (! $attributeValueId) {
-                        continue;
-                    }
+                    if (!$attributeValueId) continue;
 
-                    ProductVariantValue::create([
-                        // ⚠ see note below about schema
-                        'product_id'        => $product->id,
-                        'attribute_id'      => (int) $attributeId,
-                        'attribute_value_id' => (int) $attributeValueId,
-                        'value'             => null,
+                    $this->productAttributeValueRepository->create([
+                        'product_id'         => $variantId,
+                        'attribute_id'       => (int)$attributeId,
+                        'attribute_value_id' => (int)$attributeValueId,
+                        'value'              => null,
                     ]);
                 }
             }
         }
 
+        /* ============================================================
+     * 5) AUTO DELETE removed variants (this makes “row removed” delete DB)
+     * ============================================================ */
+        $existingIds = $this->variantRepository
+            ->where('product_id', $product->id)
+            ->pluck('id')
+            ->toArray();
+
+        $toDelete = array_diff($existingIds, $keptVariantIds);
+
+        if (!empty($toDelete)) {
+            foreach ($toDelete as $delId) {
+                $delId = (int) $delId;
+
+                // delete variant values first (product_id = variant_id)
+                $this->productAttributeValueRepository->deleteWhere(['product_id' => $delId]);
+
+                // delete variant (repo-safe)
+                $this->variantRepository->deleteWhere([
+                    'id'         => $delId,
+                    'product_id' => $product->id,
+                ]);
+            }
+        }
 
         return redirect()
             ->route('sysadmin.catalog.product.attributes', $product->id)
-            ->with('success', 'Product attributes and variants saved successfully.');
+            ->with('success', 'Attributes & variants saved successfully.');
     }
+
+
 
     /**
      * AJAX: load attributes for a given attribute set (group).
@@ -313,6 +400,10 @@ class ProductController extends Controller
         //dd($product);
         $attributeSets = $this->attributeRepository->getAttributeSets();
 
+        $galleryImages = ProductImage::where('product_id', $product->id)
+            ->orderBy('sort_order')
+            ->get();
+
         //dd($attributeSets);
 
         return view('sysadmin::catalog.product.edit', [
@@ -321,6 +412,7 @@ class ProductController extends Controller
             'categories'    => $this->productRepository->getCategories() ?? [],
             'subCategories' => $this->productRepository->getSubCategories($product->product_category) ?? [],
             'attributeSets' => $attributeSets,
+            'galleryImages' => $galleryImages
         ]);
     }
 
@@ -331,8 +423,8 @@ class ProductController extends Controller
     {
         $validated = $request->validated();
 
-        // step 1 does not touch attributes / configurable / variants
-        unset($validated['attributes'], $validated['configurable_attributes']);
+        // do not touch attributes / variants here
+        unset($validated['attributes'], $validated['configurable_attributes'], $validated['variants']);
 
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['slider']      = $request->boolean('slider');
@@ -340,16 +432,29 @@ class ProductController extends Controller
         /** @var Product $product */
         $product = $this->productRepository->saveOrUpdate($validated, $id);
 
-        // keep attribute_set_id in sync
+        // Keep attribute set in sync
         if ($request->filled('attribute_set_id')) {
-            $product->attribute_set_id = (int)$request->input('attribute_set_id');
-            $product->save();
+            $product->attribute_set_id = (int) $request->input('attribute_set_id');
+        }
+
+        // IMPORTANT: re-determine product type
+        $product->type = $this->determineProductTypeFromAttributeSet($product->attribute_set_id);
+        $product->save();
+
+        // Gallery update
+        if ($request->hasFile('gallery_images')) {
+            $this->productRepository->syncGallery(
+                $product,
+                $request->file('gallery_images'),
+                true // edit mode
+            );
         }
 
         return redirect()
             ->route('sysadmin.catalog.product.edit', $product->id)
             ->with('success', 'Product updated. You can manage attributes & variants from this page.');
     }
+
 
     /**
      * Delete Product
