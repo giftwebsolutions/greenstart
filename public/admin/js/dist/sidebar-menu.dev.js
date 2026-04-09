@@ -13,7 +13,7 @@ if (localStorage.getItem("page-wrapper") === null) {
 } // left sidebar and vertical menu
 
 
-if ($('#pageWrapper').hasClass('compact-wrapper')) {
+if ($('.pageWrapper').hasClass('compact-wrapper')) {
   jQuery('.sidebar-title').append('<div class="according-menu"><i class="bi bi-arrow-right"></i></div>');
   jQuery('.sidebar-title').click(function () {
     jQuery('.sidebar-title').removeClass('active').find('div').replaceWith('<div class="according-menu"><i class="bi bi-arrow-right"></i></div>');
@@ -43,11 +43,11 @@ if ($('#pageWrapper').hasClass('compact-wrapper')) {
     }
   });
   jQuery('.submenu-content').hide();
-} else if ($('#pageWrapper').hasClass('horizontal-wrapper')) {
+} else if ($('.pageWrapper').hasClass('horizontal-wrapper')) {
   var contentwidth = jQuery(window).width();
 
   if (contentwidth < '992') {
-    $('#pageWrapper').removeClass('horizontal-wrapper').addClass('compact-wrapper');
+    $('.pageWrapper').removeClass('horizontal-wrapper').addClass('compact-wrapper');
     $('.page-body-wrapper').removeClass('horizontal-menu').addClass('sidebar-icon');
     jQuery('.submenu-title').append('<div class="according-menu"><i class="bi bi-arrow-right"></i></div>');
     jQuery('.submenu-title').click(function () {
@@ -80,7 +80,7 @@ if ($('#pageWrapper').hasClass('compact-wrapper')) {
     });
     jQuery('.sidebar-submenu, .menu-content').hide();
   }
-} else if ($('#pageWrapper').hasClass('compact-sidebar')) {
+} else if ($('.pageWrapper').hasClass('compact-sidebar')) {
   var contentwidth = jQuery(window).width();
 
   if (contentwidth > 992) {
@@ -210,7 +210,7 @@ var menuWrapperSize = getMenuWrapperSize();
 if (menuWrapperSize >= '1660') {
   var sliderLimit = -3000;
 
-  if ($('#pageWrapper').hasClass('material-type')) {
+  if ($('.pageWrapper').hasClass('material-type')) {
     var sliderLimit = -3500;
   }
 } else if (menuWrapperSize >= '992') {
@@ -255,7 +255,7 @@ $("#left-arrow").click(function () {
   }
 }); // page active
 
-if ($('#pageWrapper').hasClass('compact-wrapper')) {
+if ($('.pageWrapper').hasClass('compact-wrapper')) {
   $(".sidebar-wrapper nav").find("a").removeClass("active");
   $(".sidebar-wrapper nav").find("li").removeClass("active");
   var current = window.location.pathname;

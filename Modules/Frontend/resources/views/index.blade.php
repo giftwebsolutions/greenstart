@@ -7,15 +7,7 @@
     $myTabs = [['category_id' => 7, 'label' => 'Handle'], ['category_id' => 8, 'label' => 'Hinges']];
     $home_blocks = ['home-free-shipping', 'home-support'];
     $homeBlocks = Blocks::whereIn('key', $home_blocks)->get()->toArray();
-
-
-
-    
-
 @endphp
-
-
-
 <x-frontend::layouts.master>
     <!-- Slider Start -->
     <div class="slider-area">
@@ -72,6 +64,7 @@
                         $freeShipping = collect($homeBlocks)->firstWhere('key', 'home-free-shipping');
                     @endphp
                     <!-- Static Single Item Start -->
+                    @if(!empty($freeShipping))
                     <div class="col-lg-3 col-xs-12 col-md-6 col-sm-6 mb-md-30px mb-lm-30px">
                         <div class="single-static">
                             <img src="{{ asset(ImageUploader::getFilePath($freeShipping['thumbnail'], $freeShipping['created_at'])) }}"
@@ -82,6 +75,7 @@
                             </div>
                         </div>
                     </div>
+                    @endif
                     <!-- Static Single Item End -->
                     <!-- Static Single Item Start -->
                     <div class="col-lg-3 col-xs-12 col-md-6 col-sm-6 mb-md-30px mb-lm-30px">

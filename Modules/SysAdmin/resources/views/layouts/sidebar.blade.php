@@ -3,16 +3,24 @@ $menus = Config::get('sysadmin.menus');
 ?>
 <div class="sidebar-wrapper" sidebar-layout="stroke-svg">
     <div>
-        <div class="logo-wrapper"><a href="{{ route('sysadmin.index') }}"><img class="img-fluid for-light"
-                    src="{{ asset('admin/images/logo/logo.png') }}" alt=""><img class="img-fluid for-dark"
-                    src="{{ asset('admin/images/logo/logo_dark.png') }}" alt=""></a>
+        <div class="logo-wrapper">
+            <a href="{{ route('sysadmin.index') }}">
+                <img class="img-fluid for-light"
+                    src="{{ asset('admin/images/logo/logo.png') }}" alt="">
+                <img class="img-fluid for-dark"
+                    src="{{ asset('admin/images/logo/logo_dark.png') }}" alt="">
+                </a>
             <div class="back-btn"><i class="fa fa-angle-left"></i></div>
             <div class="toggle-sidebar">
                 <i class="status_toggle middle sidebar-toggle" data-feather="grid"> </i>
             </div>
         </div>
-        <div class="logo-icon-wrapper"><a href="{{ route('sysadmin.index') }}"><img class="img-fluid"
-                    src="{{ asset('admin/images/logo/logo-icon.png') }}" alt=""></a></div>
+        <div class="logo-icon-wrapper">
+            <a href="{{ route('sysadmin.index') }}">
+                <img class="img-fluid"
+                    src="{{ asset('admin/images/logo/logo-icon.png') }}" alt="">
+                </a>
+            </div>
         <nav class="sidebar-main">
             <div class="left-arrow" id="left-arrow"><i data-feather="arrow-left"></i></div>
             <div id="sidebar-menu">
@@ -26,10 +34,10 @@ $menus = Config::get('sysadmin.menus');
                         @if (!empty($menu['children']))
                             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="javascript:void(0)">
                                     <svg class="stroke-icon">
-                                        <use href="{{ asset('admin/svg/icon-sprite.svg#'.$menu['icon']) }}"></use>
+                                        <use href="{{ asset('admin/svg/icon-sprite.svg#' . $menu['icon']) }}"></use>
                                     </svg>
                                     <svg class="fill-icon">
-                                        <use href="{{ asset('admin/svg/icon-sprite.svg#'.$menu['icon']) }}"></use>
+                                        <use href="{{ asset('admin/svg/icon-sprite.svg#' . $menu['icon']) }}"></use>
                                     </svg><span>{{ $menu['name'] }}</span></a>
                                 @if (!empty($menu['children']))
                                     <ul class="sidebar-submenu">
@@ -43,10 +51,10 @@ $menus = Config::get('sysadmin.menus');
                             <li class="sidebar-list"><a class="sidebar-link sidebar-title"
                                     href="{{ route($menu['route']) }}">
                                     <svg class="stroke-icon">
-                                        <use href="{{ asset('admin/svg/icon-sprite.svg#'.$menu['icon']) }}"></use>
+                                        <use href="{{ asset('admin/svg/icon-sprite.svg#' . $menu['icon']) }}"></use>
                                     </svg>
                                     <svg class="fill-icon">
-                                        <use href="{{ asset('admin/svg/icon-sprite.svg#'.$menu['icon']) }}"></use>
+                                        <use href="{{ asset('admin/svg/icon-sprite.svg#' . $menu['icon']) }}"></use>
                                     </svg><span>{{ $menu['name'] }}</span></a>
                             </li>
                         @endif
