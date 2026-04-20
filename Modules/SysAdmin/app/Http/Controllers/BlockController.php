@@ -47,7 +47,7 @@ class BlockController extends Controller
     public function show($id)
     {
         $page = $this->blockRepository->findOrFail($id)->toArray();
-        return view('sysadmin::block.view')->with([
+        return view('sysadmin::blocks.view')->with([
             'page' => $page,
         ]);
     }

@@ -52,7 +52,7 @@ class SettingsController extends Controller
      */
     public function create()
     {
-        return view('sysadmin::create');
+        return redirect()->route('sysadmin.settings.index');
     }
 
     /**
@@ -66,7 +66,6 @@ class SettingsController extends Controller
             $this->settingRepository->saveOrUpdate($validatedData, $id);
             return redirect()->route('sysadmin.settings.index');
         } catch (ValidationException $e) {
-            dd($e->validator->errors());
             return back()->withErrors($e->validator->errors());
         }
     }
@@ -75,7 +74,7 @@ class SettingsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(): RedirectResponse
     {
         return redirect()->route('sysadmin.settings.index');
     }
@@ -93,24 +92,23 @@ class SettingsController extends Controller
     /**
      * Show the specified resource.
      */
-    public function show($id)
+    public function show(): RedirectResponse
     {
-        $user = $this->settingRepository->findOrFail($id)->toArray();
-        return view('sysadmin::show');
+        return redirect()->route('sysadmin.settings.index');
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id)
+    public function edit(): RedirectResponse
     {
-        return view('sysadmin::edit');
+        return redirect()->route('sysadmin.settings.index');
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(): RedirectResponse
     {
         return redirect()->route('sysadmin.settings.index');
     }

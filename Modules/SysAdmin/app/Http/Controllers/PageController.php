@@ -4,7 +4,6 @@ namespace Modules\SysAdmin\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Modules\SysAdmin\DataTables\PageDataTable;
 use Modules\SysAdmin\Interfaces\PageInterface;
 use Modules\SysAdmin\Requests\PageFormRequest;
@@ -76,14 +75,11 @@ class PageController extends Controller
      */
     public function update(PageFormRequest $request, $id): RedirectResponse
     {
-        //dd($request);
         try {
-
             $validatedData = $request->validated();
-            $page = $this->pageRepository->saveOrUpdate($validatedData, $id);
+            $this->pageRepository->saveOrUpdate($validatedData, $id);
             return redirect()->route('sysadmin.cms.page.index');
         } catch (ValidationException $e) {
-            dd($e->validator->errors());
             return back()->withErrors($e->validator->errors());
         }
     }

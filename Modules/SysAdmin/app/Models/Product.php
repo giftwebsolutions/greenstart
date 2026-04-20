@@ -163,6 +163,11 @@ class Product extends Model
 		return $this->hasMany(ProductConfigurableAttribute::class, 'product_id', 'id');
 	}
 
+	public function productAttributeValues()
+	{
+		return $this->hasMany(ProductAttributeValue::class, 'product_id', 'id');
+	}
+
 	public function images()
 	{
 		return $this->hasMany(ProductImage::class, 'product_id', 'id')

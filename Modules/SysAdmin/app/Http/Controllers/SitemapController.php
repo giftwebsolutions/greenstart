@@ -20,7 +20,7 @@ class SitemapController extends Controller
         $content = file_get_contents($filePath);
         $exists = File::exists($filePath);
 
-        return view('sysadmin::.sitemap.index')->with(['content' => $content, 'exists' => $exists]);
+        return view('sysadmin::sitemap.index')->with(['content' => $content, 'exists' => $exists]);
     }
 
     public function generate(Request $request)
@@ -34,6 +34,6 @@ class SitemapController extends Controller
         // Save sitemap to storage
         $sitemap->writeToFile(public_path('sitemap.xml'));
 
-        return redirect()->route('admin.sitemap.index')->with('success', 'Sitemap generated successfully!');
+        return redirect()->route('sysadmin.media.sitemap.index')->with('success', 'Sitemap generated successfully!');
     }
 }

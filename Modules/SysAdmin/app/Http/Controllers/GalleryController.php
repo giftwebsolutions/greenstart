@@ -43,7 +43,7 @@ class GalleryController extends Controller
     {
         $validatedData = $request->validated();
         $result = $this->galleryRepository->saveOrUpdate($validatedData);
-        return redirect()->route('sysadmin.gallery.view', $result->id);
+        return redirect()->route('sysadmin.media.gallery.view', $result->id);
     }
 
     /**
@@ -111,7 +111,7 @@ class GalleryController extends Controller
     {
         $validatedData = $request->validated();
         $this->galleryRepository->saveOrUpdate($validatedData, $id);
-        return redirect()->route('sysadmin.gallery.view', $id);
+        return redirect()->route('sysadmin.media.gallery.view', $id);
     }
 
     /**
@@ -120,7 +120,7 @@ class GalleryController extends Controller
     public function destroy($id)
     {
         $this->galleryRepository->delete($id);
-        return redirect()->route('sysadmin.gallery.index');
+        return redirect()->route('sysadmin.media.gallery.index');
     }
 
     public function uploadItem($gallery_id, $created_at, Request $request)

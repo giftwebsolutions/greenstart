@@ -5,6 +5,7 @@ namespace Modules\SysAdmin\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Modules\SysAdmin\Models\Product;
 
 class ProductCategory extends Model
 {
@@ -80,5 +81,10 @@ class ProductCategory extends Model
 	public function children()
 	{
 		return $this->hasMany(ProductCategory::class, 'parent_id', 'id');
+	}
+
+	public function products()
+	{
+		return $this->hasMany(Product::class, 'product_category', 'id');
 	}
 }

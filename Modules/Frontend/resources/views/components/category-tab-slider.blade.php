@@ -1,7 +1,8 @@
 @php
     use Modules\SysAdmin\Helpers\ImageUploader;
+    //dd($tabs);
 @endphp
-@if ($tabs && $tabs->count() > 0)
+@if ($tabs && count($tabs) > 0)
     <div class="category-tab-slider-area mb-60px">
         <div class="container">
             <div class="row">
@@ -64,7 +65,7 @@
                                                         @foreach ($chunk as $product)
                                                             @php
 
-                                                                dd($product);
+                                                                //dd($product);
                                                                 $thumb = ImageUploader::getFilePath(
                                                                     $product->thumb ?? '',
                                                                     $product->created_at,

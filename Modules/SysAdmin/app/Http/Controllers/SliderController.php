@@ -40,7 +40,7 @@ class SliderController extends Controller
     {
         $validatedData = $request->validated();
         $this->sliderRepository->saveOrUpdate($validatedData);
-        return redirect()->route('sysadmin.slider.index');
+        return redirect()->route('sysadmin.media.slider.index');
     }
 
     /**
@@ -59,8 +59,8 @@ class SliderController extends Controller
      */
     public function edit($id)
     {
-        $block = $this->sliderRepository->findOrFail($id);
-        return view('sysadmin::slider.edit', compact('block'));
+        $slider = $this->sliderRepository->findOrFail($id);
+        return view('sysadmin::slider.edit', compact('slider'));
     }
 
     /**
@@ -70,7 +70,7 @@ class SliderController extends Controller
     {
         $validatedData = $request->validated();
         $page = $this->sliderRepository->saveOrUpdate($validatedData, $id);
-        return redirect()->route('sysadmin.slider.index');
+        return redirect()->route('sysadmin.media.slider.index');
     }
 
     /**
@@ -79,6 +79,6 @@ class SliderController extends Controller
     public function destroy($id)
     {
         $this->sliderRepository->delete($id);
-        return redirect()->route('sysadmin.slider.index');
+        return redirect()->route('sysadmin.media.slider.index');
     }
 }

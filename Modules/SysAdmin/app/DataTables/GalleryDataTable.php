@@ -38,7 +38,7 @@ class GalleryDataTable extends DataTable
             ->orderBy(1)
             ->selectStyleSingle()
             ->buttons([
-                Button::make('add')->action("window.location = '" . route('sysadmin.gallery.create') . "';"),
+                Button::make('add')->action("window.location = '" . route('sysadmin.media.gallery.create') . "';"),
                 Button::make('excel'),
                 //Button::make('csv'),
                 // Button::make('pdf'),
@@ -61,9 +61,9 @@ class GalleryDataTable extends DataTable
 
     protected function getActionColumn($data): string
     {
-        $showUrl = route('sysadmin.gallery.view', $data->id);
-        $editUrl = route('sysadmin.gallery.edit', $data->id);
-        $deleteUrl = route('sysadmin.gallery.delete', $data->id);
+        $showUrl = route('sysadmin.media.gallery.view', $data->id);
+        $editUrl = route('sysadmin.media.gallery.edit', $data->id);
+        $deleteUrl = route('sysadmin.media.gallery.delete', $data->id);
         return '
         <ul class="action">
             <li class="edit"> <a href="' . $editUrl . '" data-bs-original-title="edit" title="edit"><i class="icon-pencil-alt"></i></a></li>

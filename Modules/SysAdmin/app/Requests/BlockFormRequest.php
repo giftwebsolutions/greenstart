@@ -21,12 +21,10 @@ class BlockFormRequest extends FormRequest
      */
     public function rules()
     {
-        return match (request()->route()->action['as']) {
-            'sysadmin.cms.block.create',  => $this->store(),
-            'sysadmin.cms.block.edit' => $this->update(),
-            'sysadmin.cms.block.update' => $this->update(),
-            default => $this->store()
-        };
+        if ($this->isMethod('PATCH')) {
+            return $this->update();
+        }
+        return $this->store();
     }
 
 
@@ -54,7 +52,7 @@ class BlockFormRequest extends FormRequest
     public function update()
     {
         return [
-            'key' => 'required|string|max:30|unique:blocks,key,' . $this->id,
+            'key' => 'required|string|max:30|unique:blocks,key,' . $this->route('id'),
             'title' => 'required|string|max:120',
             'value' => 'required|string',
             'icon' => 'string|max:100',

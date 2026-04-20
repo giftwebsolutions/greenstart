@@ -4,64 +4,53 @@ namespace Modules\SysAdmin\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Modules\SysAdmin\DataTables\RoleDataTable;
+use Modules\SysAdmin\Interfaces\RoleInterface;
+use Modules\SysAdmin\Requests\RoleFormRequest;
 
 class RoleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function __construct(
+        protected RoleInterface $roleRepository
+    ) {}
+
+    public function index(RoleDataTable $dataTable)
     {
-        return view('sysadmin::index');
+        return $dataTable->render('sysadmin::roles.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        return view('sysadmin::create');
+        return view('sysadmin::roles.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request): RedirectResponse
+    public function store(RoleFormRequest $request): RedirectResponse
     {
-        //
+        $this->roleRepository->saveOrUpdate($request->validated());
+        return redirect()->route('sysadmin.roles.index')->with('success', 'Role created successfully.');
     }
 
-    /**
-     * Show the specified resource.
-     */
     public function show($id)
     {
-        return view('sysadmin::show');
+        $role = $this->roleRepository->findOrFail($id)->toArray();
+        return view('sysadmin::roles.view', compact('role'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit($id)
     {
-        return view('sysadmin::edit');
+        $role = $this->roleRepository->findOrFail($id);
+        return view('sysadmin::roles.edit', compact('role'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(RoleFormRequest $request, $id): RedirectResponse
     {
-        //
+        $this->roleRepository->saveOrUpdate($request->validated(), $id);
+        return redirect()->route('sysadmin.roles.index')->with('success', 'Role updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
+    public function destroy($id): RedirectResponse
     {
-        //
+        $this->roleRepository->delete($id);
+        return redirect()->route('sysadmin.roles.index')->with('success', 'Role deleted successfully.');
     }
 }

@@ -20,12 +20,10 @@ class SliderFormRequest extends FormRequest
      */
     public function rules()
     {
-        return match (request()->route()->action['as']) {
-            'sysadmin.gallery.create',  => $this->store(),
-            'sysadmin.gallery.edit' => $this->update(),
-            'sysadmin.gallery.update' => $this->update(),
-            default => $this->store()
-        };
+        if ($this->isMethod('PATCH')) {
+            return $this->update();
+        }
+        return $this->store();
     }
 
 
@@ -37,10 +35,10 @@ class SliderFormRequest extends FormRequest
     public function store()
     {
         return [
-            'name' => 'required|string|unique:galleries|max:120',
-            'description' => 'string',
-            'status' => 'boolean',
-            'thumbnail' => 'image|mimes:jpg,png,jpeg|max:2048'
+            'name'        => 'required|string|unique:sliders|max:120',
+            'description' => 'nullable|string',
+            'status'      => 'nullable|boolean',
+            'thumbnail'   => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
         ];
     }
 
@@ -52,10 +50,10 @@ class SliderFormRequest extends FormRequest
     public function update()
     {
         return [
-            'name' => 'required|string|max:30|unique:galleries,name,' . $this->id,
-            'description' => 'string',
-            'status' => 'boolean',
-            'thumbnail' => 'image|mimes:jpg,png,jpeg|max:2048'
+            'name'        => 'required|string|max:120|unique:sliders,name,' . $this->route('id'),
+            'description' => 'nullable|string',
+            'status'      => 'nullable|boolean',
+            'thumbnail'   => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
         ];
     }
 }

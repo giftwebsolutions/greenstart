@@ -42,7 +42,7 @@ class ProductFormRequest extends FormRequest
             'sku'                  => ['nullable', 'string', 'max:100'],
 
             // Auto-determined by attribute set – do NOT validate type from request
-            // 'type' => ...
+            'type' => ['nullable', 'integer', 'min:0'],
 
             'is_featured'          => ['nullable', 'boolean'],
             'video'                => ['nullable', 'string', 'max:255'],
@@ -88,7 +88,7 @@ class ProductFormRequest extends FormRequest
             'sku'                  => ['nullable', 'string', 'max:100'],
 
             // Auto-determined by attribute set – do NOT validate type from request
-            // 'type' => ...
+            'type' => ['nullable', 'integer', 'min:0'],
 
             'is_featured'          => ['nullable', 'boolean'],
             'video'                => ['nullable', 'string', 'max:255'],

@@ -20,13 +20,10 @@ class GalleryFormRequest extends FormRequest
      */
     public function rules()
     {
-        return match (request()->route()->action['as']) {
-            'sysadmin.gallery.create',  => $this->store(),
-            'sysadmin.gallery.edit' => $this->update(),
-            'sysadmin.gallery.update' => $this->update(),
-            'sysadmin.gallery.view' => $this->update(),
-            default => $this->store()
-        };
+        if ($this->isMethod('PATCH')) {
+            return $this->update();
+        }
+        return $this->store();
     }
 
 
@@ -53,7 +50,7 @@ class GalleryFormRequest extends FormRequest
     public function update()
     {
         return [
-            'name' => 'required|string|max:30|unique:galleries,name,' . $this->id,
+            'name' => 'required|string|max:30|unique:galleries,name,' . $this->route('id'),
             'description' => 'string',
             'status' => 'boolean',
             'thumbnail' => 'image|mimes:jpg,png,jpeg|max:2048'

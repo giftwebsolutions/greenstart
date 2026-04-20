@@ -25,6 +25,8 @@ class ProductRepository extends BaseRepository implements ProductInterface
      */
     public function saveOrUpdate($data, $id = 0)
     {
+
+        //dd($data);
         if ($id !== 0) {
             $product = $this->find($id);
             $createdAt = Carbon::createFromTimestamp($product->created_at);

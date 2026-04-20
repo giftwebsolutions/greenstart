@@ -9,11 +9,15 @@ use Modules\SysAdmin\Interfaces\BlogInterface;
 use  Modules\SysAdmin\Repository\PageRepository;
 use Modules\SysAdmin\Interfaces\PageInterface;
 use Modules\SysAdmin\Interfaces\SettingInterface;
+use Modules\SysAdmin\Interfaces\GalleryInterface;
+use Modules\SysAdmin\Interfaces\GalleryItemInterface;
 use Modules\SysAdmin\Interfaces\SliderInterface;
 use Modules\SysAdmin\Interfaces\SliderItemInterface;
 use Modules\SysAdmin\Interfaces\UserInterface;
 use Modules\SysAdmin\Repository\BlockRepository;
 use Modules\SysAdmin\Repository\BlogCategoryRepository;
+use Modules\SysAdmin\Repository\GalleryItemRepository;
+use Modules\SysAdmin\Repository\GalleryRepository;
 use Modules\SysAdmin\Repository\BlogRepository;
 use Modules\SysAdmin\Repository\SettingRepository;
 use Modules\SysAdmin\Repository\TestimonialRepository;
@@ -25,12 +29,16 @@ use Modules\SysAdmin\Interfaces\AttributeInterface;
 use Modules\SysAdmin\Interfaces\AttributeMappingInterface;
 use Modules\SysAdmin\Interfaces\AttributeTypeInterface;
 use Modules\SysAdmin\Interfaces\ProductAttributeValueInterface;
+use Modules\SysAdmin\Interfaces\RoleInterface;
+use Modules\SysAdmin\Interfaces\TagInterface;
 use Modules\SysAdmin\Interfaces\TestimonialInterface;
 use Modules\SysAdmin\Repository\AttributeGroupRepository;
 use Modules\SysAdmin\Repository\AttributeMappingRepository;
 use Modules\SysAdmin\Repository\AttributeRepository;
 use Modules\SysAdmin\Repository\AttributeTypeRepository;
 use Modules\SysAdmin\Repository\ProductAttributeValueRepository;
+use Modules\SysAdmin\Repository\RoleRepository;
+use Modules\SysAdmin\Repository\TagRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -39,6 +47,10 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->bind(RoleInterface::class, RoleRepository::class);
+        $this->app->bind(TagInterface::class, TagRepository::class);
+        $this->app->bind(GalleryInterface::class, GalleryRepository::class);
+        $this->app->bind(GalleryItemInterface::class, GalleryItemRepository::class);
         $this->app->bind(TestimonialInterface::class, TestimonialRepository::class);
         $this->app->bind(BlogInterface::class, BlogRepository::class);
         $this->app->bind(BlockInterface::class, BlockRepository::class);

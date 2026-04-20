@@ -58,7 +58,7 @@
                         </form>
                     @else
                         <p>No sitemap file found.</p>
-                        <form action="{{ route('sysadmin.sitemap.generate') }}" method="POST">
+                        <form action="{{ route('sysadmin.media.sitemap.generate') }}" method="POST">
                             @csrf
                             <button type="submit" class="btn btn-primary">Generate Sitemap</button>
                         </form>

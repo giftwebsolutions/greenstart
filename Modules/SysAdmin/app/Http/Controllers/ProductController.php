@@ -64,7 +64,7 @@ class ProductController extends Controller
 
             unset($validated['attributes'], $validated['configurable_attributes'], $validated['variants']);
 
-            unset($validated['type']);
+            //unset($validated['type']);
 
             /** @var Product $product */
             $product = $this->productRepository->saveOrUpdate($validated);
@@ -98,7 +98,7 @@ class ProductController extends Controller
             ->where('id', (int) $attributeSetId)
             ->whereHas('attributes', function ($q) {
                 $q->where('configurable', 1)
-                    ->where('type', 3); // dropdown
+                    ->where('type', 2); // dropdown
             })
             ->exists();
 
@@ -108,6 +108,7 @@ class ProductController extends Controller
     public function attributes(int $productId)
     {
         $product = $this->productRepository->find($productId);
+        //dd($product);
         if (!$product) abort(404);
 
         if (!$product->attribute_set_id) {
@@ -133,7 +134,7 @@ class ProductController extends Controller
 
         // Variant attributes (dropdown + configurable)
         $variantAttributes = $group->attributes->filter(function ($attr) {
-            return (int)$attr->configurable === 1 && (int)$attr->type === 3;
+            return (int)$attr->configurable === 1 && (int)$attr->type === 2;
         });
 
         //  Existing variants with their values

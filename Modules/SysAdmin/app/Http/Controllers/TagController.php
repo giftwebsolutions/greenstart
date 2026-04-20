@@ -6,76 +6,89 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Modules\SysAdmin\DataTables\TagDataTable;
+use Modules\SysAdmin\Interfaces\TagInterface;
+use Modules\SysAdmin\Requests\TagFormRequest;
 
 class TagController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        return view('sysadmin::index');
-    }
+    public function __construct(
+        protected TagInterface $tagRepository
+    ) {}
 
     /**
-     * Display a listing of the resource.
+     * Search tags for Select2 AJAX.
      */
     public function search(Request $request): JsonResponse
     {
-        $param = $request->get('term');
-        $data = [
-            ['id' => 1, 'text' => 'Test'],
-            ['id' => 2, 'text' => 'Test 2'],
-        ];
+        $term = $request->get('term', '');
+        $tags = $this->tagRepository->getModel()
+            ->where('name', 'like', "%{$term}%")
+            ->get(['id', 'name']);
+
+        $data = $tags->map(fn($tag) => ['id' => $tag->id, 'text' => $tag->name])->values()->toArray();
+
         return response()->json(['items' => $data]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display a listing of tags.
+     */
+    public function index(TagDataTable $dataTable)
+    {
+        return $dataTable->render('sysadmin::tags.index');
+    }
+
+    /**
+     * Show the form for creating a new tag.
      */
     public function create()
     {
-        return view('sysadmin::create');
+        return view('sysadmin::tags.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created tag.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(TagFormRequest $request): RedirectResponse
     {
-        //
+        $this->tagRepository->saveOrUpdate($request->validated());
+        return redirect()->route('sysadmin.blog.tags.index')->with('success', 'Tag created successfully.');
     }
 
     /**
-     * Show the specified resource.
+     * Show the specified tag.
      */
     public function show($id)
     {
-        return view('sysadmin::show');
+        $tag = $this->tagRepository->findOrFail($id)->toArray();
+        return view('sysadmin::tags.view', compact('tag'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified tag.
      */
     public function edit($id)
     {
-        return view('sysadmin::edit');
+        $tag = $this->tagRepository->findOrFail($id);
+        return view('sysadmin::tags.edit', compact('tag'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified tag.
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(TagFormRequest $request, $id): RedirectResponse
     {
-        //
+        $this->tagRepository->saveOrUpdate($request->validated(), $id);
+        return redirect()->route('sysadmin.blog.tags.index')->with('success', 'Tag updated successfully.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified tag.
      */
-    public function destroy($id)
+    public function destroy($id): RedirectResponse
     {
-        //
+        $this->tagRepository->delete($id);
+        return redirect()->route('sysadmin.blog.tags.index')->with('success', 'Tag deleted successfully.');
     }
 }
