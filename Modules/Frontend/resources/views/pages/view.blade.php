@@ -1,6 +1,14 @@
 @section('css')
 @endsection
 
+@php
+    use Modules\SysAdmin\Helpers\ImageUploader;
+
+    // fallback image
+    $fallback = asset('public/admin/images/dashboard/papernote.jpg');
+@endphp
+
+
 <x-frontend::layouts.master>
 
     <!-- Breadcrumb Area Start -->
@@ -41,11 +49,18 @@
                     @if(!empty($page->banner) || !empty($page->featured_image))
                         <div class="col-lg-6">
                             <div class="about-left-image mb-md-30px mb-lm-30px">
-                                <img
-                                    src="{{ asset($page->banner ?? $page->featured_image) }}"
+                                {{-- @dd($page->featured_image) --}}
+                                 @php
+                                        $img = $page->featured_image
+                                            ? ImageUploader::getFilePath($page->featured_image, $page->created_at, 'thumbnail')
+                                            : $fallback;
+                                 @endphp
+                                    <img src="{{ $img }}" alt="{{ $page->title }}" />
+                                {{-- <img
+                                    src="{{ asset($page->banner ?? $page->featured_image ?? 'public/admin/images/dashboard/papernote.jpg')  }}"
                                     alt="{{ $page->title ?? $page->name }}"
                                     class="img-responsive"
-                                />
+                                /> --}}
                             </div>
                         </div>
                     @endif

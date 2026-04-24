@@ -423,7 +423,7 @@ class ProductController extends Controller
     public function update(ProductFormRequest $request, int $id): RedirectResponse
     {
         $validated = $request->validated();
-
+        //dd($validated);
         // do not touch attributes / variants here
         unset($validated['attributes'], $validated['configurable_attributes'], $validated['variants']);
 

@@ -15,7 +15,7 @@ class EnquiryController extends Controller
         protected EnquiryInterface $enquiryRepository
     ) {}
 
-    /**
+    /**                                                                             
      * Enquiry listing
      */
     public function index(EnquiryDataTable $dataTable)

@@ -58,7 +58,7 @@ class ProductController extends Controller
 
         $products    = $this->products->paginateForFrontend($filters, 12);
         $activeTitle = $category->name;
-
+        //dd($products);
         return view('frontend::catalog.product-list', compact('products', 'activeTitle', 'category'));
     }
 
@@ -97,7 +97,7 @@ class ProductController extends Controller
     public function show(string $slug)
     {
         $product = $this->products->findWithVariantsForFrontend($slug);
-
+        //dd($product);
         abort_if(! $product, 404);
 
         $related = $this->products->getRelatedForFrontend($product, 10);

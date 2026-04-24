@@ -96,7 +96,6 @@ class BlogController extends Controller
         $sidebar = $this->sidebarData([
             'activeCategorySlug' => $category->slug,
         ]);
-
         return view('frontend::blogs.category', array_merge(compact('category', 'blogs'), $sidebar));
     }
 

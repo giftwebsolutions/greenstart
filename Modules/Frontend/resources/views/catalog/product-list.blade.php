@@ -49,7 +49,7 @@
                                     <div class="pricing-meta">
                                         <ul>
                                             <li class="current-price">
-                                                ₹{{ number_format($product->price ?? 0, 2) }}
+                                                ₹{{ number_format($product->sales_price ?? 0, 2) }}
                                             </li>
                                         </ul>
                                     </div>
@@ -59,7 +59,7 @@
                                     <button type="button" class="btn btn-success btn-sm js-enquiry-open"
                                         data-product-id="{{ $product->id }}"
                                         data-category-id="{{ $product->category_id ?? 0 }}"
-                                        data-price="{{ $product->price ?? 0 }}"
+                                        data-price="{{ $product->sales_price ?? 0 }}"
                                         data-product-name="{{ $product->name ?? ($product->title ?? '') }}">
                                         Buy Now
                                     </button>

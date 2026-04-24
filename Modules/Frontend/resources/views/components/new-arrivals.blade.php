@@ -18,6 +18,8 @@
 
                 @foreach ($products as $product)
                     @php
+                        //dd($products);
+                        
                         $thumb = ImageUploader::getFilePath($product->thumb ?? '', $product->created_at, 'thumbnail');
                     @endphp
 
@@ -48,7 +50,7 @@
                                     <div class="pricing-meta">
                                         <ul>
                                             <li class="current-price">
-                                                ₹{{ number_format($product->price, 2) }}
+                                                ₹{{ number_format($product->sales_price, 2) }}
                                             </li>
                                         </ul>
                                     </div>

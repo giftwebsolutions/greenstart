@@ -41,6 +41,7 @@
                                         $img = $blog->featured_image
                                             ? ImageUploader::getFilePath($blog->featured_image, $blog->created_at, 'thumbnail')
                                             : $fallback;
+                                          
                                     @endphp
                                     <img src="{{ $img }}" alt="{{ $blog->title }}" />
                                 </div>
