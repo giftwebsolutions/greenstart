@@ -47,3 +47,7 @@ ALTER TABLE `enquiries`
 ALTER TABLE `enquiries`
   MODIFY `id` smallint UNSIGNED NOT NULL AUTO_INCREMENT;
 COMMIT;
+
+
+
+ALTER TABLE `slider_items` ADD `file` VARCHAR(150) NOT NULL AFTER `title`, ADD `target` VARCHAR(10) NULL DEFAULT NULL AFTER `file`;

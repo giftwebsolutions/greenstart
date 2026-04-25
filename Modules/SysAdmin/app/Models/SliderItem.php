@@ -32,6 +32,8 @@ class SliderItem extends Model
 		'slider_id',
 		'path',
 		'title',
+		'file',
+		'target',
 		'description'
 	];
 

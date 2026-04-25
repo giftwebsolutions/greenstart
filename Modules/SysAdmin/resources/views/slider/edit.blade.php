@@ -1,3 +1,6 @@
+@php
+    use Modules\SysAdmin\Helpers\ImageUploader;
+@endphp
 @extends('sysadmin::layouts.master')
 
 @section('breadcrumb-title')
@@ -75,7 +78,7 @@
                                 @if($slider->thumbnail)
                                     <div class="mt-2">
                                         <img id="thumbnailPreview"
-                                             src="{{ asset('storage/' . $slider->thumbnail) }}"
+                                             src="{{ ImageUploader::getFilePath($slider->thumbnail, $slider->created_at, 'thumbnail'); }}"
                                              class="img-fluid rounded" style="max-height:150px;">
                                     </div>
                                 @else
