@@ -36,7 +36,7 @@ class SliderItemRepository extends BaseRepository implements SliderItemInterface
     public function save($data)
     {
         $response = '';
-        $data['file'] = ImageUploader::upload($data['file'], null);
+        $data['file'] = ImageUploader::upload($data['file'], null);        
         $response = parent::create($data);
         return $response;
     }
@@ -46,7 +46,6 @@ class SliderItemRepository extends BaseRepository implements SliderItemInterface
     {
         $slideritem = $this->find($id);
         $createdAt = $slideritem->created_at;
-
         ImageUploader::remove($createdAt, $slideritem->file);
     }
     /**

@@ -4,7 +4,7 @@
 @php
     use Modules\SysAdmin\Helpers\ImageUploader;
     use Modules\SysAdmin\Models\Blocks;
-    $myTabs = [['category_id' => 7, 'label' => 'Handle'], ['category_id' => 8, 'label' => 'Hinges']];
+    //$myTabs = [['category_id' => 7, 'label' => 'Handle'], ['category_id' => 8, 'label' => 'Hinges']];
     $home_blocks = ['home-free-shipping', 'home-support'];
     $homeBlocks = Blocks::whereIn('key', $home_blocks)->get()->toArray();
 @endphp
@@ -190,8 +190,9 @@
     <!-- Banner Area End -->
 
     <!-- Category Tab Slider Area Start -->
+     @dd($tabs);
     <x-frontend::category-tab-slider title="Featured Products" sub-title="Best quality parts for your vehicle"
-        :banner="asset('assets/images/icons/static-icons-1.png')" :tabs-config="$myTabs" :limit="8" />
+        :banner="asset('assets/images/icons/static-icons-1.png')" :tabs=$tabs :limit="8" />
     <!-- Category Tab Slider Area End -->
     <x-frontend::home-blog />
 

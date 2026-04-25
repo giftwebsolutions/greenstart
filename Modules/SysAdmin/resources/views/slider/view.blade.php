@@ -48,7 +48,6 @@
                     </div>
                 </div>
             </div>
-
             @if ($slider['thumbnail'])
                 <div class="col-md-4">
                     <div class="card">

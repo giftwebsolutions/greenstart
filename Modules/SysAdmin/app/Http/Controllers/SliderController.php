@@ -61,6 +61,7 @@ class SliderController extends Controller
     public function show($id)
     {
         $slider = $this->sliderRepository->with('sliderItems')->findOrFail($id)->toArray();
+        //dd($slider);
         return view('sysadmin::slider.view')->with([
             'slider' => $slider
         ]);
@@ -82,7 +83,7 @@ class SliderController extends Controller
     {
         $validatedData = $request->validated();
         $page = $this->sliderRepository->saveOrUpdate($validatedData, $id);
-        return redirect()->route('sysadmin.media.slider.index');
+        return redirect()->route('sysadmin.slider.index');
     }
     public function itemCreate(SliderItemFormRequest $request, $id): RedirectResponse
     {

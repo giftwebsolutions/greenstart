@@ -1,7 +1,7 @@
 @php
     use Modules\SysAdmin\Helpers\ImageUploader;
-    //dd($tabs);
 @endphp
+@dd($tabs);
 @if ($tabs && count($tabs) > 0)
     <div class="category-tab-slider-area mb-60px">
         <div class="container">

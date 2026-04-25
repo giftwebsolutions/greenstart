@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Modules\SysAdmin\Interfaces\EnquiryInterface;
 use Modules\SysAdmin\Models\Page;
 use Modules\SysAdmin\Models\ProductCategory;
+use Modules\SysAdmin\Repository\SliderRepository;
+use Modules\SysAdmin\Repository\SliderItemRepository;
 use Modules\SysAdmin\Repository\TestimonialRepository;
 
 class FrontendController extends Controller
@@ -16,11 +18,13 @@ class FrontendController extends Controller
     /**
      * Home Page
      */
-    public function index(TestimonialRepository $testimonialRepo)
+    public function index(TestimonialRepository $testimonialRepo, SliderRepository $slider)
     {
+        $tabs = $slider->with('sliderItems')->find('2')->toArray();
+        //dd($tabs);
         $testimonials = $testimonialRepo->recentFrontend(6);
         $home = Page::where('slug', 'home')->active()->first();
-        return view('frontend::index', compact('testimonials', 'home'));
+        return view('frontend::index', compact('testimonials', 'home', 'tabs'));
     }
 
     public function newarraival()

@@ -51,3 +51,5 @@ COMMIT;
 
 ALTER TABLE `product` ADD `product_code` VARCHAR(50) NULL DEFAULT NULL AFTER `title`;
 ALTER TABLE `product` ADD `model` VARCHAR(150) NULL DEFAULT NULL AFTER `product_code`;
+
+ALTER TABLE `slider_items` ADD `file` VARCHAR(150) NOT NULL AFTER `title`, ADD `target` VARCHAR(10) NULL DEFAULT NULL AFTER `file`;

@@ -23,6 +23,8 @@ class SliderDataTable extends DataTable
         $query = new EloquentDataTable($query);
         $query->addColumn('action', function ($data) {
             return $this->getActionColumn($data);
+        })->editColumn('status', function ($data) {
+            return ($data->status == 1 ? 'Active' : 'Draft');
         })->editColumn('created_at', function ($data) {
             return Carbon::createFromFormat('Y-m-d H:i:s', $data->created_at);
         })->setRowId('id');
