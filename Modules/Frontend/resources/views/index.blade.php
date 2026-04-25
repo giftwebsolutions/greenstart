@@ -124,7 +124,7 @@
             <div class="container">
                 <div class="container-inner">
                     <div class="row">
-
+                
                         {{-- Image --}}
                         <div class="col-lg-6">
                             <div class="about-left-image mb-md-30px mb-lm-30px">

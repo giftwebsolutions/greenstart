@@ -37,7 +37,7 @@ Route::prefix('shop')->group(function () {
     Route::get('/newarraival', [ProductController::class, 'newarraival'])
         ->name('frontend.shop.newarraival');
 
-    Route::get('/categories', [ProductController::class, 'categories'])
+    Route::get('/categories/', [ProductController::class, 'categories'])
         ->name('frontend.shop.categories');
 
     Route::get('/products', [ProductController::class, 'index'])

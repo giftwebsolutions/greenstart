@@ -6,7 +6,7 @@
 
 @section('breadcrumb-items')
     <li class="breadcrumb-item">Media</li>
-    <li class="breadcrumb-item"><a href="{{ route('sysadmin.media.slider.index') }}">Sliders</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('sysadmin.slider.index') }}">Sliders</a></li>
     <li class="breadcrumb-item active">Create</li>
 @endsection
 
@@ -28,7 +28,7 @@
             <div class="col-md-8 offset-md-2">
                 <div class="card">
                     <form id="create-slider" class="theme-form" method="POST" enctype="multipart/form-data"
-                          action="{{ route('sysadmin.media.slider.store') }}">
+                          action="{{ route('sysadmin.slider.store') }}">
                         @csrf
 
                         <div class="card-header p-3">
@@ -81,7 +81,7 @@
                         </div>
 
                         <div class="card-footer text-end">
-                            <a href="{{ route('sysadmin.media.slider.index') }}" class="btn btn-secondary">Cancel</a>
+                            <a href="{{ route('sysadmin.slider.index') }}" class="btn btn-secondary">Cancel</a>
                             <button type="submit" class="btn btn-primary mx-2">Save</button>
                         </div>
                     </form>

@@ -38,7 +38,7 @@ class SliderDataTable extends DataTable
             ->orderBy(1)
             ->selectStyleSingle()
             ->buttons([
-                Button::make('add')->action("window.location = '" . route('sysadmin.media.slider.create') . "';"),
+                Button::make('add')->action("window.location = '" . route('sysadmin.slider.create') . "';"),
                 Button::make('excel'),
                 //Button::make('csv'),
                 // Button::make('pdf'),
@@ -61,9 +61,9 @@ class SliderDataTable extends DataTable
 
     protected function getActionColumn($data): string
     {
-        $showUrl = route('sysadmin.media.slider.view', $data->id);
-        $editUrl = route('sysadmin.media.slider.edit', $data->id);
-        $deleteUrl = route('sysadmin.media.slider.delete', $data->id);
+        $showUrl = route('sysadmin.slider.view', $data->id);
+        $editUrl = route('sysadmin.slider.edit', $data->id);
+        $deleteUrl = route('sysadmin.slider.delete', $data->id);
         return '
         <ul class="action">
             <li class="edit"> <a href="' . $editUrl . '" data-bs-original-title="edit" title="edit"><i class="icon-pencil-alt"></i></a></li>

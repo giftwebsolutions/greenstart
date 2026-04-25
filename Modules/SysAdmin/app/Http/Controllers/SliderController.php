@@ -9,6 +9,8 @@ use Modules\SysAdmin\DataTables\SliderDataTable;
 use Modules\SysAdmin\Interfaces\SliderInterface;
 use Modules\SysAdmin\Interfaces\SliderItemInterface;
 use Modules\SysAdmin\Requests\SliderFormRequest;
+use Modules\SysAdmin\Requests\SliderItemFormRequest;
+use Modules\SysAdmin\Helpers\ImageUploader;
 
 class SliderController extends Controller
 {
@@ -32,15 +34,25 @@ class SliderController extends Controller
     {
         return view('sysadmin::slider.create');
     }
-
+    public function slideritemcreate()
+    {
+        return view('sysadmin::slider.view');
+    }
     /**
      * Store a newly created resource in storage.
      */
     public function store(SliderFormRequest $request): RedirectResponse
     {
         $validatedData = $request->validated();
+        //dd($validatedData);
         $this->sliderRepository->saveOrUpdate($validatedData);
-        return redirect()->route('sysadmin.media.slider.index');
+        return redirect()->route('sysadmin.slider.index');
+    }
+    public function slideritemstore(SliderItemFormRequest $request): RedirectResponse
+    {
+        $validatedData = $request->validated();
+        $this->sliderItemRepository->saveOrUpdate($validatedData);
+        return redirect()->route('sysadmin.slider.view');
     }
 
     /**
@@ -48,9 +60,9 @@ class SliderController extends Controller
      */
     public function show($id)
     {
-        $page = $this->sliderRepository->findOrFail($id)->toArray();
+        $slider = $this->sliderRepository->with('sliderItems')->findOrFail($id)->toArray();
         return view('sysadmin::slider.view')->with([
-            'page' => $page,
+            'slider' => $slider
         ]);
     }
 
@@ -72,13 +84,44 @@ class SliderController extends Controller
         $page = $this->sliderRepository->saveOrUpdate($validatedData, $id);
         return redirect()->route('sysadmin.media.slider.index');
     }
+    public function itemCreate(SliderItemFormRequest $request, $id): RedirectResponse
+    {
+        //dd($request);
+        $validatedData = $request->validated();
+        $this->sliderItemRepository->save($validatedData);
+
+        return redirect()->route('sysadmin.slider.view', $id);
+    }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)
     {
-        $this->sliderRepository->delete($id);
-        return redirect()->route('sysadmin.media.slider.index');
+        $slider = $this->sliderRepository->where('id', $id)->with('sliderItems')->first();
+
+        if ($slider) {
+
+            foreach ($slider->sliderItems as $item) {
+                ImageUploader::remove($item->created_at, $item->file);
+            }
+            $this->sliderItemRepository->where('slider_id', $slider->id)->delete();
+            if ($slider->thumbnail) {
+                ImageUploader::remove($slider->created_at, $slider->thumbnail);
+            }
+            $slider->delete();
+        }
+
+        return redirect()->route('sysadmin.slider.index');
+    }
+
+    public function itemDelete($id)
+    {
+        $item = $this->sliderItemRepository->where('id', $id)->first();
+        if ($item) {
+            ImageUploader::remove($item->created_at, $item->file);
+            $item->delete();
+        }
+        return redirect()->route('sysadmin.slider.view', $item->slider_id);
     }
 }

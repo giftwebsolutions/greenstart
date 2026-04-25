@@ -182,4 +182,7 @@ class FrontendServiceProvider extends ServiceProvider
             config()->set('site-settings', array_merge(config('site-settings'), $settings));
         }
     }
+
+    
+   
 }

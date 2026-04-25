@@ -20,10 +20,8 @@ class ProductController extends Controller
     public function categories()
     {
         $rootCategories = $this->categories->getMenuTree();
-
-        //dd( $rootCategories);
-
-        return view('frontend::catalog.categories', compact('rootCategories'));
+        $products    = $this->products->paginateForFrontend([], 12);
+        return view('frontend::catalog.categories', compact('rootCategories', 'products'));
     }
 
     /**
@@ -48,9 +46,7 @@ class ProductController extends Controller
     public function category(string $slug, Request $request)
     {
         $category = $this->categories->findBySlug($slug);
-
         abort_if(! $category, 404);
-
         $filters = [
             'category_id' => $category->id,
             'search'      => $request->get('q'),
@@ -58,7 +54,7 @@ class ProductController extends Controller
 
         $products    = $this->products->paginateForFrontend($filters, 12);
         $activeTitle = $category->name;
-
+        //dd($products);
         return view('frontend::catalog.product-list', compact('products', 'activeTitle', 'category'));
     }
 
@@ -97,7 +93,7 @@ class ProductController extends Controller
     public function show(string $slug)
     {
         $product = $this->products->findWithVariantsForFrontend($slug);
-
+        //dd($product);
         abort_if(! $product, 404);
 
         $related = $this->products->getRelatedForFrontend($product, 10);

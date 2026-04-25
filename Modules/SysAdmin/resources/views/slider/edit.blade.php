@@ -6,7 +6,7 @@
 
 @section('breadcrumb-items')
     <li class="breadcrumb-item">Media</li>
-    <li class="breadcrumb-item"><a href="{{ route('sysadmin.media.slider.index') }}">Sliders</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('sysadmin.slider.index') }}">Sliders</a></li>
     <li class="breadcrumb-item active">Edit</li>
 @endsection
 
@@ -28,7 +28,7 @@
             <div class="col-md-8 offset-md-2">
                 <div class="card">
                     <form id="edit-slider" class="theme-form" method="POST" enctype="multipart/form-data"
-                          action="{{ route('sysadmin.media.slider.update', $slider->id) }}">
+                          action="{{ route('sysadmin.slider.update', $slider->id) }}">
                         @method('PATCH')
                         @csrf
 
@@ -86,7 +86,7 @@
                         </div>
 
                         <div class="card-footer text-end">
-                            <a href="{{ route('sysadmin.media.slider.index') }}" class="btn btn-secondary">Cancel</a>
+                            <a href="{{ route('sysadmin.slider.index') }}" class="btn btn-secondary">Cancel</a>
                             <button type="submit" class="btn btn-primary mx-2">Update</button>
                         </div>
                     </form>
