@@ -52,7 +52,8 @@ class Product extends Model
 		// keep fillable for backward-compatibility,
 		// but controller/repository should not trust request input for 'type'
 		'type',
-
+		'product_code',
+		'model',
 		'is_featured',
 		'video',
 		'catalog',

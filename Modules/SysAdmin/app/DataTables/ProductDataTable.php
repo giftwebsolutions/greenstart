@@ -26,7 +26,7 @@ class ProductDataTable extends DataTable
             ->select([
                 'id',
                 'title',
-                'sku',
+                'model',
                 'product_category',
                 'sub_product_category',
                 'is_featured',
@@ -102,7 +102,7 @@ class ProductDataTable extends DataTable
         return [
             Column::make('id'),
             Column::make('title'),
-            Column::make('sku'),
+            Column::make('model'),
             Column::make('category_name')
                 ->title('Category')
                 ->searchable(false)

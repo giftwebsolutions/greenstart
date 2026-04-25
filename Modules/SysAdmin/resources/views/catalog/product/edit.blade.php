@@ -85,6 +85,21 @@
                                 </div>
                             </div>
 
+                             <div class="row mb-3">
+                                <label class="col-md-12 col-form-label">Product Code</label>
+                                <div class="col-md-12">
+                                    <input type="text" name="product_code" id="product_code" class="form-control" value="{{ old('product_code', $product->product_code) }}">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label class="col-md-12 col-form-label">Model No</label>
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" value="{{ old('model', $product->title) }}" name="model" id="model">
+                                </div>
+                            </div>
+
+
                             {{-- Keywords --}}
                             <div class="row mb-3">
                                 <label class="col-md-12 col-form-label">Keywords</label>

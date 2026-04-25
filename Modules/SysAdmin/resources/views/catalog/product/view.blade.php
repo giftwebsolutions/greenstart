@@ -35,7 +35,8 @@
             <div class="card p-3 mb-3">
                 <h4 class="mb-2">{{ $product->title }}</h4>
 
-                <p class="mb-1"><strong>SKU:</strong> {{ $product->sku ?: '-' }}</p>
+                <p class="mb-1"><strong>Model:</strong> {{ $product->model ?: '-' }}</p>
+                <p class="mb-1"><strong>Product Code:</strong> {{ $product->product_code ?: '-' }}</p>
                 <p class="mb-1"><strong>Status:</strong> {{ $status }}</p>
                 <p class="mb-1"><strong>Type:</strong> {{ (int)$product->type === 2 ? 'Variable' : 'Simple' }}</p>
                 <p class="mb-1"><strong>Category:</strong> {{ $category->name ?? '-' }}</p>

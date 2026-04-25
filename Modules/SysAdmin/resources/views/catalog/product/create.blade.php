@@ -54,6 +54,20 @@
                                 </div>
                             </div>
 
+                            <div class="row mb-3">
+                                <label class="col-md-12 col-form-label">Product Code</label>
+                                <div class="col-md-12">
+                                    <input type="text" name="prodcut_code" id="product_code" class="form-control" value="">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label class="col-md-12 col-form-label">Model No</label>
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" value="" name="model" id="model">
+                                </div>
+                            </div>
+
                             {{-- Keywords --}}
                             <div class="row mb-3">
                                 <label class="col-md-12 col-form-label">Keywords</label>

@@ -78,7 +78,7 @@
                                         </label>
 
                                         <div class="col-md-12 mb-2">
-                                            @if ($attribute->type == 3 && $attribute->values->count())
+                                            @if ($attribute->type == 2 && $attribute->values->count())
                                                 <select name="attributes[{{ $attribute->id }}]" class="form-select">
                                                     <option value="">Select {{ $attribute->name }}</option>
                                                     @foreach ($attribute->values as $v)

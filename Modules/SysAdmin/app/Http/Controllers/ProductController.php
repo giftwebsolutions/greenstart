@@ -73,7 +73,7 @@ class ProductController extends Controller
             if ($request->filled('attribute_set_id')) {
                 $product->attribute_set_id = (int) $request->input('attribute_set_id');
             }
-            $product->type = $this->determineProductTypeFromAttributeSet($product->attribute_set_id);
+            //$product->type = $this->determineProductTypeFromAttributeSet($product->attribute_set_id);
             $product->save();
 
             if ($request->hasFile('gallery_images')) {
@@ -439,7 +439,7 @@ class ProductController extends Controller
         }
 
         // IMPORTANT: re-determine product type
-        $product->type = $this->determineProductTypeFromAttributeSet($product->attribute_set_id);
+        //$product->type = $this->determineProductTypeFromAttributeSet($product->attribute_set_id);
         $product->save();
 
         // Gallery update

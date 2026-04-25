@@ -47,3 +47,7 @@ ALTER TABLE `enquiries`
 ALTER TABLE `enquiries`
   MODIFY `id` smallint UNSIGNED NOT NULL AUTO_INCREMENT;
 COMMIT;
+
+
+ALTER TABLE `product` ADD `product_code` VARCHAR(50) NULL DEFAULT NULL AFTER `title`;
+ALTER TABLE `product` ADD `model` VARCHAR(150) NULL DEFAULT NULL AFTER `product_code`;

@@ -41,6 +41,9 @@ class ProductFormRequest extends FormRequest
             'description'          => ['nullable', 'string'], // editor can send empty initially
             'sku'                  => ['nullable', 'string', 'max:100'],
 
+            'product_code'           => ['nullable', 'string', 'max:100'],
+            'model'                  => ['nullable', 'string', 'max:100'],
+            
             // Auto-determined by attribute set – do NOT validate type from request
             'type' => ['nullable', 'integer', 'min:0'],
 
@@ -86,6 +89,9 @@ class ProductFormRequest extends FormRequest
             'short_description'    => ['nullable', 'string', 'max:180'],
             'description'          => ['nullable', 'string'],
             'sku'                  => ['nullable', 'string', 'max:100'],
+
+            'product_code'           => ['nullable', 'string', 'max:100'],
+            'model'                  => ['nullable', 'string', 'max:100'],
 
             // Auto-determined by attribute set – do NOT validate type from request
             'type' => ['nullable', 'integer', 'min:0'],
