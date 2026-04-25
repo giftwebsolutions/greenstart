@@ -51,6 +51,31 @@ return [
             ]
         ]
     ],
+
+    [
+        'key'        => 'slider',
+        'name'       => 'Slider',
+        'route'      => 'sysadmin.slider.index',
+        'sort'       => 1,
+        'icon'       => 'stroke-project',
+        'children' => [
+            [
+                'key'        => 'create-slider',
+                'name'       => 'Create Slider',
+                'route'      => 'sysadmin.slider.create',
+                'sort'       => 1,
+                'icon'       => 'icon-gear',
+            ],
+            [
+                'key'        => 'index-slider',
+                'name'       => 'Manage Slider',
+                'route'      => 'sysadmin.slider.index',
+                'sort'       => 1,
+                'icon'       => 'icon-gear',
+            ]
+        ]
+    ],
+
     [
         'key'        => 'catalog',
         'name'       => 'Catalog',

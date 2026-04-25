@@ -90,6 +90,33 @@ Route::prefix('sysadmin')
             Route::get('destroy/{id}', 'destroy')->name('delete');
         });
 
+        Route::prefix('slider')
+                ->as('slider.')
+                ->controller(Modules\SysAdmin\Http\Controllers\SliderController::class)
+                ->group(function () {
+
+                    // List
+                    Route::get('/', 'index')->name('index');
+
+                    // Create
+                    Route::get('/create', 'create')->name('create');
+                    Route::post('/store', 'store')->name('store');
+
+                    // View
+                    Route::get('/view/{id}', 'show')->name('view');
+
+                    // Edit
+                    Route::get('/edit/{id}', 'edit')->name('edit');
+
+                    // Update
+                    Route::patch('/update/{id}', 'update')->name('update');
+
+                    // Delete
+                    Route::get('/delete/{id}', 'destroy')->name('delete');
+                    Route::post('/item-delete/{id}', 'itemDelete')->name('item-delete');
+                    Route::post('/item-save/{id}', 'itemCreate')->name('item-create');
+            });
+
     Route::prefix('enquiry')
         ->as('enquiry.')
         ->controller(Modules\SysAdmin\Http\Controllers\EnquiryController::class)
@@ -273,16 +300,6 @@ Route::prefix('sysadmin')
                 Route::get('destroy/{id}', 'destroy')->name('delete');
                 Route::post('add-item/{id}/{created_at}', 'uploadItem')->name('item.upload');
                 Route::delete('remove-item/{id}', 'removeItem')->name('item.remove');
-            });
-
-            Route::controller(Modules\SysAdmin\Http\Controllers\SliderController::class)->prefix('slider')->as('slider.')->group(function () {
-                Route::get('/', 'index')->name('index');
-                Route::get('view/{id}', 'show')->name('view');
-                Route::get('create', 'create')->name('create');
-                Route::post('create', 'store')->name('store');
-                Route::get('edit/{id}', 'edit')->name('edit');
-                Route::patch('update/{id}', 'update')->name('update');
-                Route::get('destroy/{id}', 'destroy')->name('delete');
             });
 
             // Sitemap
