@@ -20,12 +20,18 @@ class ProductRepository extends BaseRepository implements ProductInterface
     {
         $this->resetModel();
 
+        //dd($filters);
+
         $this->scopeQuery(function ($q) use ($filters) {
             $q = $q->where('status', 1);
 
             // category filter
             if (!empty($filters['category_id'])) {
                 $q->where('product_category', $filters['category_id']);
+            }
+
+            if (!empty($filters['category_id'])) {
+                $q->where('sub_product_category ', $filters['category_id']);
             }
 
             // search filter

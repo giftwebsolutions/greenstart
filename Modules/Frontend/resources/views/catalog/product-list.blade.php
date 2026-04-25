@@ -21,6 +21,7 @@
     <div class="shop-category-area pt-30px pb-60px">
         <div class="container">
             <div class="row">
+                
                 @forelse ($products as $product)
                     <div class="col-lg-3 col-md-4 col-sm-6 mb-30px">
                         <article class="list-product text-left">
