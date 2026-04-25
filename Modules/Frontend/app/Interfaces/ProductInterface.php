@@ -4,6 +4,7 @@ namespace Modules\Frontend\Interfaces;
 
 use Prettus\Repository\Contracts\RepositoryInterface;
 use Modules\SysAdmin\Models\Product;
+use Illuminate\Database\Eloquent\Collection;
 
 interface ProductInterface extends RepositoryInterface
 {
@@ -14,4 +15,10 @@ interface ProductInterface extends RepositoryInterface
     public function findWithVariantsForFrontend(string|int $id): ?Product;
 
     public function getRelatedForFrontend(Product $product, int $limit = 10);
+
+    /**
+     * Returns active attribute groups with their filterable attributes + values,
+     * used to render the sidebar filter panel.
+     */
+    public function getFilterableGroups(): Collection;
 }

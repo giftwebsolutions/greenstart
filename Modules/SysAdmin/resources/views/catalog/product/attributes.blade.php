@@ -15,7 +15,7 @@
 @section('content')
     <div class="container-fluid">
 
-        {{-- ✅ enctype required for variant image upload --}}
+        {{-- enctype required for variant image upload --}}
         <form method="POST" enctype="multipart/form-data"
             action="{{ route('sysadmin.catalog.product.attributes.store', $product->id) }}">
             @csrf
@@ -134,7 +134,7 @@
                                                 <th>Price</th>
                                                 <th>Stock</th>
 
-                                                {{-- ✅ NEW --}}
+                                                {{--  NEW --}}
                                                 <th style="min-width:220px;">Image</th>
 
                                                 <th>Status</th>
@@ -188,7 +188,7 @@
                                                             value="{{ old("variants.$rowIndex.stock", $variant->stock) }}">
                                                     </td>
 
-                                                    {{-- ✅ NEW: Variant Image + remove flag --}}
+                                                    {{--  NEW: Variant Image + remove flag --}}
                                                     <td>
                                                         <input type="file" name="variants[{{ $rowIndex }}][thumb]"
                                                             class="form-control form-control-sm variant-thumb-input"
@@ -273,7 +273,7 @@
                                                     <td><input type="number" name="variants[0][stock]"
                                                             class="form-control" value="0"></td>
 
-                                                    {{-- ✅ NEW --}}
+                                                    {{-- NEW --}}
                                                     <td>
                                                         <input type="file" name="variants[0][thumb]"
                                                             class="form-control form-control-sm variant-thumb-input"
@@ -382,7 +382,7 @@
                 return name.replace(/variants\[\d+]/g, 'variants[' + newIndex + ']');
             }
 
-            // ✅ always compute next index from DOM (safe after delete)
+            //  always compute next index from DOM (safe after delete)
             function getNextVariantIndex() {
                 let max = -1;
                 tableBody.querySelectorAll('input[name^="variants["], select[name^="variants["]').forEach(el => {
@@ -392,7 +392,7 @@
                 return max + 1;
             }
 
-            // ✅ preview image when selected
+            //  preview image when selected
             tableBody.addEventListener('change', function(e) {
                 const input = e.target.closest('.variant-thumb-input');
                 if (!input) return;
@@ -415,7 +415,7 @@
                 }
             });
 
-            // ✅ remove thumb (set remove_thumb=1)
+            //  remove thumb (set remove_thumb=1)
             tableBody.addEventListener('click', function(e) {
                 const btn = e.target.closest('.variant-remove-thumb');
                 if (!btn) return;
@@ -440,7 +440,7 @@
                 btn.classList.add('d-none');
             });
 
-            // ✅ add row (clean clone)
+            //  add row (clean clone)
             addBtn.addEventListener('click', function() {
                 const lastRow = tableBody.querySelector('tr:last-child');
                 if (!lastRow) return;
@@ -448,7 +448,7 @@
                 const newIndex = getNextVariantIndex();
                 const newRow = lastRow.cloneNode(true);
 
-                // ✅ remove hidden id so it creates new variant
+                //  remove hidden id so it creates new variant
                 newRow.querySelectorAll('input[name$="[id]"]').forEach(el => el.remove());
 
                 newRow.querySelectorAll('input, select, textarea').forEach(function(el) {
@@ -484,7 +484,7 @@
                 tableBody.appendChild(newRow);
             });
 
-            // ✅ remove row UI
+            //  remove row UI
             tableBody.addEventListener('click', function(e) {
                 const btn = e.target.closest('.remove-variant-row');
                 if (!btn) return;

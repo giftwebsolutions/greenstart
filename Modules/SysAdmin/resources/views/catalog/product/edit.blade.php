@@ -441,7 +441,7 @@
                 loadSubCategories(parentId);
             });
 
-            // ✅ On edit / validation error – preselect existing subcategory
+            //  On edit / validation error – preselect existing subcategory
             const initialParent = $categorySelect.val(); // existing category
             const preselectedSub = $subCategorySelect.data('selected') || null; // existing subcategory
 

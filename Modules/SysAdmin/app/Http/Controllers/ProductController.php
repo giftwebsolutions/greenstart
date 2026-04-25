@@ -233,7 +233,7 @@ class ProductController extends Controller
 
             // valid row
             if ($name !== '' || $sku !== '' || $hasAttrs) {
-                $filteredVariants[$key] = $row; // ✅ keep original key
+                $filteredVariants[$key] = $row; //  keep original key
             }
         }
 
