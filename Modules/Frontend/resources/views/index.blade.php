@@ -4,7 +4,7 @@
 @php
     use Modules\SysAdmin\Helpers\ImageUploader;
     use Modules\SysAdmin\Models\Blocks;
-    //$myTabs = [['category_id' => 7, 'label' => 'Handle'], ['category_id' => 8, 'label' => 'Hinges']];
+    $myTabs = [['category_id' => 7, 'label' => 'Handle'], ['category_id' => 8, 'label' => 'Hinges']];
     $home_blocks = ['home-free-shipping', 'home-support'];
     $homeBlocks = Blocks::whereIn('key', $home_blocks)->get()->toArray();
 @endphp
@@ -13,45 +13,11 @@
     <div class="slider-area">
         <div class="hero-slider-wrapper">
             <!-- Single Slider  -->
-            <div class="single-slide slider-height-1 bg-img d-flex"
-                data-bg-image=" {{ asset('assets/images/slider-image/sample-1.jpg') }}">
-                <div class="container align-self-center">
-                    <div class="slider-content-1 slider-animated-1 text-left">
-                        <span class="title theme-color">Black Friday.</span>
-                        <h1 class="animated color-white">Car Brake Pads <br> Sale 50% Off</h1>
-                        <p class="animated color-white">Lets diagnose your vehicle’s brake prodblems and offer solutions
-                            that fit your budget.</p>
-                        <a href="shop-4-column.html" class="shop-btn animated">Shopping Now</a>
-                    </div>
+             @foreach ($sliderdata as $slider)
+                <div class="single-slide slider-height-1 bg-img d-flex"
+                    data-bg-image=" {{ ImageUploader::getFilePath($slider['file'], $slider['created_at']) }}">
                 </div>
-            </div>
-            <!-- Single Slider  -->
-            <div class="single-slide slider-height-1 bg-img d-flex"
-                data-bg-image=" {{ asset('assets/images/slider-image/sample-2.jpg') }}">
-                <div class="container align-self-center">
-                    <div class="slider-content-1 slider-animated-2 text-left">
-                        <span class="title color-white">New Arrivals</span>
-                        <h1 class="animated color-white">Quadrum <br> 1100MM Wheels </h1>
-                        <p class="animated color-white">Strong All-Season Perfomance for your CUV/SUV with a 60K
-                            warranty</p>
-                        <a href="shop-4-column.html" class="shop-btn animated">Shopping Now</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Single Slider  -->
-            <div class="single-slide slider-height-1 bg-img d-flex"
-                data-bg-image=" {{ asset('assets/images/slider-image/sample-3.jpg') }}">
-                <div class="container align-self-center">
-                    <div class="slider-content-1 slider-animated-3 text-left">
-                        <span class="title theme-color">T1 - series 2018</span>
-                        <h1 class="animated color-white">Led Headlight <br> Bulbs</h1>
-                        <p class="animated color-white">Headlights at low internet prices from the UK’s leading vehicle
-                            headlights specialist</p>
-                        <a href="shop-4-column.html" class="shop-btn animated">Shopping Now</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Single Slider  -->
+             @endforeach
         </div>
     </div>
     <!-- Slider End -->
@@ -190,9 +156,8 @@
     <!-- Banner Area End -->
 
     <!-- Category Tab Slider Area Start -->
-     @dd($tabs);
     <x-frontend::category-tab-slider title="Featured Products" sub-title="Best quality parts for your vehicle"
-        :banner="asset('assets/images/icons/static-icons-1.png')" :tabs=$tabs :limit="8" />
+        :banner="asset('assets/images/icons/static-icons-1.png')" :tabs-config="$myTabs" :limit="8" />
     <!-- Category Tab Slider Area End -->
     <x-frontend::home-blog />
 

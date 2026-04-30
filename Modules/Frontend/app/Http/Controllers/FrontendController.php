@@ -20,11 +20,12 @@ class FrontendController extends Controller
      */
     public function index(TestimonialRepository $testimonialRepo, SliderRepository $slider)
     {
-        $tabs = $slider->with('sliderItems')->find('2')->toArray();
-        //dd($tabs);
+        $slider = $slider->with('sliderItems')->find('2')->toArray();
+        $sliderdata = $slider['slider_items'];
+        //dd($sliderdata);
         $testimonials = $testimonialRepo->recentFrontend(6);
         $home = Page::where('slug', 'home')->active()->first();
-        return view('frontend::index', compact('testimonials', 'home', 'tabs'));
+        return view('frontend::index', compact('testimonials', 'home', 'sliderdata'));
     }
 
     public function newarraival()
