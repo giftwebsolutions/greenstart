@@ -95,7 +95,7 @@
                             <div class="row mb-3">
                                 <label class="col-md-12 col-form-label">Model No</label>
                                 <div class="col-md-12">
-                                    <input type="text" class="form-control" value="{{ old('model', $product->title) }}" name="model" id="model">
+                                    <input type="text" class="form-control" value="{{ old('model', $product->model) }}" name="model" id="model">
                                 </div>
                             </div>
 

@@ -62,6 +62,8 @@ class ProductController extends Controller
         try {
             $validated = $request->validated();
 
+            //dd($validated);
+
             unset($validated['attributes'], $validated['configurable_attributes'], $validated['variants']);
 
             //unset($validated['type']);

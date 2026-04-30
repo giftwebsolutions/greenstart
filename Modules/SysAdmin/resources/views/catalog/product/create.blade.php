@@ -57,7 +57,7 @@
                             <div class="row mb-3">
                                 <label class="col-md-12 col-form-label">Product Code</label>
                                 <div class="col-md-12">
-                                    <input type="text" name="prodcut_code" id="product_code" class="form-control" value="">
+                                    <input type="text" name="product_code" id="product_code" class="form-control" value="">
                                 </div>
                             </div>
 

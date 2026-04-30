@@ -14,17 +14,12 @@ class ProductFormRequest extends FormRequest
 
     public function rules(): array
     {
-        $routeName = request()->route()->action['as'] ?? null;
 
-        return match ($routeName) {
-            'sysadmin.product.create',
-            'sysadmin.product.store',
-            'sysadmin.catalog.product.store'  => $this->store(),
-
-            'sysadmin.catalog.product.edit',
+     return match (request()->route()->action['as']) {
+            'sysadmin.catalog.product.create',  => $this->store(),
+            'sysadmin.catalog.product.edit' => $this->update(),
             'sysadmin.catalog.product.update' => $this->update(),
-
-            default => $this->store(),
+            default => $this->store()
         };
     }
 
