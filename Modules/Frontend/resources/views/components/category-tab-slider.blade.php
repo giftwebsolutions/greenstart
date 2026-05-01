@@ -72,8 +72,7 @@
                                                                 );
 
                                                                 // If you have relation `variants`, you can adjust this:
-                                                                $price =
-                                                                    optional($product->variants->first())->price ?? 0;
+                                                                $price = ($product->type == 2) ? optional($product->variants->first())->sales_price ?? 0 : $product->sales_price;
                                                             @endphp
 
                                                             <article class="product-layout list-product text-left">

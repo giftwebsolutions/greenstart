@@ -40,6 +40,12 @@ class ShopController extends Controller
         // Force the main category; user may further filter by sub-category
         $filters = $this->buildFilters($request, ['c_cat' => $category->id]);
 
+        if(isset($_GET['s_cat'])) {
+            $filters = $this->buildFilters($request, ['s_cat' => $_GET['s_cat']]);
+        }
+
+        //dd($filters);
+
         $products       = $this->products->paginateForFrontend($filters, 12);
         $filterGroups   = $this->products->getFilterableGroups();
         $rootCategories = $this->categories->getMenuTree();

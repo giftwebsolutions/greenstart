@@ -30,19 +30,19 @@ class ProductRepository extends BaseRepository implements ProductInterface
         $this->resetModel();
 
         $this->scopeQuery(function ($q) use ($filters) {
-            $q->where('status', 1);
+            $q = $q->newQuery()->where('status', 1);
 
             if (!empty($filters['c_cat'])) {
-                $q->where('product_category', (int) $filters['c_cat']);
+                $q = $q->where('product_category', (int) $filters['c_cat']);
             }
 
             if (!empty($filters['s_cat'])) {
-                $q->where('sub_product_category', (int) $filters['s_cat']);
+                $q = $q->where('sub_product_category', (int) $filters['s_cat']);
             }
 
             if (!empty($filters['search'])) {
                 $search = $filters['search'];
-                $q->where(function ($sub) use ($search) {
+                $q = $q->where(function ($sub) use ($search) {
                     $sub->where('title', 'like', "%{$search}%")
                         ->orWhere('keywords', 'like', "%{$search}%")
                         ->orWhere('sku', 'like', "%{$search}%");
@@ -56,23 +56,21 @@ class ProductRepository extends BaseRepository implements ProductInterface
                     if (empty($valueIds)) {
                         continue;
                     }
-                    $q->whereHas('productAttributeValues', function ($sub) use ($attributeId, $valueIds) {
+                    $q = $q->whereHas('productAttributeValues', function ($sub) use ($attributeId, $valueIds) {
                         $sub->where('attribute_id', (int) $attributeId)
                             ->whereIn('attribute_value_id', $valueIds);
                     });
                 }
             }
 
-            match ($filters['sort'] ?? 'newest') {
+            return match ($filters['sort'] ?? 'newest') {
                 'price_asc'  => $q->orderBy('sales_price', 'asc'),
                 'price_desc' => $q->orderBy('sales_price', 'desc'),
                 'name_asc'   => $q->orderBy('title', 'asc'),
                 default      => $q->orderByDesc('created_at'),
             };
-
-            return $q;
         });
-
+      
         return $this->paginate($perPage);
     }
 
@@ -81,7 +79,8 @@ class ProductRepository extends BaseRepository implements ProductInterface
         $this->resetModel();
 
         $this->scopeQuery(function ($q) use ($id) {
-            $q->where('status', 1);
+            $q = $q->newQuery()->where('status', 1);
+
             return is_numeric($id)
                 ? $q->where('id', (int) $id)
                 : $q->where('slug', $id);
@@ -103,7 +102,8 @@ class ProductRepository extends BaseRepository implements ProductInterface
         ]);
 
         $this->scopeQuery(function ($q) use ($id) {
-            $q->where('status', 1);
+            $q = $q->newQuery()->where('status', 1);
+
             return is_numeric($id)
                 ? $q->where('id', (int) $id)
                 : $q->where('slug', $id);
@@ -117,10 +117,12 @@ class ProductRepository extends BaseRepository implements ProductInterface
         $this->resetModel();
 
         $this->scopeQuery(function ($q) use ($product, $limit) {
-            $q->where('status', 1)->where('id', '!=', $product->id);
+            $q = $q->newQuery()
+                ->where('status', 1)
+                ->where('id', '!=', $product->id);
 
             if ($product->product_category) {
-                $q->where('product_category', $product->product_category);
+                $q = $q->where('product_category', $product->product_category);
             }
 
             return $q->orderByDesc('created_at')->limit($limit);

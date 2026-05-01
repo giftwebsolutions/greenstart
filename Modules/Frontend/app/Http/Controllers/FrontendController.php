@@ -20,8 +20,14 @@ class FrontendController extends Controller
      */
     public function index(TestimonialRepository $testimonialRepo, SliderRepository $slider)
     {
-        $slider = $slider->with('sliderItems')->find('2')->toArray();
-        $sliderdata = $slider['slider_items'];
+        $sliderdata = [];
+        $slider = $slider->with('sliderItems')->findWhere(['slug' => 'home'])->first();
+
+        if ($slider) {
+            $slider = $slider->toArray();
+            $sliderdata = $slider['slider_items'];
+        }
+
         //dd($sliderdata);
         $testimonials = $testimonialRepo->recentFrontend(6);
         $home = Page::where('slug', 'home')->active()->first();
