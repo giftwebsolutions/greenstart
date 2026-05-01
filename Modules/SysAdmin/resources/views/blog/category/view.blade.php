@@ -1,6 +1,7 @@
 @extends('sysadmin::layouts.master')
 
 @section('breadcrumb-title')
+
     <h3>{{ $page['name'] }}</h3>
 @endsection
 
@@ -36,7 +37,7 @@
                 </div>
 
                 <div class="col-md-8 mt-2">
-                    <h1 class="fs-4 mb-1">{{ $page['title'] }}</h1>
+                    <h1 class="fs-4 mb-1">{{ $page['name'] }}</h1>
                     <p class="mb-1"><strong>Description:</strong> {{ $page['description'] ?? '—' }}</p>
                     <p class="mb-0 text-primary">
                         <strong>Keywords:</strong> {{ $page['keywords'] ?? '—' }}

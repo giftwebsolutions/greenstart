@@ -34,7 +34,7 @@
                                 <i class="ion-android-call"></i>
                             </div>
                             <div class="contact-info-dec">
-                               <p><a href="tel:{{ $settings['mobile-1'] ?? '' }}">{{ $settings['mobile-1'] ?? '' }}</a></p>
+                               <p><a href="tel:{{ $settings['mobile'] ?? '' }}">{{ $settings['mobile'] ?? '' }}</a></p>
                                <p><a href="tel:{{ $settings['mobile-1'] ?? '' }}">{{ $settings['mobile-1'] ?? '' }}</a></p>
                             </div>
                         </div>

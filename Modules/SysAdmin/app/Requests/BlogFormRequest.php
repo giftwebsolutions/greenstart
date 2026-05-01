@@ -44,6 +44,7 @@ class BlogFormRequest extends FormRequest
             'keywords' => 'required|string|max:220',
             'description' => 'required|string|max:220',
             'published_at' => 'string',
+            'status' => 'nullable', 'integer',
             'featured_image' => 'image|mimes:jpg,png,jpeg|max:2048'
         ];
     }
@@ -62,6 +63,7 @@ class BlogFormRequest extends FormRequest
             'keywords' => 'required|string|max:220',
             'description' => 'required|string|max:220',
             'published_at' => 'string',
+            'status' => 'nullable', 'integer',
             'featured_image' => 'image|mimes:jpg,png,jpeg|max:2048'
         ];
     }

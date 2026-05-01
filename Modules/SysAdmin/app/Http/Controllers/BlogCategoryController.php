@@ -40,6 +40,7 @@ class BlogCategoryController extends Controller
     public function store(BlogCategoryFormRequest $request)
     {
         $validatedData = $request->validated();
+        //dd($validatedData);
         $this->categoryRepository->saveOrUpdate($validatedData);
         return redirect()->route('sysadmin.blog.category.index');
     }
@@ -76,7 +77,7 @@ class BlogCategoryController extends Controller
     {
         try {
             $validatedData = $request->validated();
-        //dd($validatedData);
+            //dd($validatedData);
             $this->categoryRepository->saveOrUpdate($validatedData, $id);
             return redirect()->route('sysadmin.blog.category.index');
         } catch (ValidationException $e) {

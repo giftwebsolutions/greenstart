@@ -85,7 +85,6 @@ class BlogController extends Controller
         $perPage = (int) $request->get('per_page', 12);
 
         $category = $this->blogCategoryRepo->findBySlug($slug);
-
         $blogs = $this->blogRepo->frontendBaseQuery()
             ->where('category_id', $category->id)
             ->orderByDesc('published_at')
@@ -96,6 +95,7 @@ class BlogController extends Controller
         $sidebar = $this->sidebarData([
             'activeCategorySlug' => $category->slug,
         ]);
+        //dd($blogs);
         return view('frontend::blogs.category', array_merge(compact('category', 'blogs'), $sidebar));
     }
 

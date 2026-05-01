@@ -130,7 +130,7 @@
                     </div>
                     <div class="card-body p-3">
                         <div class="mb-3">
-                            <select class="form-select" name="status" id="status">
+                            <select class="form-select" name="parent_id" id="parent_id">
                                 <option value="0">Select Parent</option>
                                 @foreach ($parents as $parent)
                                     <option value="{{ $parent['id'] }}"
