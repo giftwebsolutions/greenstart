@@ -430,7 +430,7 @@
                                                     data-category-id="{{ $product->product_category ?? 0 }}"
                                                     data-price="{{ $product->sales_price ?? 0 }}"
                                                     data-product-name="{{ $product->title }}">
-                                                Buy Now
+                                                Enquiry
                                             </button>
                                         </div>
                                     </div>

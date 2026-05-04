@@ -76,8 +76,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" id="enquirySubmitBtn">
+                    <button type="button" class="btn btn-sw btn-sm js-enquiry-open" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-sw-green btn-sm js-enquiry-open" id="enquirySubmitBtn">
                         Submit Enquiry
                     </button>
                 </div>

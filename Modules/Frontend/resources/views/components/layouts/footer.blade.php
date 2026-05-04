@@ -15,7 +15,7 @@
                         <div class="single-wedge">
                             <div class="footer-logo">
                                 <a href="{{ route('frontend.home') }}">
-                                    <img src="{{ asset('assets/images/logo/logo.png') }}" alt="{{ env('APP_NAME') }}">
+                                    <img class="img-responsive logo w-25 h-100" src="{{ asset('assets/images/logo/logo.png') }}" alt="{{ env('APP_NAME') }}">
                                 </a>
                             </div>
 

@@ -1,7 +1,7 @@
 <?php
 $menus = Config::get('frontend.menus');
 $settings = Config::get('site-settings');
-//dd($menus);
+//dd($settings);
 ?>    
     <!-- Header Section Start From Here -->
     <header class="header-wrapper">
@@ -65,9 +65,9 @@ $settings = Config::get('site-settings');
     <div class="container">
         <div class="row">
             <div class="col-md-3 d-flex">
-                <div class="align-self-center">
+                <div class="align-self-center" >
                     <a href="{{ route('frontend.home') }}">
-                        <img class="img-responsive logo"
+                        <img class="img-responsive logo w-25 h-100"
                              src="{{ asset('assets/images/logo/logo.png') }}"
                              alt="{{ env('APP_NAME') }}" />
                     </a>
@@ -157,7 +157,7 @@ $settings = Config::get('site-settings');
                         </a>
                     </div>
                     <div class="header-logo  mt-7px">
-                      <a href="{{ route('frontend.home') }}"><img class="img-responsive logo"
+                      <a href="{{ route('frontend.home') }}"><img class="img-responsive logo w-25"
                                     src="{{asset('assets/images/logo/logo.png')}}" alt="{{ env('APP_NAME') }}" /></a>
                     </div>
                 </div>
