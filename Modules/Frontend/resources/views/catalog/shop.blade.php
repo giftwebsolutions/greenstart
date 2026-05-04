@@ -394,7 +394,7 @@
                                 $thumbUrl    = ImageUploader::getFilePath($product->thumb ?? '', $product->created_at ?? null, 'thumbnail');
                                 $hasDiscount = $product->mrp > 0 && $product->mrp > $product->sales_price;
                                 $discPct     = $hasDiscount ? round((($product->mrp - $product->sales_price) / $product->mrp) * 100) : 0;
-                                $isNew = isset($product->created_at)  && Carbon::createFromTimestamp($product->created_at)->diffInDays(now()) <= 30;
+                                $isNew = isset($product->created_at)  && Carbon::createFromTimestamp($product->created_at)->diffInDays(now()) <= 30;  
                             @endphp
                             <div class="col-lg-4 col-md-6 col-sm-6 mb-4 product-item">
                                 <div class="pcard">
@@ -792,7 +792,7 @@
             max-width: 25%;
         }
     </style>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
     $(function () {
 

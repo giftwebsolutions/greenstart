@@ -20,12 +20,13 @@ class ShopController extends Controller
     public function index(Request $request)
     {
         $filters        = $this->buildFilters($request);
+        //dd($filters);
         $products       = $this->products->paginateForFrontend($filters, 12);
         $filterGroups   = $this->products->getFilterableGroups();
         $rootCategories = $this->categories->getMenuTree();
-
+        
         return view('frontend::catalog.shop', compact(
-            'products', 'filterGroups', 'rootCategories', 'filters'
+            'products', 'filterGroups', 'rootCategories', 'filters',
         ) + ['activeTitle' => 'All Products']);
     }
 
@@ -107,6 +108,8 @@ class ShopController extends Controller
         }
 
         return array_merge([
+            'price_min' => $request->integer('price_min'),
+            'price_max' => $request->integer('price_max'),
             'c_cat'  => $request->integer('c_cat') ?: null,
             's_cat'  => $request->integer('s_cat') ?: null,
             'search' => $request->get('q'),

@@ -49,6 +49,14 @@ class ProductRepository extends BaseRepository implements ProductInterface
                 });
             }
 
+            if(isset($filters['price_min']) && isset($filters['price_max']) ){
+                //dd($filters);
+                $q = $q->whereBetween('sales_price', [
+                    (int) $filters['price_min'],
+                    (int) $filters['price_max']
+                ]);
+            }
+
             // Attribute filters: each selected attribute must match at least one chosen value
             if (!empty($filters['attrs']) && is_array($filters['attrs'])) {
                 foreach ($filters['attrs'] as $attributeId => $valueIds) {
