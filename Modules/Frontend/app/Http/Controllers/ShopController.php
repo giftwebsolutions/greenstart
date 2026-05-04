@@ -40,7 +40,7 @@ class ShopController extends Controller
 
         // Force the main category; user may further filter by sub-category
         $filters = $this->buildFilters($request, ['c_cat' => $category->id]);
-
+        //dd($filters);
         if(isset($_GET['s_cat'])) {
             $filters = $this->buildFilters($request, ['s_cat' => $_GET['s_cat']]);
         }
@@ -108,8 +108,8 @@ class ShopController extends Controller
         }
 
         return array_merge([
-            'price_min' => $request->integer('price_min'),
-            'price_max' => $request->integer('price_max'),
+            'price_min' => $request->integer('price_min', 0),
+            'price_max' => $request->integer('price_max', 100000),
             'c_cat'  => $request->integer('c_cat') ?: null,
             's_cat'  => $request->integer('s_cat') ?: null,
             'search' => $request->get('q'),
