@@ -1,4 +1,3 @@
-{{-- Modules/Frontend/Resources/views/product/index.blade.php --}}
 <x-frontend::layouts.master>
     <div class="breadcrumb-area">
         <div class="container">
