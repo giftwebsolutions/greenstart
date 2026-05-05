@@ -24,20 +24,6 @@
                                     <span class="address">Address</span>
                                     {{ $settings['address'] ?? '' }}
                                 </p>
-
-                                <p class="phone">
-                                    <span class="call-us">Need Help?</span>
-                                    <a href="tel:{{ $settings['mobile-1'] ?? '' }}">
-                                        {{ $settings['mobile-1'] ?? '' }}
-                                    </a>
-                                </p>
-
-                                <p class="phone">
-                                    <span class="call-us">Products & Sales</span>
-                                    <a href="tel:{{ $settings['productssales'] ?? '' }}">
-                                        {{ $settings['productssales'] ?? '' }}
-                                    </a>
-                                </p>
                             </div>
                         </div>
                     </div>

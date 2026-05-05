@@ -10,7 +10,7 @@ $settings = Config::get('site-settings');
         <div class="container">
             <div class="header-nav-wrapper d-md-flex d-sm-flex d-xl-flex d-lg-flex justify-content-between">
                 <div class="header-static-nav d-flex">
-                    <p>WELCOME TO GREENSTART ONLINE SHOPPING STORE !</p>
+                    <p>WELCOME TO GREENS AQUA WORLD WEBSITE</p>
                     <div class="social-top">
                         <div class="follow d-flex">
                             <label>Follow Us:</label>
