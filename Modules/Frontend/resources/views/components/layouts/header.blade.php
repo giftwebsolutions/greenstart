@@ -167,11 +167,6 @@ $settings = Config::get('site-settings');
                             data-number="3" target="_blank">
                             <i class="fa-brands fa-whatsapp"></i>
                         </a>
-
-                        <a title="Call Us" href="tel:{{ $settings['mobile-1'] ?? '' }}" class="bag"
-                            data-number="8">
-                            <i class="fa-solid fa-phone"></i>
-                        </a>
                     </div>
                 </div>
             </div>

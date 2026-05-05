@@ -49,7 +49,7 @@
                     <div class="thumb-side">
                         <a href="{{ route('frontend.blog.show', $rp->slug) }}">
                             <img
-                                src="{{ $rp->featured_image ? ImageUploader::getFilePath($blog->featured_image, $blog->created_at, 'thumbnail') : asset('assets/images/blog-image/1.jpg') }}"
+                                src="{{ $rp->featured_image ? ImageUploader::getFilePath($rp->featured_image, $rp->created_at, 'thumbnail') : asset('assets/images/blog-image/1.jpg') }}"
                                 alt="{{ $rp->title }}"
                             />
                         </a>
