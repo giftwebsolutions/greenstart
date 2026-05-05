@@ -103,7 +103,7 @@
         </div>
 
         <div class="footer-bottom text-center">
-            <p>© {{ date('Y') }} {{ env('APP_NAME') }}. All Rights Reserved</p>
+            <p>Copyright{{ date('Y') }} © Developed By Gift Web Solutions </p>
         </div>
     </div>
 </div>
