@@ -104,7 +104,7 @@
                                         data-category-id="{{ $product->category_id ?? 0 }}"
                                         data-price="{{ $product->price ?? 0 }}"
                                         data-product-name="{{ $product->name ?? ($product->title ?? '') }}">
-                                        Buy Now
+                                        Enquiry
                                     </button>
                                 </div>
                             </div>
@@ -216,6 +216,7 @@
                 </div>
                 <div class="arrival-wrapper">
                     <div class="arrival-slider slider-nav-style-1">
+                       
                         @foreach ($related as $rel)
                             <div class="arrval-slider-item">
                                 <article class="list-product text-left">
@@ -251,7 +252,7 @@
                                                 data-category-id="{{ $product->category_id ?? 0 }}"
                                                 data-price="{{ $product->price ?? 0 }}"
                                                 data-product-name="{{ $product->name ?? ($product->title ?? '') }}">
-                                                Buy Now
+                                                Enquiry
                                             </button>
                                         </div>
 
