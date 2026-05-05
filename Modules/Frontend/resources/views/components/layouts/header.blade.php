@@ -179,14 +179,7 @@ $settings = Config::get('site-settings');
    href="tel:{{ $settings['mobile-1'] ?? '' }}"
    class="bag"
    data-number="8">
-   <i class="fa-solid fa-phone"></i>
-</a>
-
- 
-
-
-                
-              
+   <i class="fa-solid fa-phone"></i>       
 </a>
 
                 </div>

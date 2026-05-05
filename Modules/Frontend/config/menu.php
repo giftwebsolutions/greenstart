@@ -23,6 +23,11 @@ return [
         'params' => ['slug' => 'about'],
     ],
     [
+        'label' => 'Faq',
+        'route' => 'frontend.cms.view',
+        'params' => ['slug' => 'faq'],
+    ],
+    [
         'label' => 'Enquiry',
         'route' => 'frontend.enquiry',
     ],
