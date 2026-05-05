@@ -226,8 +226,8 @@
                                                 class="thumbnail">
                                                 @php
                                                     $relThumb = ImageUploader::getFilePath(
-                                                        $product->thumb ?? '',
-                                                        $product->created_at ?? null,
+                                                        $rel->thumb ?? '',
+                                                        $rel->created_at ?? null,
                                                         'thumbnail',
                                                     );
                                                 @endphp
@@ -238,10 +238,10 @@
                                         </div>
                                         <div class="product-decs">
                                             <h2><a href="{{ route('frontend.shop.product.show', $product->slug ?? $product->id) }}"
-                                                    class="product-link">{{ $product->title }}</a></h2>
+                                                    class="product-link">{{ $rel->title }}</a></h2>
                                             <div class="pricing-meta">
                                                 <ul>
-                                                    <li class="current-price">₹{{ number_format($product->price ?? 0, 2) }}
+                                                    <li class="current-price">₹{{ number_format($rel->sales_price ?? 0, 2) }}
                                                     </li>
                                                 </ul>
                                             </div>

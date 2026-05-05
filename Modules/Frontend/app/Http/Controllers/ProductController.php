@@ -18,7 +18,7 @@ class ProductController extends Controller
         abort_if(!$product, 404);
 
         $related = $this->products->getRelatedForFrontend($product, 10);
-
+        //dd($related);
         return view('frontend::catalog.product-show', compact('product', 'related'));
     }
 }
