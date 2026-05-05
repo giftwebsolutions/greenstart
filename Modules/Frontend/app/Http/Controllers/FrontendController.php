@@ -34,11 +34,6 @@ class FrontendController extends Controller
         return view('frontend::index', compact('testimonials', 'home', 'sliderdata'));
     }
 
-    public function newarraival()
-    {
-        return view('frontend::pages.newarraival');
-    }
-
     public function about()
     {
         // Testimonials can also be reused here if needed
