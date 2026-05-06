@@ -82,7 +82,8 @@
                         <div class="contact-title mb-30">
                             <h2>Get In Touch</h2>
                         </div>
-                        <form class="contact-form-style" id="contact-form" action="https://htmldemo.net/sharma/sharma/assets/php/mail.php" method="post">
+                        <form class="contact-form-style" id="contact-form" action="{{ route('frontend.enquiry.store') }}" method="post">
+                        @csrf    
                             <div class="row">
                                 <div class="col-lg-6">
                                     <input name="name" placeholder="Name*" type="text" />
@@ -108,6 +109,7 @@
             </div>
         </div>
     </div>
+
     <!-- contact area end -->
 </x-frontend::layouts.master>
 @section('js')
