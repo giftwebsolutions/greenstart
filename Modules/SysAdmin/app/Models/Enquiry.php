@@ -30,28 +30,9 @@ class Enquiry extends Model
 
     protected $fillable = [
         'name',
-        'mobile',
         'email',
-        'city',
-        'state',
         'message',
-        'category_id',
-        'product_id',
-        'qty',
-        'price',
-        'req_price',
-        'status',
-    ];
-
-    protected $casts = [
-        'category_id' => 'integer',
-        'product_id'  => 'integer',
-        'status'      => 'integer',
-        'qty'         => 'decimal:2',
-        'price'       => 'decimal:2',
-        'req_price'   => 'decimal:2',
-        'created_at'  => 'datetime',
-        'updated_at'  => 'datetime',
+        'subject',
     ];
 
     public function setCategoryIdAttribute($value): void

@@ -119,19 +119,19 @@ class EnquiryDataTable extends DataTable
             Column::make('id')->title('ID')->width(60),
 
             Column::make('name')->title('Customer'),
-            Column::make('mobile')->title('Mobile')->width(120),
-            //Column::make('email')->title('Email'),
+            //Column::make('mobile')->title('Mobile')->width(120),
+            Column::make('email')->title('Email'),
 
             //Column::computed('category_name')->title('Category')->orderable(false),
-            Column::computed('product_name')->title('Product')->orderable(false),
+            //Column::computed('product_name')->title('Product')->orderable(false),
 
-            Column::make('qty')->title('Qty')->width(80),
-            Column::make('price')->title('Price')->width(100),
-            Column::make('req_price')->title('Req. Price')->width(100),
+            //Column::make('qty')->title('Qty')->width(80),
+            //Column::make('price')->title('Price')->width(100),
+            //Column::make('req_price')->title('Req. Price')->width(100),
 
-            Column::make('status')->title('Status')->width(100),
+            //Column::make('status')->title('Status')->width(100),
 
-            Column::make('created_at')->title('Date')->width(100),
+            Column::make('created_at')->title('Date'),
 
             Column::computed('action')
                 ->title('Action')

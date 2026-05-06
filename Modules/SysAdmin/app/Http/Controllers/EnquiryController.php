@@ -20,6 +20,7 @@ class EnquiryController extends Controller
      */
     public function index(EnquiryDataTable $dataTable)
     {
+        //dd($dataTable);
         return $dataTable->render('sysadmin::enquiry.index');
     }
 
@@ -54,7 +55,7 @@ class EnquiryController extends Controller
             $enquiry = $this->enquiryRepository
                 ->with(['category', 'product'])
                 ->findOrFail($id);
-
+            //dd($enquiry);
             return view('sysadmin::enquiry.view')->with([
                 'enquiry' => $enquiry,
             ]);

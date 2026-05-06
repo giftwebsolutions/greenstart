@@ -37,23 +37,26 @@ class EnquiryFormRequest extends FormRequest
     {
         return [
             'name'        => ['required', 'string', 'max:50'],
-            'mobile'      => ['required', 'string', 'max:15'],
             'email'       => ['nullable', 'email', 'max:75'],
+
+            'subject'     => ['required', 'string'],
+            'message'     => ['required', 'string'],
+             
+            //need query for below things to add in the table ok ??
+            'mobile'      => ['nullable', 'string', 'max:15'],
 
             'city'        => ['nullable', 'string', 'max:50'],
             'state'       => ['nullable', 'string', 'max:50'],
 
-            'message'     => ['required', 'string'],
-
             'category_id' => ['nullable', 'integer'],
             'product_id'  => ['nullable', 'integer'],
 
-            'qty'         => ['required', 'numeric', 'min:0.01'],
-            'price'       => ['required', 'numeric', 'min:0'],
+            'qty'         => ['nullable', 'numeric', 'min:0.01'],
+            'price'       => ['nullable', 'numeric', 'min:0'],
             'req_price'   => ['nullable', 'numeric', 'min:0'],
 
             'status'      => [
-                'required',
+                'nullable',
                 Rule::in(array_keys((new Enquiry)->statuses ?? [0 => 'Inactive', 1 => 'Active']))
             ],
         ];
@@ -66,23 +69,25 @@ class EnquiryFormRequest extends FormRequest
     {
         return [
             'name'        => ['required', 'string', 'max:50'],
-            'mobile'      => ['required', 'string', 'max:15'],
             'email'       => ['nullable', 'email', 'max:75'],
 
+            'subject'     => ['required', 'string'],
+            'message'     => ['required', 'string'],
+
+            
+            'mobile'      => ['nullable', 'string', 'max:15'],
             'city'        => ['nullable', 'string', 'max:50'],
             'state'       => ['nullable', 'string', 'max:50'],
-
-            'message'     => ['required', 'string'],
 
             'category_id' => ['nullable', 'integer'],
             'product_id'  => ['nullable', 'integer'],
 
-            'qty'         => ['required', 'numeric', 'min:0.01'],
-            'price'       => ['required', 'numeric', 'min:0'],
+            'qty'         => ['nullable', 'numeric', 'min:0.01'],
+            'price'       => ['nullable', 'numeric', 'min:0'],
             'req_price'   => ['nullable', 'numeric', 'min:0'],
 
             'status'      => [
-                'required',
+                'nullable',
                 Rule::in(array_keys((new Enquiry)->statuses ?? [0 => 'Inactive', 1 => 'Active']))
             ],
         ];
@@ -95,17 +100,9 @@ class EnquiryFormRequest extends FormRequest
     {
         return [
             'name'        => 'customer name',
-            'mobile'      => 'mobile number',
             'email'       => 'email address',
-            'city'        => 'city',
-            'state'       => 'state',
+            'subject'     => 'subject',
             'message'     => 'message',
-            'category_id' => 'category',
-            'product_id'  => 'product',
-            'qty'         => 'quantity',
-            'price'       => 'price',
-            'req_price'   => 'requested price',
-            'status'      => 'status',
         ];
     }
 }

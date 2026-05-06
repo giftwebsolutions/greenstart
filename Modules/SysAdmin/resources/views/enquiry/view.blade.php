@@ -48,26 +48,11 @@
                             </div>
 
                             <div class="col-md-8 mt-2">
-                                <h1 class="fs-4 mb-1">{{ $enquiry->name }}</h1>
+                                <h1 class="fs-4 mb-1"><strong>Name:</strong> {{ $enquiry->name }}</h1>
 
                                 <div class="mt-2">
                                     <p class="mb-1">
-                                        <strong>Mobile:</strong> {{ $enquiry->mobile ?? '—' }}
-                                    </p>
-                                    <p class="mb-1">
                                         <strong>Email:</strong> {{ $enquiry->email ?? '—' }}
-                                    </p>
-                                    <p class="mb-1">
-                                        <strong>City / State:</strong>
-                                        {{ $enquiry->city ?? '—' }}{{ $enquiry->state ? ', ' . $enquiry->state : '' }}
-                                    </p>
-                                    <p class="mb-1">
-                                        <strong>Category:</strong>
-                                        {{ optional($enquiry->category)->name ?? '—' }}
-                                    </p>
-                                    <p class="mb-1">
-                                        <strong>Product:</strong>
-                                        {{ optional($enquiry->product)->name ?? '—' }}
                                     </p>
                                 </div>
                             </div>
@@ -108,72 +93,20 @@
                     <div class="card-body p-3">
                         <div class="row">
 
-                            {{-- Core --}}
-                            <div class="col-md-6">
+                            {{-- Subject --}}
+                            <div class="col-12">
                                 <div class="border rounded p-3 mb-3">
-                                    <h6 class="border-bottom pb-2 mb-3">Core</h6>
+                                    <h6 class="border-bottom pb-2 mb-3">Subject</h6>
 
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span class="text-muted">ID</span>
-                                        <span>{{ $enquiry->id }}</span>
-                                    </div>
-
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span class="text-muted">Customer</span>
-                                        <span>{{ $enquiry->name ?? '—' }}</span>
-                                    </div>
-
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span class="text-muted">Mobile</span>
-                                        <span>{{ $enquiry->mobile ?? '—' }}</span>
-                                    </div>
-
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span class="text-muted">Email</span>
-                                        <span>{{ $enquiry->email ?? '—' }}</span>
-                                    </div>
-
-                                    <div class="d-flex justify-content-between">
-                                        <span class="text-muted">Location</span>
-                                        <span>
-                                            {{ $enquiry->city ?? '—' }}{{ $enquiry->state ? ', ' . $enquiry->state : '' }}
-                                        </span>
-                                    </div>
+                                    @if(!empty($enquiry->message))
+                                        <p class="mb-0" style="white-space: pre-line;">{{ $enquiry->subject }}</p>
+                                    @else
+                                        <p class="mb-0 text-muted">—</p>
+                                    @endif
                                 </div>
                             </div>
 
-                            {{-- Product & Pricing --}}
-                            <div class="col-md-6">
-                                <div class="border rounded p-3 mb-3">
-                                    <h6 class="border-bottom pb-2 mb-3">Product & Pricing</h6>
-
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span class="text-muted">Category</span>
-                                        <span>{{ optional($enquiry->category)->name ?? '—' }}</span>
-                                    </div>
-
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span class="text-muted">Product</span>
-                                        <span>{{ optional($enquiry->product)->name ?? '—' }}</span>
-                                    </div>
-
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span class="text-muted">Quantity</span>
-                                        <span>{{ $enquiry->qty ?? '—' }}</span>
-                                    </div>
-
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span class="text-muted">Price</span>
-                                        <span>{{ $enquiry->price ?? '—' }}</span>
-                                    </div>
-
-                                    <div class="d-flex justify-content-between">
-                                        <span class="text-muted">Requested Price</span>
-                                        <span>{{ $enquiry->req_price ?? '—' }}</span>
-                                    </div>
-                                </div>
-                            </div>
-
+                           
                             {{-- Message --}}
                             <div class="col-12">
                                 <div class="border rounded p-3 mb-3">

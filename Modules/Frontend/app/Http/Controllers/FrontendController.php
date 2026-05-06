@@ -53,8 +53,9 @@ class FrontendController extends Controller
 
     public function storeEnquiry(\Modules\SysAdmin\Requests\EnquiryFormRequest $request, EnquiryInterface $enquiry)
     {
+        //dd($request);
         $data = $request->validated();
-
+        //dd($data);
         // Ensure defaults if not present
         $data['category_id'] = $data['category_id'] ?? 0;
         $data['product_id']  = $data['product_id'] ?? 0;
