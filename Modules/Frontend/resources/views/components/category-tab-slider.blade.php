@@ -1,5 +1,8 @@
 @php
     use Modules\SysAdmin\Helpers\ImageUploader;
+
+    $activetabs = $tabs[0] ?? null;
+    //dd($activetabs);
 @endphp
 @if ($tabs && count($tabs) > 0)
     <div class="category-tab-slider-area mb-60px">
@@ -17,8 +20,10 @@
                             <ul class="tab-heading tabs-categorys nav nav-tabs">
                                 @foreach ($tabs as $i => $tab)
                                     <li>
-                                        <a class="{{ $i === 0 ? 'active' : '' }}" data-bs-toggle="pill"
-                                            href="#{{ $tab['id'] }}">
+                                        <a class="{{ $i === 0 ? 'active' : '' }} tab-btn"
+                                            data-bs-toggle="pill"
+                                            href="#{{ $tab['id'] }}"
+                                            data-banner="{{ ImageUploader::getFilePath($tab['category']->banner, $tab['category']->created_at) }}">
                                             <span>{{ $tab['label'] }}</span>
                                         </a>
                                     </li>
@@ -32,10 +37,10 @@
                         <div class="category-image">
                             <div class="banner-area">
                                 <div class="banner-wrapper">
-                                    @if ($banner)
+                                    @if ($activetabs && $activetabs['category']->banner)
                                         <a
-                                            href="{{ route('frontend.shop.product.show', $tabs[0]['category']->slug ?? '') }}">
-                                            <img src="{{ $banner }}" alt="">
+                                            href="{{ route('frontend.shop.product.show', $activetabs['category']->slug ?? '') }}">
+                                            <img id="banner-img" src="{{  ImageUploader::getFilePath($activetabs['category']->banner, $activetabs['category']->created_at)  }}" alt="">
                                         </a>
                                     @else
                                         <a href="#">
@@ -155,3 +160,18 @@
         </div>
     </div>
 @endif
+<script>
+document.querySelectorAll('[data-bs-toggle="pill"]').forEach(tab => {
+    tab.addEventListener('shown.bs.tab', function () {
+
+        const banner = this.getAttribute('data-banner');
+        const bannerImg = document.getElementById('banner-img');
+
+        console.log('SWITCHED:', banner);
+
+        if (bannerImg && banner) {
+            bannerImg.src = banner;
+        }
+    });
+});
+</script>

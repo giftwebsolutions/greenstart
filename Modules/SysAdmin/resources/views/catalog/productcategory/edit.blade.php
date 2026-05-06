@@ -105,9 +105,8 @@
                                         )) }}"
                                         class="img-fluid mb-2 rounded">
                                 @else
-                                    <img id="bannerPreview" class="img-fluid mb-2 rounded d-none">
+                                    <img id="bannerPreview" class="img-fluid mb-2 rounded d-none" src="">
                                 @endif
-
                                 <div id="remove-banner-block"
                                     class="{{ $category->banner ? '' : 'd-none' }}">
                                     <button type="button" id="remove-banner"

@@ -64,7 +64,9 @@ class ProductCategoryController extends Controller
      */
     public function update(ProductCategoryFormRequest $request, int $id): RedirectResponse
     {
+        //dd($request);
         $validated = $request->validated();
+        //dd($validated);
         $this->categoryRepository->saveOrUpdate($validated, $id);
         $this->categoryRepository->clearMenuCache();
         return redirect()

@@ -64,6 +64,8 @@ class ProductCategoryFormRequest extends FormRequest
             'banner'      => ['nullable', 'image', 'mimes:jpg,png,jpeg,webp', 'max:3072'],
             'slug'        => 'nullable|string|max:255|unique:product_category,slug,' . $this->id,
             'image'       => ['nullable', 'image', 'mimes:jpg,png,jpeg,webp', 'max:3072'],
+            'remove_banner' => ['nullable'],
+            'remove_image' => ['nullable'],
             'sort'        => ['nullable', 'integer', 'min:0'],
             'status'      => ['required', Rule::in(array_keys(ProductCategory::$statuses))]
         ];
@@ -97,7 +99,7 @@ class ProductCategoryFormRequest extends FormRequest
         $data['parent_id'] = $data['parent_id'] ?: null;
 
         
-
+        //dd($data);
         return $data;
     }
 }

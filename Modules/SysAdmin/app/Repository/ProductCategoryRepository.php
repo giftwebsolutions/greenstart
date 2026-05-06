@@ -35,12 +35,20 @@ class ProductCategoryRepository extends BaseRepository implements ProductCategor
 
         if ($id) {
             $category = ProductCategory::findOrFail($id);
-
+            //dd($data);
             if (isset($data['banner'])) {
                 $data['banner'] = ImageUploader::upload($data['banner'], $category->created_at);
             }
             if (isset($data['image'])) {
                 $data['image'] = ImageUploader::upload($data['image'], $category->created_at);
+            }
+            if(!empty($data['remove_banner'])){
+                $data['banner'] = ImageUploader::remove($category->created_at, $category['banner']);
+                $data['banner'] = null;
+            }
+            if(!empty($data['remove_image'])){
+                $data['image'] = ImageUploader::remove($category->created_at, $category['image']);
+                $data['image'] = null;
             }
 
             $category->update($data);
