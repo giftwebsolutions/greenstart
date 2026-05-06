@@ -26,12 +26,8 @@
                        data-bs-title="Back" class="btn btn-primary">
                         <i class="bi bi-arrow-left"></i>
                     </a>
-                    <a href="{{ route('sysadmin.enquiry.edit', $enquiry->id) }}" data-bs-toggle="tooltip"
-                       data-bs-placement="top" data-bs-title="Edit" class="btn btn-primary mx-2">
-                        <i class="bi bi-pencil-fill"></i>
-                    </a>
                     <a href="{{ route('sysadmin.enquiry.index') }}" data-bs-toggle="tooltip"
-                       data-bs-placement="top" data-bs-title="List" class="btn btn-primary">
+                       data-bs-placement="top" data-bs-title="List" class="btn btn-primary mx-2">
                         <i class="bi bi-list"></i>
                     </a>
                 </div>
@@ -58,27 +54,6 @@
                             </div>
 
                             <div class="col-md-4 text-md-end mt-2">
-                                <p class="mb-1">
-                                    <strong>Status:</strong>
-                                    @php
-                                        $map = $enquiry->statuses ?? [0 => 'Inactive', 1 => 'Active'];
-                                        $statusLabel = $map[$enquiry->status] ?? $enquiry->status;
-
-                                        $statusClass = match ((int)$enquiry->status) {
-                                            1 => 'bg-success',
-                                            default => 'bg-danger',
-                                        };
-                                    @endphp
-                                    <span class="badge {{ $statusClass }}">{{ $statusLabel }}</span>
-                                </p>
-
-                                @if(!empty($enquiry->updated_at))
-                                    <p class="mb-1">
-                                        <strong>Last Updated:</strong>
-                                        {{ \Carbon\Carbon::parse($enquiry->updated_at)->format('d-m-Y H:i:s') }}
-                                    </p>
-                                @endif
-
                                 @if(!empty($enquiry->created_at))
                                     <p class="mb-0">
                                         <strong>Created:</strong>
