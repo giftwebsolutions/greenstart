@@ -43,7 +43,7 @@ $settings = Config::get('site-settings');
                 </div>
                 <div class="header-menu-nav d-flex justify-content-between">
                     <div class="social-top align-self-center">
-                        <div class="follow d-flex">
+                        <div class="follow d-none d-md-flex">
                             <label>Follow Us:</label>
                             <ul class="link-follow">
                                 <li><a class="facebook ion-social-facebook" title="Facebook" href="#"></a>
@@ -167,6 +167,10 @@ $settings = Config::get('site-settings');
                             data-number="3" target="_blank">
                             <i class="fa-brands fa-whatsapp"></i>
                         </a>
+                        <a title="Call Us" href="tel:{{ $settings['mobile'] ?? '' }}" class="bag"
+                            data-number="8">
+                            <i class="fa-solid fa-phone"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -266,8 +270,4 @@ $settings = Config::get('site-settings');
 </div>
 
 <!-- Mobile Contact -->
-<div class="contact-link d-lg-none">
-    <a href="tel:{{ $settings['mobile'] }}">{{ $settings['mobile'] }}</a>
-</div>
-
 <div class="offcanvas-overlay"></div>

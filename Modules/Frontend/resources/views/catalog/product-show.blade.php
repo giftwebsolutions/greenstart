@@ -34,7 +34,7 @@
                     {{-- Images --}}
                     <div class="col-xl-6 col-lg-6 col-md-12">
                         <div class="product-details-img product-details-tab">
-                            <div class="zoompro-wrap zoompro-2">
+                            <div class="zoompro-wrap zoompro-2 px-2">
                                 @foreach ($images as $img)
                                     <div class="zoompro-border zoompro-span">
                                         <img class="zoompro" src="{{ $img }}"
@@ -57,7 +57,7 @@
 
                     {{-- Info --}}
                     <div class="col-xl-6 col-lg-6 col-md-12">
-                        <div class="product-details-content">
+                        <div class="product-details-content px-4">
                             <h2>{{ $product->title }}</h2>
 
                             <div class="pro-details-rating-wrap">
