@@ -157,11 +157,6 @@ class EnquiryDataTable extends DataTable
                     <i class="icon-eye"></i>
                 </a>
             </li>
-            <li class="edit">
-                <a href="' . $editUrl . '" title="edit">
-                    <i class="icon-pencil-alt"></i>
-                </a>
-            </li>
             <li class="delete">
                 <a href="' . $deleteUrl . '" title="delete">
                     <i class="icon-trash"></i>
