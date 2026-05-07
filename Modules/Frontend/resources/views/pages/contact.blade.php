@@ -83,7 +83,14 @@
                             <h2>Get In Touch</h2>
                         </div>
                         <form class="contact-form-style" id="contact-form" action="{{ route('frontend.enquiry.store') }}" method="post">
-                        @csrf    
+                        @csrf
+                            <div id="contact-form-errors"
+                                style="display:none; margin-bottom:15px; padding:12px 15px; border:1px solid #dc3545; background:#f8d7da; color:#842029;">
+                                <ul style="margin:0; padding-left:18px;"></ul>
+                            </div>
+                            <div id="contact-form-message"
+                                style="display:none; margin-bottom:15px; padding:12px 15px; border:1px solid #198754; background:#d1e7dd; color:#0f5132;">
+                            </div>
                             <div class="row">
                                 <div class="col-lg-12">
                                     <input name="name" placeholder="Name*" type="text" />
@@ -114,6 +121,139 @@
     </div>
 
     <!-- contact area end -->
+    @push('scripts')
+        <script>
+            $(function() {
+                const $form = $('#contact-form');
+
+                if (!$form.length) {
+                    return;
+                }
+
+                const $submitButton = $form.find('button[type="submit"]');
+                const $errorBox = $('#contact-form-errors');
+                const $messageBox = $('#contact-form-message');
+
+                function hideBox($box) {
+                    $box.hide().html('');
+                }
+
+                function showErrors(messages) {
+                    let errorHtml = '<ul style="margin:0; padding-left:18px; list-style:disc;">';
+
+                    $.each(messages, function(index, message) {
+                        errorHtml += '<li>' + message + '</li>';
+                    });
+
+                    errorHtml += '</ul>';
+
+                    $errorBox.html(errorHtml).show();
+                }
+
+                function showMessage(message) {
+                    $messageBox.text(message).show();
+                }
+
+                function scrollToBox($box) {
+                    $('html, body').animate({
+                        scrollTop: $box.offset().top - 120
+                    }, 300);
+                }
+
+                function getFormErrors() {
+                    const messages = [];
+                    const name = $.trim($form.find('input[name="name"]').val());
+                    const mobile = $.trim($form.find('input[name="mobile"]').val());
+                    const subject = $.trim($form.find('input[name="subject"]').val());
+                    const message = $.trim($form.find('textarea[name="message"]').val());
+
+                    if (!name) {
+                        messages.push('Name is required.');
+                    }
+
+                    if (!mobile) {
+                        messages.push('Mobile is required.');
+                    }
+
+                    if (!subject) {
+                        messages.push('Subject is required.');
+                    }
+
+                    if (!message) {
+                        messages.push('Message is required.');
+                    }
+
+                    return messages;
+                }
+
+                $form.on('submit', function(event) {
+                    event.preventDefault();
+
+                    hideBox($errorBox);
+                    hideBox($messageBox);
+
+                    const formErrors = getFormErrors();
+
+                    if (formErrors.length) {
+                        showErrors(formErrors);
+                        scrollToBox($errorBox);
+                        return;
+                    }
+
+                    $submitButton.prop('disabled', true);
+
+                    $.ajax({
+                        url: $form.attr('action'),
+                        type: 'POST',
+                        data: new FormData($form[0]),
+                        processData: false,
+                        contentType: false,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        },
+                        success: function(response) {
+                            const message = response.message || 'Enquiry submitted successfully.';
+                            showMessage(message);
+                            scrollToBox($messageBox);
+                            alert(message);
+                            $form[0].reset();
+                        },
+                        error: function(xhr) {
+                            let response = xhr.responseJSON || {};
+
+                            if ($.isEmptyObject(response) && xhr.responseText) {
+                                try {
+                                    response = JSON.parse(xhr.responseText);
+                                } catch (e) {
+                                    response = {};
+                                }
+                            }
+
+                            let errors = [];
+
+                            if (response.errors) {
+                                errors = Object.values(response.errors).flat();
+                            } else if (response.message) {
+                                errors = [response.message];
+                            } else if (xhr.status === 422) {
+                                errors = ['Please fill in all required fields correctly.'];
+                            } else if (xhr.status === 0) {
+                                errors = ['Network error. Please try again.'];
+                            } else {
+                                errors = ['Something went wrong. Please try again.'];
+                            }
+
+                            showErrors(errors);
+                            scrollToBox($errorBox);
+                        },
+                        complete: function() {
+                            $submitButton.prop('disabled', false);
+                        }
+                    });
+                });
+            });
+        </script>
+    @endpush
 </x-frontend::layouts.master>
-@section('js')
-@endsection
