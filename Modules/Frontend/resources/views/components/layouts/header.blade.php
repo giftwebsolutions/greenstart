@@ -39,7 +39,7 @@ $settings = Config::get('site-settings');
         <div class="container">
             <div class="header-nav-wrapper ">
                 <div class="header-static-nav f-none text-center">
-                    <p>WELCOME TO GREENSTART ONLINE SHOPPING STORE !</p>
+                    <p>WELCOME TO GREENS AQUA WORLD WEBSITE</p>
                 </div>
                 <div class="header-menu-nav d-flex justify-content-between">
                     <div class="social-top align-self-center">
