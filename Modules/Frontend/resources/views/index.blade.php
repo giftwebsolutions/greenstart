@@ -4,7 +4,7 @@
 @php
     use Modules\SysAdmin\Helpers\ImageUploader;
     use Modules\SysAdmin\Models\Blocks;
-    $myTabs = [['category_id' => 10, 'label' => 'Domestic RO'], ['category_id' => 15, 'label' => 'Industrial RO']];
+    $myTabs = [['category_id' => 8, 'label' => 'Domestic RO'], ['category_id' => 13, 'label' => 'Industrial RO']];
     $home_blocks = ['home-free-shipping', 'home-support'];
     $homeBlocks = Blocks::whereIn('key', $home_blocks)->get()->toArray();
 @endphp
