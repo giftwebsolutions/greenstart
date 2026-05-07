@@ -119,7 +119,7 @@ class EnquiryDataTable extends DataTable
             Column::make('id')->title('ID')->width(60),
 
             Column::make('name')->title('Customer'),
-            //Column::make('mobile')->title('Mobile')->width(120),
+            Column::make('mobile')->title('Mobile')->width(120),
             Column::make('email')->title('Email'),
 
             //Column::computed('category_name')->title('Category')->orderable(false),
