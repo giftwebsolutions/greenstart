@@ -39,7 +39,7 @@
                                 <div class="blog-image single-blog">
                                     @php
                                         $img = $blog->featured_image
-                                            ? ImageUploader::getFilePath($blog->featured_image, $blog->created_at, 'thumbnail')
+                                            ? ImageUploader::getFilePath($blog->featured_image, $blog->created_at)
                                             : $fallback;
                                           
                                     @endphp
@@ -71,41 +71,6 @@
                         </div>
                     </div>
 
-                    <!-- Tags & Share -->
-                    <div class="blog-single-tags-share d-sm-flex justify-content-between">
-                        <div class="blog-single-tags d-flex">
-                            <span class="title">Tags: </span>
-                            <ul class="tag-list">
-                                @php
-                                    $tags = collect(explode(',', (string) ($blog->keywords ?? '')))
-                                        ->map(fn($t) => trim($t))
-                                        ->filter()
-                                        ->unique()
-                                        ->values();
-                                @endphp
-                                @forelse($tags as $tag)
-                                    <li><a href="{{ route('frontend.blog.search', ['q' => $tag]) }}">{{ $tag }}@if (!$loop->last),@endif</a></li>
-                                @empty
-                                    <li><a href="javascript:void(0)">-</a></li>
-                                @endforelse
-                            </ul>
-                        </div>
-
-                        @php
-                            $shareUrl = urlencode(url()->current());
-                            $shareTitle = urlencode($blog->title);
-                        @endphp
-
-                        <div class="blog-single-share d-flex">
-                            <span class="title">Share:</span>
-                            <ul class="social">
-                                <li><a target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u={{ $shareUrl }}"><i class="ion-social-facebook"></i></a></li>
-                                <li><a target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?url={{ $shareUrl }}&text={{ $shareTitle }}"><i class="ion-social-twitter"></i></a></li>
-                                <li><a target="_blank" rel="noopener" href="https://www.linkedin.com/sharing/share-offsite/?url={{ $shareUrl }}"><i class="ion-social-google"></i></a></li>
-                                <li><a target="_blank" rel="noopener" href="https://wa.me/?text={{ $shareTitle }}%20-%20{{ $shareUrl }}"><i class="ion-social-instagram"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
 
                     <!-- Related Post -->
                     <div class="blog-related-post">
@@ -121,7 +86,7 @@
                             @forelse($related as $rel)
                                 @php
                                     $relImg = $rel->featured_image
-                                        ? ImageUploader::getFilePath($rel->featured_image, $rel->created_at, 'thumbnail')
+                                        ? ImageUploader::getFilePath($rel->featured_image, $rel->created_at)
                                         : asset('assets/images/blog-image/1.jpg');
                                 @endphp
                                 <div class="col-md-4 mb-lm-30px">

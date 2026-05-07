@@ -71,7 +71,7 @@
                                         </a>
                                     </li>
 
-                                          <li><a class="fa-brands fa-youtube" title="Facebook"
+                                    <li><a class="fa-brands fa-youtube" title="Facebook"
                                               href="{{ $settings['youtube'] ?? '' }}" 
                                                 ><span>Youtube</span>
                                         </a>
