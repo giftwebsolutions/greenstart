@@ -15,4 +15,4 @@
 
  <!-- Main Activation JS -->
  <script src="{{ asset('assets/js/main.js') }}"></script>
- @yield('script');
+ @yield('script')
