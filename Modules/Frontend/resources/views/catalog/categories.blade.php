@@ -5,7 +5,7 @@
 @endphp
 
 
-<x-frontend::layouts.master>
+<x-frontend::layouts.master :seo="$seo ?? []" :structuredData="$structuredData ?? []">
 
     <div class="breadcrumb-area">
         <div class="container">

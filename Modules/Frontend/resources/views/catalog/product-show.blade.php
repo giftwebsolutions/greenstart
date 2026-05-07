@@ -8,7 +8,7 @@
     $images = $product->gallery_images ?? [$mainImage];
 @endphp
 
-<x-frontend::layouts.master>
+<x-frontend::layouts.master :seo="$seo ?? []" :structuredData="$structuredData ?? []">
 
     {{-- Breadcrumb --}}
     <div class="breadcrumb-area">

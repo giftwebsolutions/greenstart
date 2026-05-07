@@ -1,7 +1,7 @@
 @section('css')
 @endsection
 
-<x-frontend::layouts.master>
+<x-frontend::layouts.master :seo="$seo ?? []" :structuredData="$structuredData ?? []">
 
     <!-- Breadcrumb Area Start -->
     <div class="breadcrumb-area">

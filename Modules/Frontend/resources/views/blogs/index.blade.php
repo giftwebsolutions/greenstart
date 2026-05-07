@@ -14,7 +14,7 @@
     $titleRest  = $titleParts[1] ?? 'BLOGS';
 @endphp
 
-<x-frontend::layouts.master>
+<x-frontend::layouts.master :seo="$seo ?? []" :structuredData="$structuredData ?? []">
     <!-- Breadcrumb Area Start -->
     <div class="breadcrumb-area">
         <div class="container">
@@ -58,7 +58,7 @@
                                     $excerpt = Str::limit(strip_tags($blog->description ?? $blog->content ?? ''), 160);
                                 @endphp
 
-                                <div class="col-md-6 mb-res-sm-30px">
+                                <div class="col-md-4 mb-res-sm-30px">
                                     <div class="single-blog-post mb-30px blog-grid-post">
                                         <div class="blog-post-media">
                                             <div class="blog-image">

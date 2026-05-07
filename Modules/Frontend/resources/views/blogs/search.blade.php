@@ -8,7 +8,7 @@ use Modules\SysAdmin\Helpers\ImageUploader;
 $fallback = asset('assets/images/blog-image/1.jpg');
 @endphp
 
-<x-frontend::layouts.master>
+<x-frontend::layouts.master :seo="$seo ?? []" :structuredData="$structuredData ?? []">
 
     <!-- Mobile Search Area Start -->
     {{-- <div class="mobile-search-area d-lg-none mb-15px">

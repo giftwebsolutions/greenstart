@@ -3,24 +3,17 @@
 namespace Modules\Frontend\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Modules\Frontend\Support\SeoData;
 
 class CatalogController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return view('frontend::catalog.index');
+        return view('frontend::catalog.index', SeoData::productList('Catalog'));
     }
 
-
-    /**
-     * Show the specified resource.
-     */
     public function show($id)
     {
-        return view('frontend::catalog.show');
+        return view('frontend::catalog.show', SeoData::basic('Catalog'));
     }
 }
