@@ -85,8 +85,11 @@
                         <form class="contact-form-style" id="contact-form" action="{{ route('frontend.enquiry.store') }}" method="post">
                         @csrf    
                             <div class="row">
-                                <div class="col-lg-6">
+                                <div class="col-lg-12">
                                     <input name="name" placeholder="Name*" type="text" />
+                                </div>
+                                <div class="col-lg-6">
+                                    <input name="mobile" placeholder="Mobile*" type="text" />
                                 </div>
                                 <div class="col-lg-6">
                                     <input name="email" placeholder="Email*" type="email" />

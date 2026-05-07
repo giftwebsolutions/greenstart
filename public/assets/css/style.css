@@ -9359,7 +9359,7 @@ offcanvas-menu > ul > li .menu-expand {
     overflow: hidden;
 }
 .single-blog-post .blog-post-media .blog-image img {
-    height: 300px;
+    height: auto;
     width: 100%;
     -o-object-fit: cover;
     object-fit: cover;
@@ -9426,7 +9426,7 @@ offcanvas-menu > ul > li .menu-expand {
 }
 
 .single-blog-post.blog-list-post .blog-post-media .blog-image img {
-    height: 300px;
+    height: auto;
 }
 .single-blog-post.blog-list-post .blog-post-media iframe {
     width: 100%;

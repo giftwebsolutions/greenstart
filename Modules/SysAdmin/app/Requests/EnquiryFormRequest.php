@@ -43,7 +43,7 @@ class EnquiryFormRequest extends FormRequest
             'message'     => ['required', 'string'],
              
             //need query for below things to add in the table ok ??
-            'mobile'      => ['nullable', 'string', 'max:15'],
+            'mobile'      => ['required', 'string', 'max:15'],
 
             'city'        => ['nullable', 'string', 'max:50'],
             'state'       => ['nullable', 'string', 'max:50'],
@@ -75,7 +75,7 @@ class EnquiryFormRequest extends FormRequest
             'message'     => ['required', 'string'],
 
             
-            'mobile'      => ['nullable', 'string', 'max:15'],
+            'mobile'      => ['required', 'string', 'max:15'],
             'city'        => ['nullable', 'string', 'max:50'],
             'state'       => ['nullable', 'string', 'max:50'],
 
@@ -100,6 +100,7 @@ class EnquiryFormRequest extends FormRequest
     {
         return [
             'name'        => 'customer name',
+            'mobile'      => 'mobile number',
             'email'       => 'email address',
             'subject'     => 'subject',
             'message'     => 'message',

@@ -48,6 +48,9 @@
 
                                 <div class="mt-2">
                                     <p class="mb-1">
+                                        <strong>Mobile:</strong> {{ $enquiry->mobile ?? '—' }}
+                                    </p>
+                                    <p class="mb-1">
                                         <strong>Email:</strong> {{ $enquiry->email ?? '—' }}
                                     </p>
                                 </div>
