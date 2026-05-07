@@ -1,14 +1,14 @@
  
 body {
     font-family: "Rubik", sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     font-style: normal;
     position: relative;
     visibility: visible;
     overflow-x: hidden;
     color: #777777;
     font-weight: 400;
-    line-height: 1.428571429;
+    line-height: 1.6;
     width: 100%;
     background: #f7f7f7;
 }
@@ -2425,7 +2425,7 @@ label {
     font-weight: 500;
     position: relative;
     margin-bottom: 8px;
-    line-height: 1;
+    line-height: 1.5;
     padding: 0;
     display: block;
 }
@@ -2836,7 +2836,7 @@ label {
     color: #fab311;
     text-transform: capitalize;
     font-weight: 400;
-    line-height: 1;
+    line-height: 1.5;
     margin: 0;
     margin-bottom: 18px;
 }
@@ -2908,7 +2908,7 @@ label {
     font-size: 40px;
     color: #fff;
     font-weight: 500;
-    line-height: 1;
+    line-height: 1.5;
     text-transform: capitalize;
     margin: 0;
     margin-bottom: 6px;
@@ -2933,7 +2933,7 @@ label {
     color: #fab311;
     text-transform: capitalize;
     font-weight: 400;
-    line-height: 1;
+    line-height: 1.5;
     margin: 0;
     margin-bottom: 18px;
 }
@@ -3277,7 +3277,7 @@ label {
 .list-product .product-decs h2 {
     font-weight: 400;
     margin: 0;
-    line-height: 1;
+    line-height: 1.5;
 }
 .list-product .product-decs h2 a {
     line-height: 20px;
@@ -3292,7 +3292,7 @@ label {
     color: #4ab033;
 }
 .list-product .product-decs .rating-product {
-    line-height: 1;
+    line-height: 1.5;
     font-size: 16px;
     color: #fab311;
 }
@@ -3302,7 +3302,7 @@ label {
 .list-product .product-decs .pricing-meta {
     -webkit-transition: all 300ms linear;
     transition: all 300ms linear;
-    line-height: 1;
+    line-height: 1.5;
     margin: 10px 0 5px;
 }
 .list-product .product-decs .pricing-meta li.old-price {
@@ -3339,7 +3339,7 @@ label {
     position: absolute;
     right: 0px;
     top: 15px;
-    line-height: 1;
+    line-height: 1.5;
     font-size: 0;
     visibility: hidden;
     opacity: 0;
@@ -3477,7 +3477,7 @@ label {
     vertical-align: top;
     font-size: 24px;
     font-weight: 400;
-    line-height: 1;
+    line-height: 1.5;
     color: #888;
     cursor: pointer;
     margin-right: 35px;
@@ -3572,7 +3572,7 @@ label {
     margin: 0;
     font-size: 18px;
     color: #222;
-    line-height: 1;
+    line-height: 1.5;
     width: 110px;
 }
 @media only screen and (max-width: 479px) {
@@ -4036,7 +4036,7 @@ label {
     font-size: 14px;
     color: #a9a9a9;
     font-weight: 400;
-    line-height: 1;
+    line-height: 1.5;
     padding: 0;
     text-transform: capitalize;
     display: block;
@@ -4214,7 +4214,7 @@ label {
         font-size: 14px;
         color: #a9a9a9;
         font-weight: 400;
-        line-height: 1;
+        line-height: 1.5;
         padding: 0;
         text-transform: capitalize;
         display: block;
@@ -4392,7 +4392,7 @@ label {
 .footer-area .footer-top .single-wedge .footer-links li {
     display: block;
     margin: 0;
-    line-height: 1;
+    line-height: 1.5;
     border: 0;
     padding: 0;
     font-weight: 400;
@@ -4535,7 +4535,7 @@ label {
     padding-bottom: 30px;
 }
 .footer-tags .tag-content {
-    line-height: 1;
+    line-height: 1.5;
     text-align: center;
     margin: auto;
 }
@@ -4544,7 +4544,7 @@ label {
     color: #999;
     font-size: 13px;
     padding: 0 15px;
-    line-height: 1;
+    line-height: 1.5;
     margin-bottom: 10px;
     position: relative;
 }
@@ -4579,7 +4579,7 @@ label {
     background: #1d1d1d;
 }
 .footer-bottom .copy-text {
-    line-height: 1;
+    line-height: 1.5;
     color: #999;
     font-size: 13px;
     text-align: center;
@@ -5967,7 +5967,7 @@ offcanvas-menu > ul > li .menu-expand {
     font-size: 14px;
     text-transform: capitalize;
     color: #777;
-    line-height: 1;
+    line-height: 1.5;
     display: block;
     margin-bottom: 30px;
 }
@@ -6626,7 +6626,7 @@ offcanvas-menu > ul > li .menu-expand {
     color: #222;
     font-size: 18px;
     text-transform: capitalize;
-    line-height: 1;
+    line-height: 1.5;
     font-weight: 500;
     margin: 0 0 25px 0;
 }
@@ -6670,7 +6670,7 @@ offcanvas-menu > ul > li .menu-expand {
     font-family: "Ionicons";
     font-size: 16px;
     font-weight: 400;
-    line-height: 1;
+    line-height: 1.5;
     margin-right: 6px;
     content: "\f3b2";
 }
@@ -7138,7 +7138,7 @@ offcanvas-menu > ul > li .menu-expand {
     h4 {
     font-size: 16px;
     margin: 0;
-    line-height: 1;
+    line-height: 1.5;
     font-weight: 500;
 }
 .description-review-bottom
@@ -7146,7 +7146,7 @@ offcanvas-menu > ul > li .menu-expand {
     .review-top-wrap
     .review-left
     .rating-product {
-    line-height: 1;
+    line-height: 1.5;
     margin-bottom: 6px;
 }
 .description-review-bottom
@@ -7194,7 +7194,7 @@ offcanvas-menu > ul > li .menu-expand {
     margin: 0;
     font-size: 16px;
     font-weight: 500;
-    line-height: 1;
+    line-height: 1.5;
 }
 .description-review-bottom .ratting-form-wrapper .star-box {
     display: -webkit-box;
@@ -7681,7 +7681,7 @@ offcanvas-menu > ul > li .menu-expand {
     color: #fff;
     font-size: 14px;
     font-weight: 500;
-    line-height: 1;
+    line-height: 1.5;
     padding: 10px 12px;
     text-transform: uppercase;
 }
@@ -7726,7 +7726,7 @@ offcanvas-menu > ul > li .menu-expand {
     display: inline-block;
     font-size: 14px;
     font-weight: 600;
-    line-height: 1;
+    line-height: 1.5;
     padding: 18px 63px 17px;
     text-transform: uppercase;
 }
@@ -7855,7 +7855,7 @@ offcanvas-menu > ul > li .menu-expand {
     display: inline-block;
     font-size: 14px;
     font-weight: 500;
-    line-height: 1;
+    line-height: 1.5;
     padding: 18px 58px;
     text-transform: uppercase;
     width: 100%;
@@ -7888,7 +7888,7 @@ offcanvas-menu > ul > li .menu-expand {
     display: inline-block;
     font-size: 14px;
     font-weight: 500;
-    line-height: 1;
+    line-height: 1.5;
     padding: 18px 58px;
     text-transform: uppercase;
     width: 100%;
@@ -7969,7 +7969,7 @@ offcanvas-menu > ul > li .menu-expand {
     display: block;
     font-size: 14px;
     font-weight: 500;
-    line-height: 1;
+    line-height: 1.5;
     padding: 18px 10px 17px;
     text-align: center;
     text-transform: uppercase;
@@ -8224,7 +8224,7 @@ offcanvas-menu > ul > li .menu-expand {
     display: block;
     font-weight: 700;
     letter-spacing: 1px;
-    line-height: 1;
+    line-height: 1.5;
     padding: 18px 20px;
     text-align: center;
     text-transform: uppercase;
@@ -8260,7 +8260,7 @@ offcanvas-menu > ul > li .menu-expand {
     font-weight: 500;
     color: #222;
     margin: 0;
-    line-height: 1;
+    line-height: 1.5;
 }
 .compare-table .table tbody tr td.product-image-title {
     min-width: 290px;
@@ -8458,7 +8458,7 @@ offcanvas-menu > ul > li .menu-expand {
     cursor: pointer;
     font-size: 14px;
     font-weight: 500;
-    line-height: 1;
+    line-height: 1.5;
     padding: 11px 30px;
     text-transform: uppercase;
     -webkit-transition: all 0.3s ease 0s;
@@ -8637,7 +8637,7 @@ offcanvas-menu > ul > li .menu-expand {
     display: inline-block;
     font-size: 14px;
     font-weight: 500;
-    line-height: 1;
+    line-height: 1.5;
     padding: 16px 35px 17px;
     text-transform: uppercase;
     cursor: pointer;
@@ -8700,7 +8700,7 @@ offcanvas-menu > ul > li .menu-expand {
     background-color: #f32013;
     color: #fff;
     display: inline-block;
-    line-height: 1;
+    line-height: 1.5;
     margin: 0 2px;
     padding: 12px 15px;
     text-transform: uppercase;
@@ -8916,7 +8916,7 @@ offcanvas-menu > ul > li .menu-expand {
     font-size: 22px;
     color: #fff;
     font-weight: 500;
-    line-height: 1;
+    line-height: 1.5;
     display: block;
 }
 .main-blog-slider-wrapper
@@ -8929,7 +8929,7 @@ offcanvas-menu > ul > li .menu-expand {
     font-size: 10px;
     color: #fff;
     text-transform: uppercase;
-    line-height: 1;
+    line-height: 1.5;
     margin-top: 2px;
     display: block;
 }
@@ -9147,7 +9147,7 @@ offcanvas-menu > ul > li .menu-expand {
     font-size: 22px;
     color: #fff;
     font-weight: 500;
-    line-height: 1;
+    line-height: 1.5;
     display: block;
 }
 .main-blog-slider-wrapper-2
@@ -9160,7 +9160,7 @@ offcanvas-menu > ul > li .menu-expand {
     font-size: 10px;
     color: #fff;
     text-transform: uppercase;
-    line-height: 1;
+    line-height: 1.5;
     margin-top: 2px;
     display: block;
 }
@@ -9451,7 +9451,7 @@ offcanvas-menu > ul > li .menu-expand {
 }
 
 .blog-post-content-inner .blog-title a {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 500;
     color: #222;
 }
@@ -9460,17 +9460,17 @@ offcanvas-menu > ul > li .menu-expand {
 }
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
     .blog-post-content-inner .blog-title a {
-        font-size: 20px;
+        font-size: 18px;
     }
 }
 @media only screen and (min-width: 768px) and (max-width: 991px) {
     .blog-post-content-inner .blog-title a {
-        font-size: 20px;
+        font-size: 18px;
     }
 }
 @media only screen and (max-width: 479px) {
     .blog-post-content-inner .blog-title a {
-        font-size: 20px;
+        font-size: 18px;
     }
 }
 .blog-post-content-inner .blog-page-meta {
@@ -9512,7 +9512,7 @@ offcanvas-menu > ul > li .menu-expand {
     color: #222;
     font-size: 14px;
     text-transform: capitalize;
-    line-height: 1;
+    line-height: 1.5;
     position: relative;
     display: inline-block;
 }
@@ -9807,7 +9807,7 @@ offcanvas-menu > ul > li .menu-expand {
 .main-blog-page .shop-sidebar-wrap h3 span {
     padding-right: 20px;
     font-size: 21px;
-    line-height: 1;
+    line-height: 1.5;
     color: #222;
     margin-bottom: 15px;
     position: relative;
@@ -9818,7 +9818,7 @@ offcanvas-menu > ul > li .menu-expand {
     font-weight: 400;
 }
 .main-blog-page .shop-sidebar-wrap .sidebar-widget-tag li {
-    line-height: 1;
+    line-height: 1.5;
     float: left;
     list-style: none;
 }
@@ -9923,7 +9923,7 @@ offcanvas-menu > ul > li .menu-expand {
     .single-contact-info
     .contact-info-dec
     p {
-    line-height: 1;
+    line-height: 1.5;
     color: #222;
     margin: 0 0 9px;
 }
@@ -9950,7 +9950,7 @@ offcanvas-menu > ul > li .menu-expand {
     color: #222;
     font-size: 24px;
     margin: 0 0 17px;
-    line-height: 1;
+    line-height: 1.5;
 }
 .contact-area .custom-row-2 .contact-info-wrap .contact-social .social-info {
     margin-top: 30px;
@@ -10002,7 +10002,7 @@ offcanvas-menu > ul > li .menu-expand {
     font-size: 24px;
     font-weight: 500;
     color: #222;
-    line-height: 1;
+    line-height: 1.5;
     margin-bottom: 36px;
     margin-left: -10px;
 }
@@ -10035,7 +10035,7 @@ offcanvas-menu > ul > li .menu-expand {
     font-size: 14px;
     font-weight: 500;
     text-transform: uppercase;
-    line-height: 1;
+    line-height: 1.5;
     padding: 15px 52px;
     margin-top: 33px;
     outline: none;
@@ -10342,7 +10342,7 @@ offcanvas-menu > ul > li .menu-expand {
     .d-grid
     .testimonial-author
     .rating-product {
-    line-height: 1;
+    line-height: 1.5;
     font-size: 16px;
     color: #fab311;
 }
@@ -10423,7 +10423,7 @@ offcanvas-menu > ul > li .menu-expand {
     font-size: 13px;
     text-transform: capitalize;
     color: #9d9c9c;
-    line-height: 1;
+    line-height: 1.5;
     display: block;
     margin: 0 0 15px;
 }
@@ -10715,7 +10715,7 @@ offcanvas-menu > ul > li .menu-expand {
     color: #222;
     text-align: left;
     font-size: 28px;
-    line-height: 1;
+    line-height: 1.5;
     font-style: normal;
     text-transform: none;
     margin: 0;
@@ -10917,7 +10917,7 @@ offcanvas-menu > ul > li .menu-expand {
     background: inherit;
     font-size: 26px;
     font-weight: 500;
-    line-height: 1;
+    line-height: 1.5;
     color: #fff;
     margin-bottom: 8px;
     width: 60px;

@@ -4,8 +4,10 @@ namespace Modules\Frontend\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Modules\Frontend\Support\SeoData;
 use Modules\SysAdmin\Interfaces\BlogInterface;
 use Modules\SysAdmin\Interfaces\BlogCategoryInterface;
+use Modules\SysAdmin\Models\Page;
 
 class BlogController extends Controller
 {
@@ -58,11 +60,17 @@ class BlogController extends Controller
     {
         $perPage = (int) $request->get('per_page', 12);
 
-        $blogs = $this->blogRepo->paginateFrontend($perPage);
+        $blogs   = $this->blogRepo->paginateFrontend($perPage);
+        $sidebar = $this->sidebarData();
 
-        $sidebar = $this->sidebarData(); // list sidebar recent posts
+        $blogPage   = Page::where('slug', 'blog')->active()->first();
+        $seoPayload = $blogPage ? SeoData::page($blogPage) : SeoData::blogIndex();
 
-        return view('frontend::blogs.index', array_merge(compact('blogs'), $sidebar));
+        return view('frontend::blogs.index', array_merge(
+            compact('blogs'),
+            $sidebar,
+            $seoPayload
+        ));
     }
 
     public function show(string $slug)
@@ -74,10 +82,14 @@ class BlogController extends Controller
         $sidebar = $this->sidebarData([
             'excludeId' => $blog->id,
             'activeCategorySlug' => optional($blog->category)->slug,
-            'keywords' => [$blog->keywords], // tags based on this post
+            'keywords' => [$blog->keywords],
         ]);
 
-        return view('frontend::blogs.view', array_merge(compact('blog', 'related'), $sidebar));
+        return view('frontend::blogs.view', array_merge(
+            compact('blog', 'related'),
+            $sidebar,
+            SeoData::blogShow($blog)
+        ));
     }
 
     public function category(string $slug, Request $request)
@@ -95,8 +107,12 @@ class BlogController extends Controller
         $sidebar = $this->sidebarData([
             'activeCategorySlug' => $category->slug,
         ]);
-        //dd($blogs);
-        return view('frontend::blogs.category', array_merge(compact('category', 'blogs'), $sidebar));
+
+        return view('frontend::blogs.category', array_merge(
+            compact('category', 'blogs'),
+            $sidebar,
+            SeoData::blogIndex($category->name)
+        ));
     }
 
     public function search(Request $request)
@@ -110,6 +126,12 @@ class BlogController extends Controller
             'q' => $q,
         ]);
 
-        return view('frontend::blogs.search', array_merge(compact('q', 'blogs'), $sidebar));
+        $heading = $q !== '' ? "Blog Search: {$q}" : 'Blog Search';
+
+        return view('frontend::blogs.search', array_merge(
+            compact('q', 'blogs'),
+            $sidebar,
+            SeoData::blogIndex($heading, ['robots' => 'noindex,follow'])
+        ));
     }
 }

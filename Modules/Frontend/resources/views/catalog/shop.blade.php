@@ -75,7 +75,7 @@
     $perPageCount  = $products->perPage();
 @endphp
 
-<x-frontend::layouts.master>
+<x-frontend::layouts.master :seo="$seo ?? []" :structuredData="$structuredData ?? []">
 
     {{-- Breadcrumb --}}
     <div class="breadcrumb-area">
@@ -444,13 +444,13 @@
                     </div>
 
                     {{-- Bottom bar: count + pagination --}}
-                    <div class="d-flex flex-wrap align-items-center justify-content-between mt-3 gap-2">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between my-3 gap-2">
                         <span class="toolbar-count">
                             Showing {{ $from }} to {{ $to }} of {{ $totalProducts }}
                             ({{ $lastPage }} {{ $lastPage === 1 ? 'Page' : 'Pages' }})
                         </span>
                         <div class="shop-pager">
-                            {{ $products->withQueryString()->links() }}
+                            {{ $products->withQueryString()->links('pagination::bootstrap-5') }}
                         </div>
                     </div>
 

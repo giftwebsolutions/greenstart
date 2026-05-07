@@ -8,7 +8,7 @@
     $home_blocks = ['home-free-shipping', 'home-support'];
     $homeBlocks = Blocks::whereIn('key', $home_blocks)->get()->toArray();
 @endphp
-<x-frontend::layouts.master>
+<x-frontend::layouts.master :seo="$seo ?? []" :structuredData="$structuredData ?? []">
     <!-- Slider Start -->
     <div class="slider-area">
         <div class="hero-slider-wrapper">

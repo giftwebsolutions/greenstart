@@ -3,6 +3,7 @@
 namespace Modules\Frontend\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Modules\Frontend\Support\SeoData;
 use Modules\SysAdmin\Interfaces\EnquiryInterface;
 use Modules\SysAdmin\Models\Page;
 use Modules\SysAdmin\Models\ProductCategory;
@@ -28,17 +29,24 @@ class FrontendController extends Controller
             $sliderdata = $slider['slider_items'];
         }
 
-        //dd($sliderdata);
         $testimonials = $testimonialRepo->recentFrontend(6);
         $home = Page::where('slug', 'home')->active()->first();
-        return view('frontend::index', compact('testimonials', 'home', 'sliderdata'));
+
+        $seoPayload = $home ? SeoData::page($home) : SeoData::basic('Home');
+
+        return view('frontend::index', array_merge(
+            compact('testimonials', 'home', 'sliderdata'),
+            $seoPayload
+        ));
     }
 
     public function about()
     {
-        // Testimonials can also be reused here if needed
         $about = Page::where('slug', 'about')->active()->first();
-        return view('frontend::pages.about', compact('about'));
+
+        $seoPayload = $about ? SeoData::page($about) : SeoData::basic('About Us');
+
+        return view('frontend::pages.about', array_merge(compact('about'), $seoPayload));
     }
 
     public function enquiry()
@@ -48,7 +56,12 @@ class FrontendController extends Controller
             ->where('parent_id', 0)->where('status', '1')->get()
             ->toArray();
 
-        return view('frontend::pages.enquiry')->with(['enquiry' => $enquiry, 'category' => $productCategory]);
+        $seoPayload = $enquiry ? SeoData::page($enquiry) : SeoData::basic('Enquiry');
+
+        return view('frontend::pages.enquiry', array_merge(
+            ['enquiry' => $enquiry, 'category' => $productCategory],
+            $seoPayload
+        ));
     }
 
     public function storeEnquiry(\Modules\SysAdmin\Requests\EnquiryFormRequest $request, EnquiryInterface $enquiry)
@@ -71,11 +84,19 @@ class FrontendController extends Controller
 
     public function faqs()
     {
-        return view('frontend::pages.faqs');
+        $faqs = Page::where('slug', 'faqs')->active()->first();
+
+        $seoPayload = $faqs ? SeoData::page($faqs) : SeoData::basic('FAQs');
+
+        return view('frontend::pages.faqs', array_merge(compact('faqs'), $seoPayload));
     }
 
     public function contact()
     {
-        return view('frontend::pages.contact');
+        $contact = Page::where('slug', 'contact')->active()->first();
+
+        $seoPayload = $contact ? SeoData::page($contact) : SeoData::basic('Contact Us');
+
+        return view('frontend::pages.contact', array_merge(compact('contact'), $seoPayload));
     }
 }

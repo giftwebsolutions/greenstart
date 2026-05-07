@@ -8,7 +8,7 @@
     $fallback = asset('assets/images/blog-image/3.jpg');
 @endphp
 
-<x-frontend::layouts.master>
+<x-frontend::layouts.master :seo="$seo ?? []" :structuredData="$structuredData ?? []">
     <!-- Breadcrumb Area Start -->
     <div class="breadcrumb-area">
         <div class="container">
@@ -39,7 +39,7 @@
                                 <div class="blog-image single-blog">
                                     @php
                                         $img = $blog->featured_image
-                                            ? ImageUploader::getFilePath($blog->featured_image, $blog->created_at, 'thumbnail')
+                                            ? ImageUploader::getFilePath($blog->featured_image, $blog->created_at)
                                             : $fallback;
                                           
                                     @endphp

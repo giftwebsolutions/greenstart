@@ -4,8 +4,10 @@ namespace Modules\Frontend\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\Frontend\Support\SeoData;
 use Modules\Frontend\Interfaces\ProductInterface;
 use Modules\SysAdmin\Interfaces\ProductCategoryInterface;
+use Modules\SysAdmin\Models\Page;
 
 class ShopController extends Controller
 {
@@ -24,10 +26,16 @@ class ShopController extends Controller
         $products       = $this->products->paginateForFrontend($filters, 12);
         $filterGroups   = $this->products->getFilterableGroups();
         $rootCategories = $this->categories->getMenuTree();
-        
-        return view('frontend::catalog.shop', compact(
-            'products', 'filterGroups', 'rootCategories', 'filters',
-        ) + ['activeTitle' => 'All Products']);
+
+        $home = Page::where('slug', 'shop')->active()->first();
+
+        $seoPayload = $home ? SeoData::page($home) : SeoData::basic('Home');
+
+        return view('frontend::catalog.shop', array_merge(
+            compact('products', 'filterGroups', 'rootCategories', 'filters'),
+            ['activeTitle' => 'All Products'],
+            $seoPayload
+        ));
     }
 
     /**
@@ -41,7 +49,7 @@ class ShopController extends Controller
         // Force the main category; user may further filter by sub-category
         $filters = $this->buildFilters($request, ['c_cat' => $category->id]);
         //dd($filters);
-        if(isset($_GET['s_cat'])) {
+        if (isset($_GET['s_cat'])) {
             $filters = $this->buildFilters($request, ['s_cat' => $_GET['s_cat']]);
         }
 
@@ -52,10 +60,11 @@ class ShopController extends Controller
         $rootCategories = $this->categories->getMenuTree();
         $subCategories  = $category->children()->where('status', '1')->orderBy('sort')->get();
 
-        return view('frontend::catalog.shop', compact(
-            'products', 'filterGroups', 'rootCategories',
-            'category', 'subCategories', 'filters'
-        ) + ['activeTitle' => $category->name]);
+        return view('frontend::catalog.shop', array_merge(
+            compact('products', 'filterGroups', 'rootCategories', 'category', 'subCategories', 'filters'),
+            ['activeTitle' => $category->name],
+            SeoData::productList($category->name)
+        ));
     }
 
     /**
@@ -68,9 +77,11 @@ class ShopController extends Controller
         $filterGroups   = $this->products->getFilterableGroups();
         $rootCategories = $this->categories->getMenuTree();
 
-        return view('frontend::catalog.shop', compact(
-            'products', 'filterGroups', 'rootCategories', 'filters'
-        ) + ['activeTitle' => 'New Arrivals']);
+        return view('frontend::catalog.shop', array_merge(
+            compact('products', 'filterGroups', 'rootCategories', 'filters'),
+            ['activeTitle' => 'New Arrivals'],
+            SeoData::productList('New Arrivals')
+        ));
     }
 
     /**
@@ -86,8 +97,9 @@ class ShopController extends Controller
         $rootCategories = $this->categories->getMenuTree();
         $activeTitle    = $q !== '' ? "Search: {$q}" : 'Search Results';
 
-        return view('frontend::catalog.shop', compact(
-            'products', 'filterGroups', 'rootCategories', 'activeTitle', 'filters', 'q'
+        return view('frontend::catalog.shop', array_merge(
+            compact('products', 'filterGroups', 'rootCategories', 'activeTitle', 'filters', 'q'),
+            SeoData::productList($activeTitle, ['robots' => 'noindex,follow'])
         ));
     }
 

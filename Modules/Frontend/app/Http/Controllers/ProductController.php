@@ -3,6 +3,7 @@
 namespace Modules\Frontend\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Modules\Frontend\Support\SeoData;
 use Modules\Frontend\Interfaces\ProductInterface;
 
 class ProductController extends Controller
@@ -18,7 +19,10 @@ class ProductController extends Controller
         abort_if(!$product, 404);
 
         $related = $this->products->getRelatedForFrontend($product, 10);
-        //dd($related);
-        return view('frontend::catalog.product-show', compact('product', 'related'));
+
+        return view('frontend::catalog.product-show', array_merge(
+            compact('product', 'related'),
+            SeoData::productShow($product)
+        ));
     }
 }

@@ -8,7 +8,7 @@
     $fallback = asset('assets/images/blog-image/1.jpg');
 @endphp
 
-<x-frontend::layouts.master>
+<x-frontend::layouts.master :seo="$seo ?? []" :structuredData="$structuredData ?? []">
     <!-- Breadcrumb Area Start -->
     <div class="breadcrumb-area">
         <div class="container">
