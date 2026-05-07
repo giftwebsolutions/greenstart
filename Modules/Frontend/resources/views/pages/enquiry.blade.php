@@ -15,7 +15,7 @@
                         <div class="breadcrumb-content">
                             <ul class="nav">
                                 <li><a href="{{ route('frontend.home') }}">Home</a></li>
-                                <li>Contact us</li>
+                                <li>Enquiry</li>
                             </ul>
                         </div>
                     </div>
