@@ -43,13 +43,12 @@
                     </div>
 
                     <!-- FOOTER COLUMN 3 -->
-                    <div class="col-md-4 col-lg-4 mb-md-30px mb-lm-30px">
+                    <div class="col-12 col-sm-6 col-md-4 mb-4">
                         <div class="single-wedge">
-                       
                             <h4 class="footer-herading">Follow Us:</h4>
                             <div class="social-info">
-                                <ul class="link-follow">                        
-                                  <li>
+                                <ul class="link-follow row gy-1 gx-0">                        
+                                  <li class="col-6 mb-0">
                                       <a class="fa-brands fa-whatsapp"
                                          title="WhatsApp"
                                           href="https://wa.me/{{ $settings['whatsapp'] ?? '' }}"
@@ -59,19 +58,19 @@
                                  </li>
 
 
-                                    <li><a class="fa-brands fa-facebook-f" title="Facebook"
+                                    <li class="col-6 mb-0"><a class="fa-brands fa-facebook-f" title="Facebook"
                                               href="{{ $settings['facebook'] ?? '' }}" 
                                                 ><span>Facebook</span>
                                         </a>
                                     </li>
 
-                                    <li><a class="fa-brands fa-instagram" title="Facebook"
+                                    <li class="col-6 mb-0"><a class="fa-brands fa-instagram" title="Facebook"
                                               href="{{ $settings['instagram'] ?? '' }}" 
                                                 ><span>Instagram</span>
                                         </a>
                                     </li>
 
-                                    <li><a class="fa-brands fa-youtube" title="Facebook"
+                                    <li class="col-6 mb-0"><a class="fa-brands fa-youtube" title="Facebook"
                                               href="{{ $settings['youtube'] ?? '' }}" 
                                                 ><span>Youtube</span>
                                         </a>
