@@ -2,7 +2,6 @@
 
     {{-- Dropdown --}}
     @if(!empty($item['children']) && is_array($item['children']))
-
         <li class="menu-dropdown {{ \Modules\Frontend\Helpers\MenuHelper::isActive($item) }}">
             <a href="{{ \Modules\Frontend\Helpers\MenuHelper::url($item) }}">
                 {{ $item['label'] }} <i class="ion-ios-arrow-down"></i>

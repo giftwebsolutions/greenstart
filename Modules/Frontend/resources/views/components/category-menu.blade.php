@@ -18,8 +18,15 @@
                         <li>
                             <ul class="submenu-item">
                                 @foreach ($category->children as $child)
+                                    @php
+                                        $childQs2 = \Illuminate\Support\Arr::query([
+                                            's_cat' => $child->id
+                                        ]);
+                                        $subHref2 = route('frontend.shop.category', $category->slug) . ($childQs2 ? '?' . $childQs2 : '');
+                                    @endphp
                                     <li>
-                                        <a href="{{ route('frontend.shop.category', $child->slug) }}">
+                                        <!-- route('frontend.shop.category', [$category->slug ,'s_cat=' . $child->id]) -->
+                                        <a href="{{ $subHref2 }}">
                                             {{ $child->name }}
                                         </a>
                                     </li>
