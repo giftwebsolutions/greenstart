@@ -26,7 +26,7 @@
                             <div class="media-body">
                                 <div class="greeting-user">
                                     <h4 class="f-w-600">Welcome to</h4>
-                                    <p>Green Star</p>
+                                    <p></p>
                                 </div>
                             </div>
 
