@@ -26,60 +26,53 @@
     </div>
     <!-- Breadcrumb Area End-->
 
-    <div class="shop-category-area single-blog-page mb-60px main-blog-page">
+    <section class="blog-detail-hero">
+        <div class="container">
+            <span class="blog-kicker">{{ $blog->category->name ?? 'Article' }}</span>
+            <h1>{{ $blog->title }}</h1>
+            <div class="corp-blog-meta">
+                <span><i class="fa-regular fa-user"></i> {{ $blog->author->name ?? 'Admin' }}</span>
+                <span><i class="fa-regular fa-calendar"></i> {{ optional($blog->published_at)->format('d F, Y') ?? optional($blog->created_at)->format('d F, Y') }}</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="blog-page-wrap single-blog-page">
         <div class="container">
             <div class="row">
 
                 <!-- Content -->
                 <div class="col-lg-9 order-lg-last col-md-12 order-md-first mb-md-30px mb-lm-30px">
-                    <div class="blog-posts">
-                        <div class="single-blog-post blog-grid-post">
+                    <article class="corp-blog-detail">
 
-                            <div class="blog-post-media">
-                                <div class="blog-image single-blog">
+                            <div class="corp-blog-detail-media">
                                     @php
                                         $img = $blog->featured_image
                                             ? ImageUploader::getFilePath($blog->featured_image, $blog->created_at)
                                             : $fallback;
                                           
                                     @endphp
-                                    <img src="{{ $img }}" alt="{{ $blog->title }}" />
-                                </div>
+                                    <img src="{{ $img }}" alt="{{ $blog->title }}" loading="lazy"
+                                        onerror="this.onerror=null;this.src='{{ $fallback }}';">
                             </div>
 
-                            <div class="blog-post-content-inner mt-30px">
-                                <h4 class="blog-title">
-                                    <a href="{{ route('frontend.blog.show', $blog->slug) }}">{{ $blog->title }}</a>
-                                </h4>
-
-                                <ul class="blog-page-meta">
-                                    <li><a href="#"><i class="ion-person"></i> {{ $blog->author->name ?? 'Admin' }}</a></li>
-                                    <li><a href="#"><i class="ion-calendar"></i> {{ optional($blog->published_at)->format('d F, Y') ?? optional($blog->created_at)->format('d F, Y') }}</a></li>
-                                    @if (!empty($blog->category))
-                                        <li><a href="{{ route('frontend.blog.category', $blog->category->slug) }}"><i class="ion-ios-folder"></i> {{ $blog->category->name }}</a></li>
-                                    @endif
-                                </ul>
-
+                            <div class="corp-blog-detail-intro">
                                 @if (!empty($blog->description))
                                     <p>{{ $blog->description }}</p>
                                 @endif
                             </div>
 
-                            <div class="single-post-content">
+                            <div class="single-post-content corp-blog-content">
                                 {!! $blog->content !!}
                             </div>
-                        </div>
-                    </div>
+                    </article>
 
 
                     <!-- Related Post -->
-                    <div class="blog-related-post">
-                        <div class="row">
-                            <div class="col-md-12 text-center">
-                                <div class="section-title underline-shape">
-                                    <h2>Related Post</h2>
-                                </div>
-                            </div>
+                    <div class="blog-related-post corp-related">
+                        <div class="pd-section-head">
+                            <h2>Related articles</h2>
+                            <p>More guidance from Greens Aqua World.</p>
                         </div>
 
                         <div class="row">
@@ -89,25 +82,19 @@
                                         ? ImageUploader::getFilePath($rel->featured_image, $rel->created_at)
                                         : asset('assets/images/blog-image/1.jpg');
                                 @endphp
-                                <div class="col-md-4 mb-lm-30px">
-                                    <div class="blog-post-media">
-                                        <div class="blog-image single-blog">
+                                <div class="col-md-4 mb-4">
+                                    <article class="corp-blog-card compact">
+                                        <div class="corp-blog-media">
                                             <a href="{{ route('frontend.blog.show', $rel->slug) }}">
-                                                <img class="img-responsive" src="{{ $relImg }}" alt="{{ $rel->title }}" />
+                                                <img src="{{ $relImg }}" alt="{{ $rel->title }}" loading="lazy" />
                                             </a>
                                         </div>
-                                    </div>
-
-                                    <div class="blog-post-content-inner mt-30px">
-                                        <h4 class="blog-title">
+                                        <div class="corp-blog-body">
+                                        <h2>
                                             <a href="{{ route('frontend.blog.show', $rel->slug) }}">{{ \Illuminate\Support\Str::limit($rel->title, 55) }}</a>
-                                        </h4>
-
-                                        <ul class="blog-page-meta">
-                                            <li><a href="#"><i class="ion-person"></i> {{ $rel->author->name ?? 'Admin' }}</a></li>
-                                            <li><a href="#"><i class="ion-calendar"></i> {{ optional($rel->published_at)->format('d M, Y') ?? optional($rel->created_at)->format('d M, Y') }}</a></li>
-                                        </ul>
-                                    </div>
+                                        </h2>
+                                        </div>
+                                    </article>
                                 </div>
                             @empty
                                 <div class="col-12 text-center text-muted">No related posts found.</div>

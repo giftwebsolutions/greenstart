@@ -89,10 +89,56 @@
     {{-- Popular first-level categories (horizontal scroll on mobile) --}}
     <x-frontend::popular-categories />
 
+    <section class="ga-counter-area" data-counter-section>
+        <div class="container">
+            <div class="ga-counter-panel">
+                <div class="ga-counter-copy">
+                    <span>Service strength</span>
+                    <h2>Numbers built from real field support</h2>
+                    <p>Installation, service, and complaint handling across our local aqua purifier support network.</p>
+                </div>
+                <div class="ga-counter-grid">
+                    <div class="ga-counter-card">
+                        <strong><span class="ga-count" data-count="15">0</span>+</strong>
+                        <small>Years in water purifier field</small>
+                    </div>
+                    <div class="ga-counter-card">
+                        <strong><span class="ga-count" data-count="5000">0</span>+</strong>
+                        <small>Installations completed</small>
+                    </div>
+                    <div class="ga-counter-card">
+                        <strong><span class="ga-count" data-count="50000">0</span>+</strong>
+                        <small>Complaints completed</small>
+                    </div>
+                    <div class="ga-counter-card">
+                        <strong><span class="ga-count" data-count="50">0</span> km</strong>
+                        <small>Service radius coverage</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <x-frontend::home-category-products
+        :category-ids="[21]"
+        title="<span>Recommended</span> Products"
+        subtitle="Selected aqua purifier products for daily home and business needs."
+        :limit="8"
+    />
+
     {{-- Why choose us --}}
     <section class="ga-why-area">
         <div class="container">
-            <div class="section-title"><h2><span>Why</span> Choose Us</h2></div>
+            <div class="ga-why-shell">
+                <div class="ga-why-copy">
+                    <span>Why choose us</span>
+                    <h2>Service-first aqua purifier support</h2>
+                    <p>We combine product guidance, professional installation, and after-sales care so customers get a practical solution, not only a product box.</p>
+                    <a href="{{ route('frontend.enquiry') }}" class="ga-why-cta">
+                        <i class="fa-regular fa-paper-plane"></i>
+                        Send Enquiry
+                    </a>
+                </div>
             <div class="ga-why-grid">
                 <div class="ga-why-card">
                     <span class="ga-why-icon"><i class="fa-solid fa-certificate"></i></span>
@@ -114,6 +160,7 @@
                     <h4>Healthy Water</h4>
                     <p>Safe, great-tasting drinking water for your whole family.</p>
                 </div>
+            </div>
             </div>
         </div>
     </section>
@@ -192,6 +239,14 @@
     <x-frontend::category-tab-slider title="Featured Products" sub-title="Best quality parts for your vehicle"
         :tabs-config="$myTabs" :limit="8" />
     <!-- Category Tab Slider Area End -->
+
+    <x-frontend::home-category-products
+        :category-ids="[32, 33]"
+        title="<span>Spare</span> Parts"
+        subtitle="Essential RO spare parts and service replacements."
+        :limit="6"
+    />
+
     <x-frontend::home-blog />
 
     <!-- Brand area start -->
@@ -232,6 +287,65 @@
 
     <x-frontend::testimonials :limit='6' />
     <!-- Brand area end -->
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const section = document.querySelector('[data-counter-section]');
+
+                if (!section) {
+                    return;
+                }
+
+                const counters = section.querySelectorAll('.ga-count');
+                let hasRun = false;
+
+                function formatNumber(value) {
+                    return Math.floor(value).toLocaleString('en-IN');
+                }
+
+                function runCounters() {
+                    if (hasRun) {
+                        return;
+                    }
+
+                    hasRun = true;
+
+                    counters.forEach(function(counter) {
+                        const target = Number(counter.dataset.count || 0);
+                        const duration = 1300;
+                        const start = performance.now();
+
+                        function tick(now) {
+                            const progress = Math.min((now - start) / duration, 1);
+                            const eased = 1 - Math.pow(1 - progress, 3);
+                            counter.textContent = formatNumber(target * eased);
+
+                            if (progress < 1) {
+                                requestAnimationFrame(tick);
+                            } else {
+                                counter.textContent = formatNumber(target);
+                            }
+                        }
+
+                        requestAnimationFrame(tick);
+                    });
+                }
+
+                if ('IntersectionObserver' in window) {
+                    const observer = new IntersectionObserver(function(entries) {
+                        if (entries.some(function(entry) { return entry.isIntersecting; })) {
+                            runCounters();
+                            observer.disconnect();
+                        }
+                    }, { threshold: 0.25 });
+
+                    observer.observe(section);
+                } else {
+                    runCounters();
+                }
+            });
+        </script>
+    @endpush
 </x-frontend::layouts.master>
 @section('js')
 @endsection

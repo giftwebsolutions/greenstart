@@ -11,8 +11,16 @@
 @if (!empty($blogs) && count($blogs))
     <section class="ga-blog-area">
         <div class="container">
-            <div class="section-title">
-                <h2><span>{{ $titleFirst }}</span> {{ $titleRest }}</h2>
+            <div class="ga-blog-head">
+                <div>
+                    <div class="section-title">
+                        <h2><span>{{ $titleFirst }}</span> {{ $titleRest }}</h2>
+                    </div>
+                    <p>Water purifier tips, service guidance, and RO buying advice.</p>
+                </div>
+                <a href="{{ route('frontend.blog.index') }}" class="ga-section-link">
+                    View blog <i class="fa-solid fa-arrow-right"></i>
+                </a>
             </div>
 
             <div class="ga-blogrow">

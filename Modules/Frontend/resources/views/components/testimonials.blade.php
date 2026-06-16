@@ -1,5 +1,11 @@
 <section class="testimonial-area">
     <div class="container">
+        <div class="testimonial-head">
+            <div class="section-title">
+                <h2><span>Customer</span> Reviews</h2>
+            </div>
+            <p>Feedback from customers who installed and serviced their aqua purifier systems with us.</p>
+        </div>
 
         <!-- Swiper Container -->
         <div class="swiper testimonial-swiper">

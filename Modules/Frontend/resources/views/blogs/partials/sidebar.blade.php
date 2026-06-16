@@ -5,23 +5,23 @@
     // optional: $q (search text), $activeCategorySlug
 @endphp
 
-<div class="left-sidebar shop-sidebar-wrap">
+<aside class="corp-blog-sidebar">
 
     {{-- Search --}}
-    <div class="sidebar-widget">
-        <h3 class="sidebar-title"><span>Search</span></h3>
-        <div class="search-widget">
+    <div class="corp-side-card">
+        <h3>Search</h3>
+        <div class="corp-search-widget">
             <form action="{{ route('frontend.blog.search') }}" method="GET">
-                <input name="q" value="{{ $q ?? request('q') }}" placeholder="Search entire store here ..." type="text" />
-                <button type="submit"><i class="ion-ios-search-strong"></i></button>
+                <input name="q" value="{{ $q ?? request('q') }}" placeholder="Search articles..." type="text" />
+                <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
             </form>
         </div>
     </div>
 
     {{-- Categories --}}
-    <div class="sidebar-widget mt-40px">
-        <h3 class="sidebar-title"><span>Categories</span></h3>
-        <div class="category-post">
+    <div class="corp-side-card">
+        <h3>Categories</h3>
+        <div class="corp-category-list">
             <ul>
                 @forelse($categories ?? [] as $cat)
                     <li>
@@ -40,10 +40,10 @@
     </div>
 
     {{-- Recent Posts --}}
-    <div class="sidebar-widget mt-40px">
-        <h3 class="sidebar-title"><span>Recent Post</span></h3>
+    <div class="corp-side-card">
+        <h3>Recent posts</h3>
 
-        <div class="recent-post-widget">
+        <div class="corp-recent-posts">
             @forelse($recentPosts ?? [] as $rp)
                 <div class="recent-single-post d-flex">
                     <div class="thumb-side">
@@ -72,10 +72,10 @@
     </div>
 
     {{-- Tags --}}
-    <div class="sidebar-widget mt-40px">
-        <h3 class="sidebar-title"><span>Tags</span></h3>
+    <div class="corp-side-card">
+        <h3>Tags</h3>
 
-        <div class="sidebar-widget-tag">
+        <div class="corp-tag-list">
             <ul>
                 @forelse($tags ?? [] as $tag)
                     <li><a href="{{ route('frontend.blog.search', ['q' => $tag]) }}">{{ $tag }}</a></li>
@@ -86,4 +86,4 @@
         </div>
     </div>
 
-</div>
+</aside>

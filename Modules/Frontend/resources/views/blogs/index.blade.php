@@ -32,13 +32,21 @@
     </div>
     <!-- Breadcrumb Area End-->
 
+    <section class="blog-hero">
+        <div class="container">
+            <span class="blog-kicker">Insights & updates</span>
+            <h1>Water purifier articles</h1>
+            <p>Guides, service tips, and product knowledge for home and business water purification.</p>
+        </div>
+    </section>
+
     <!-- Blog Grid Area Start -->
-    <div class="shop-category-area blog-grid mb-60px main-blog-page">
+    <div class="blog-page-wrap">
         <div class="container">
             <div class="row">
                 <!-- Main Content -->
                 <div class="col-lg-9 order-lg-last col-md-12 order-md-first">
-                    <div class="blog-posts">
+                    <div class="blog-posts blog-card-grid">
                         <div class="row">
 
                             @forelse($blogs as $blog)
@@ -58,45 +66,34 @@
                                     $excerpt = Str::limit(strip_tags($blog->description ?? $blog->content ?? ''), 160);
                                 @endphp
 
-                                <div class="col-md-4 mb-res-sm-30px">
-                                    <div class="single-blog-post mb-30px blog-grid-post">
-                                        <div class="blog-post-media">
-                                            <div class="blog-image">
+                                <div class="col-lg-4 col-md-6 mb-4">
+                                    <article class="corp-blog-card">
+                                        <div class="corp-blog-media">
                                                 <a href="{{ route('frontend.blog.show', $blog->slug) }}">
-                                                    <img src="{{ $img }}" alt="{{ $blog->title }}" class="img-responsive" />
+                                                    <img src="{{ $img }}" alt="{{ $blog->title }}" loading="lazy"
+                                                        onerror="this.onerror=null;this.src='{{ $fallback }}';">
                                                 </a>
-                                            </div>
                                         </div>
 
-                                        <div class="blog-post-content-inner mt-30px">
-                                            <h4 class="blog-title">
+                                        <div class="corp-blog-body">
+                                            <div class="corp-blog-meta">
+                                                <span><i class="fa-regular fa-user"></i> {{ $authorName }}</span>
+                                                <span><i class="fa-regular fa-calendar"></i> {{ \Carbon\Carbon::parse($publishedAt)->format('d M Y') }}</span>
+                                            </div>
+
+                                            <h2>
                                                 <a href="{{ route('frontend.blog.show', $blog->slug) }}">
                                                     {{ $blog->title }}
                                                 </a>
-                                            </h4>
-
-                                            <ul class="blog-page-meta">
-                                                <li>
-                                                    <a href="#">
-                                                        <i class="ion-person"></i>
-                                                        {{ $authorName }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <i class="ion-calendar"></i>
-                                                        {{ \Carbon\Carbon::parse($publishedAt)->format('d M, Y') }}
-                                                    </a>
-                                                </li>
-                                            </ul>
+                                            </h2>
 
                                             <p>{{ $excerpt }}</p>
 
-                                            <a class="read-more-btn" href="{{ route('frontend.blog.show', $blog->slug) }}">
-                                                Read More <i class="ion-android-arrow-dropright-circle"></i>
+                                            <a class="corp-blog-link" href="{{ route('frontend.blog.show', $blog->slug) }}">
+                                                Read article <i class="fa-solid fa-arrow-right"></i>
                                             </a>
                                         </div>
-                                    </div>
+                                    </article>
                                 </div>
                             @empty
                                 <div class="col-12">

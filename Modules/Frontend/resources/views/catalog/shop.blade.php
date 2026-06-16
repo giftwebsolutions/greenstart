@@ -403,14 +403,18 @@
                         @include('frontend::catalog.partials.product-grid', ['products' => $products])
                     </div>
 
-                    {{-- Bottom bar: count + pagination --}}
-                    <div class="d-flex flex-wrap align-items-center justify-content-between my-3 gap-2">
+                    {{-- Bottom bar: count + infinite loader --}}
+                    <div class="d-flex flex-wrap align-items-center justify-content-center my-3 gap-2">
                         <span class="toolbar-count" data-product-count>
                             @include('frontend::catalog.partials.product-count', ['products' => $products])
                         </span>
-                        <div class="shop-pager" data-product-pagination>
-                            {{ $products->withQueryString()->links('pagination::bootstrap-5') }}
-                        </div>
+                    </div>
+
+                    <div class="shop-infinite" data-infinite-wrap data-next-url="{{ $products->withQueryString()->nextPageUrl() }}">
+                        <button type="button" class="shop-load-more" data-load-more @disabled(!$products->hasMorePages())>
+                            <span class="shop-load-label">{{ $products->hasMorePages() ? 'Load more products' : 'No more products' }}</span>
+                            <span class="shop-load-spinner" aria-hidden="true"></span>
+                        </button>
                     </div>
 
                 </div>{{-- /col main --}}
@@ -509,13 +513,6 @@
         .pcard-price { display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
         .price-old { font-size:.8rem; color:#9fb0b5; text-decoration:line-through; }
         .price-new { font-size:1.05rem; font-weight:900; color:var(--aqua-dark); }
-
-        /* ── Pagination ── */
-        .shop-pager .pagination { margin:0; gap:4px; flex-wrap:wrap; }
-        .shop-pager .page-link { border-radius:10px !important; font-size:.85rem !important; font-family:inherit !important; padding:7px 12px; color:var(--aqua-ink); border-color:var(--aqua-line); }
-        .shop-pager .page-item.active .page-link { background:var(--aqua); border-color:var(--aqua); color:#fff; }
-        .shop-pager .page-link:hover { background:var(--aqua-soft); border-color:var(--aqua); color:var(--aqua-dark); }
-        .shop-pager .page-item.disabled .page-link { opacity:.5; }
 
         /* ── Empty state ── */
         .shop-empty-state { border:1px dashed var(--aqua-line); border-radius:16px; padding:48px 20px; text-align:center; display:grid; gap:6px; color:var(--aqua-muted); background:var(--aqua-soft); }
@@ -628,8 +625,29 @@
 
         var ajaxTimer;
 
-        function loadListing(url, pushState) {
+        var $infiniteWrap = $('[data-infinite-wrap]');
+        var infiniteLoading = false;
+
+        function updateInfinite(response) {
+            var nextUrl = response.next_page_url || '';
+            $infiniteWrap.attr('data-next-url', nextUrl);
+            $('[data-load-more]').prop('disabled', !nextUrl)
+                .find('.shop-load-label').text(nextUrl ? 'Load more products' : 'No more products');
+        }
+
+        function updateAppendCount(response) {
+            var loaded = $('#product-grid .product-item').length;
+            var total = response.total || loaded;
+            $('[data-product-count]').text('Showing 1 to ' + loaded + ' of ' + total);
+        }
+
+        function loadListing(url, pushState, append) {
+            if (append && infiniteLoading) {
+                return;
+            }
+            infiniteLoading = !!append;
             $grid.addClass('is-loading').attr('aria-busy', 'true');
+            $('[data-load-more]').addClass('is-loading').prop('disabled', true);
 
             $.ajax({
                 url: url,
@@ -639,20 +657,27 @@
                     'Accept': 'application/json'
                 },
                 success: function (response) {
-                    $grid.html(response.grid || '');
-                    $('[data-product-pagination]').html(response.pagination || '');
-                    $('[data-product-count]').html(response.count || '');
+                    if (append) {
+                        $grid.append(response.grid || '');
+                        updateAppendCount(response);
+                    } else {
+                        $grid.html(response.grid || '');
+                        $('[data-product-count]').html(response.count || '');
+                    }
+                    updateInfinite(response);
                     if (pushState !== false) {
                         window.history.pushState({}, '', url);
                     }
                 },
                 complete: function () {
+                    infiniteLoading = false;
                     $grid.removeClass('is-loading').removeAttr('aria-busy');
+                    $('[data-load-more]').removeClass('is-loading').prop('disabled', !$infiniteWrap.attr('data-next-url'));
                 }
             });
         }
 
-        $(document).on('click', '.sw-box a, .chip-badge, .refine-link, [data-product-pagination] a', function (event) {
+        $(document).on('click', '.sw-box a, .chip-badge, .refine-link', function (event) {
             var href = $(this).attr('href');
             if (!href || href === '#') {
                 return;
@@ -681,6 +706,26 @@
         window.addEventListener('popstate', function () {
             loadListing(window.location.href, false);
         });
+
+        $(document).on('click', '[data-load-more]', function () {
+            var nextUrl = $infiniteWrap.attr('data-next-url');
+            if (nextUrl) {
+                loadListing(nextUrl, false, true);
+            }
+        });
+
+        function maybeLoadMore() {
+            var nextUrl = $infiniteWrap.attr('data-next-url');
+            if (!nextUrl || infiniteLoading || !$infiniteWrap.length) {
+                return;
+            }
+            var triggerTop = $infiniteWrap.offset().top - window.innerHeight - 220;
+            if ($(window).scrollTop() > triggerTop) {
+                loadListing(nextUrl, false, true);
+            }
+        }
+
+        $(window).on('scroll', maybeLoadMore);
 
     });
     </script>

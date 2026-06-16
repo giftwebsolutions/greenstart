@@ -8,6 +8,8 @@ use Modules\Frontend\Support\SeoData;
 use Modules\Frontend\Interfaces\ProductInterface;
 use Modules\SysAdmin\Interfaces\ProductCategoryInterface;
 use Modules\SysAdmin\Models\Page;
+use Modules\SysAdmin\Models\Product;
+use Modules\SysAdmin\Models\ProductCategory;
 
 class ShopController extends Controller
 {
@@ -17,26 +19,89 @@ class ShopController extends Controller
     ) {}
 
     /**
-     * Main shop page — all products with full sidebar filters.
+     * Main shop page — category landing page.
      */
     public function index(Request $request)
     {
-        $filters        = $this->buildFilters($request);
-        $products       = $this->products->paginateForFrontend($filters, $this->perPage($request));
-        $filterGroups   = $this->products->getFilterableGroups();
-        $rootCategories = $this->categories->getMenuTree();
+        $rootCategories = ProductCategory::with(['children' => function ($query) {
+            $query->where('status', '1')->orderBy('sort')->orderBy('name');
+        }])
+            ->where(function ($query) {
+                $query->where('parent_id', 0)->orWhereNull('parent_id');
+            })
+            ->where('status', '1')
+            ->orderBy('sort')
+            ->orderBy('name')
+            ->get();
+
+        $categoryIds = $rootCategories
+            ->flatMap(fn ($category) => collect([$category->id])->merge($category->children->pluck('id')))
+            ->unique()
+            ->values();
+
+        $mainCounts = Product::query()
+            ->where('status', 1)
+            ->whereIn('product_category', $categoryIds)
+            ->selectRaw('product_category, count(*) as aggregate')
+            ->groupBy('product_category')
+            ->pluck('aggregate', 'product_category');
+
+        $subCounts = Product::query()
+            ->where('status', 1)
+            ->whereIn('sub_product_category', $categoryIds)
+            ->selectRaw('sub_product_category, count(*) as aggregate')
+            ->groupBy('sub_product_category')
+            ->pluck('aggregate', 'sub_product_category');
+
+        $categoryProductCounts = [];
+        $categoryImages = [];
+
+        $imageProducts = Product::query()
+            ->where('status', 1)
+            ->whereNotNull('thumb')
+            ->where(function ($query) use ($categoryIds) {
+                $query->whereIn('product_category', $categoryIds)
+                    ->orWhereIn('sub_product_category', $categoryIds);
+            })
+            ->orderByDesc('is_featured')
+            ->orderByDesc('created_at')
+            ->get(['id', 'product_category', 'sub_product_category', 'thumb', 'created_at']);
+
+        foreach ($rootCategories as $category) {
+            $categoryProductCounts[$category->id] = (int) ($mainCounts[$category->id] ?? 0);
+            $categoryImages[$category->id] = $category->image;
+
+            foreach ($category->children as $child) {
+                $childCount = (int) ($mainCounts[$child->id] ?? 0) + (int) ($subCounts[$child->id] ?? 0);
+                $categoryProductCounts[$child->id] = $childCount;
+                $categoryProductCounts[$category->id] += $childCount;
+                $categoryImages[$child->id] = $child->image;
+            }
+        }
+
+        foreach ($imageProducts as $product) {
+            if (empty($categoryImages[$product->product_category])) {
+                $categoryImages[$product->product_category] = [
+                    'file' => $product->thumb,
+                    'created_at' => $product->created_at,
+                ];
+            }
+
+            if (!empty($product->sub_product_category) && empty($categoryImages[$product->sub_product_category])) {
+                $categoryImages[$product->sub_product_category] = [
+                    'file' => $product->thumb,
+                    'created_at' => $product->created_at,
+                ];
+            }
+        }
 
         $home = Page::where('slug', 'shop')->active()->first();
 
-        $seoPayload = $home ? SeoData::page($home) : SeoData::basic('Home');
+        $seoPayload = $home ? SeoData::page($home) : SeoData::basic('Shop');
 
-        if ($request->ajax()) {
-            return $this->ajaxListingResponse($products);
-        }
-
-        return view('frontend::catalog.shop', array_merge(
-            compact('products', 'filterGroups', 'rootCategories', 'filters'),
-            ['activeTitle' => 'All Products'],
+        return view('frontend::catalog.index', array_merge(
+            compact('rootCategories', 'categoryProductCounts', 'categoryImages'),
+            ['activeTitle' => 'Shop by Category'],
             $seoPayload
         ));
     }
@@ -148,11 +213,17 @@ class ShopController extends Controller
 
     private function ajaxListingResponse($products)
     {
+        $shownTo = min($products->currentPage() * $products->perPage(), $products->total());
+
         return response()->json([
             'grid' => view('frontend::catalog.partials.product-grid', compact('products'))->render(),
             'pagination' => $products->withQueryString()->links('pagination::bootstrap-5')->render(),
             'count' => view('frontend::catalog.partials.product-count', compact('products'))->render(),
-            'next_page_url' => $products->nextPageUrl(),
+            'next_page_url' => $products->appends(request()->query())->nextPageUrl(),
+            'total' => $products->total(),
+            'shown_to' => $shownTo,
+            'current_page' => $products->currentPage(),
+            'last_page' => $products->lastPage(),
         ]);
     }
 }

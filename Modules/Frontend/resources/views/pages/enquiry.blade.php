@@ -1,130 +1,221 @@
 @php
-
     $settings = Config::get('site-settings');
+    $phone = $settings['mobile'] ?? '';
+    $phoneAlt = $settings['mobile-1'] ?? '';
+    $email = $settings['email'] ?? '';
+    $whatsapp = preg_replace('/\D+/', '', $settings['whatsapp'] ?? $phone);
+    $categories = collect($category ?? []);
 @endphp
-@section('css')
-@endsection
+
 <x-frontend::layouts.master :seo="$seo ?? []" :structuredData="$structuredData ?? []">
-
- <!-- Breadcrumb Area Start -->
-        <div class="breadcrumb-area">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="breadcrumb-content">
-                            <ul class="nav">
-                                <li><a href="{{ route('frontend.home') }}">Home</a></li>
-                                <li>Enquiry</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Breadcrumb Area End-->
-    <!-- contact area start -->
-    <div class="contact-area mb-60px">
+    <div class="breadcrumb-area enquiry-breadcrumb">
         <div class="container">
-            <div class="custom-row-2">
-                <div class="col-lg-4 col-md-5 mb-lm-60px col-sm-12 col-xs-12 w-sm-100">
-                    <div class="contact-info-wrap">
-                        <div class="single-contact-info">
-                            <div class="contact-icon">
-                                <i class="ion-android-call"></i>
-                            </div>
-                            <div class="contact-info-dec">
-                                <p><a href="tel:{{ $settings['mobile'] ?? '' }}">{{ $settings['mobile'] ?? '' }}</a></p>
-                                <p><a href="tel:{{ $settings['mobile-1'] ?? '' }}">{{ $settings['mobile-1'] ?? '' }}</a>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="single-contact-info">
-                            <div class="contact-icon">
-                                <i class="ion-android-globe"></i>
-                            </div>
-                            <div class="contact-info-dec">
-                                <a href="mailto:{{ $settings['email'] ?? '' }}">{{ $settings['email'] ?? '' }}</a>
-                                <a href="mailto:{{ $settings['username'] ?? '' }}">{{ $settings['username'] ?? '' }}</a>
-                            </div>
-                        </div>
-                        <div class="single-contact-info">
-                            <div class="contact-icon">
-                                <i class="ion-android-pin"></i>
-                            </div>
-                            <div class="contact-info-dec">
-
-                                <p>{{ $settings['address'] ?? '' }}</p>
-                            </div>
-                        </div>
-                        <div class="contact-social">
-                            <h3>Follow Us</h3>
-                            <div class="social-info">
-                                <ul>
-                                    <li>
-                                        <a class="fa-brands fa-whatsapp" title="WhatsApp"
-                                            href="https://wa.me/{{ $settings['whatsapp'] ?? '' }}" target="_blank">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="fa-brands fa-facebook-f" title="Facebook"
-                                            href="{{ $settings['facebook'] ?? '' }}"> </a>
-                                    </li>
-                                    <li>
-                                    <li><a class="fa-brands fa-instagram" title="Facebook"
-                                            href="{{ $settings['instagram'] ?? '' }}"></a></li>
-                                    </li>
-                                    <li>
-                                        <a class="fa-brands fa-youtube" title="Facebook"
-                                            href="{{ $settings['youtube'] ?? '' }}"> </a>
-                                    </li>
-
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-8 col-md-7 col-sm-12 col-xs-12">
-                    <div class="contact-form">
-                        <div class="contact-title mb-30">
-                            <h2>Get In Touch</h2>
-                        </div>
-                        <form class="contact-form-style" id="enquiry-form"
-                            action="{{ route('frontend.enquiry.store') }}" method="post">
-                            @csrf
-                            <div id="enquiry-form-errors"
-                                style="display:none; margin-bottom:15px; padding:12px 15px; border:1px solid #dc3545; background:#f8d7da; color:#842029;">
-                                <ul style="margin:0; padding-left:18px;"></ul>
-                            </div>
-                            <div id="enquiry-form-message"
-                                style="display:none; margin-bottom:15px; padding:12px 15px; border:1px solid #198754; background:#d1e7dd; color:#0f5132;">
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <input name="name" placeholder="Name*" type="text" />
-                                </div>
-                                <div class="col-lg-6">
-                                    <input name="mobile" placeholder="Mobile*" type="text" />
-                                </div>
-                                <div class="col-lg-6">
-                                    <input name="email" placeholder="Email*" type="email" />
-                                </div>
-                                <div class="col-lg-12">
-                                    <input name="subject" placeholder="Subject*" type="text" />
-                                </div>
-                                <div class="col-lg-12">
-                                    <textarea name="message" placeholder="Your Message*"></textarea>
-                                    <button class="submit" type="submit">SEND</button>
-                                </div>
-                            </div>
-                        </form>
-                        <p class="form-messege"></p>
-                    </div>
-                </div>
+            <div class="breadcrumb-content">
+                <ul class="nav">
+                    <li><a href="{{ route('frontend.home') }}">Home</a></li>
+                    <li>Enquiry</li>
+                </ul>
             </div>
         </div>
     </div>
-    <!-- contact area end -->
+
+    <section class="enquiry-page">
+        <div class="container">
+            <div class="enquiry-hero">
+                <div>
+                    <span class="enquiry-kicker">Water purifier consultation</span>
+                    <h1>Tell us your water purifier requirement</h1>
+                    <p>Share your home, office, or spare requirement. Our team will suggest the right aqua filter solution and contact you quickly.</p>
+                </div>
+                <div class="enquiry-hero-actions">
+                    @if ($phone)
+                        <a href="tel:{{ $phone }}" class="enquiry-action enquiry-action-call">
+                            <i class="fa-solid fa-phone"></i>
+                            <span>Call Expert</span>
+                        </a>
+                    @endif
+                    @if ($whatsapp)
+                        <a href="https://wa.me/{{ $whatsapp }}" target="_blank" rel="noopener" class="enquiry-action enquiry-action-wa">
+                            <i class="fa-brands fa-whatsapp"></i>
+                            <span>WhatsApp</span>
+                        </a>
+                    @endif
+                </div>
+            </div>
+
+            <div class="enquiry-shell">
+                <aside class="enquiry-side">
+                    <div class="enquiry-card enquiry-contact-card">
+                        <span class="enquiry-card-label">Need help choosing?</span>
+                        <h2>Greens Aqua World support</h2>
+                        <p>Get product selection, installation support, and service assistance from one place.</p>
+
+                        <div class="enquiry-support-list">
+                            <div>
+                                <i class="fa-solid fa-droplet"></i>
+                                <span>Aqua purifier solution</span>
+                            </div>
+                            <div>
+                                <i class="fa-solid fa-screwdriver-wrench"></i>
+                                <span>Installation support</span>
+                            </div>
+                            <div>
+                                <i class="fa-solid fa-headset"></i>
+                                <span>Service assistance</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="enquiry-card enquiry-detail-card">
+                        @if ($phone)
+                            <a href="tel:{{ $phone }}" class="enquiry-detail-row">
+                                <i class="fa-solid fa-phone"></i>
+                                <span>
+                                    <small>Primary phone</small>
+                                    {{ $phone }}
+                                </span>
+                            </a>
+                        @endif
+                        @if ($phoneAlt)
+                            <a href="tel:{{ $phoneAlt }}" class="enquiry-detail-row">
+                                <i class="fa-solid fa-mobile-screen"></i>
+                                <span>
+                                    <small>Alternative phone</small>
+                                    {{ $phoneAlt }}
+                                </span>
+                            </a>
+                        @endif
+                        @if ($email)
+                            <a href="mailto:{{ $email }}" class="enquiry-detail-row">
+                                <i class="fa-solid fa-envelope"></i>
+                                <span>
+                                    <small>Email</small>
+                                    {{ $email }}
+                                </span>
+                            </a>
+                        @endif
+                        @if (!empty($settings['address']))
+                            <div class="enquiry-detail-row">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <span>
+                                    <small>Location</small>
+                                    {{ $settings['address'] }}
+                                </span>
+                            </div>
+                        @endif
+                    </div>
+                </aside>
+
+                <div class="enquiry-form-card">
+                    <div class="enquiry-form-head">
+                        <span class="enquiry-card-label">Quick enquiry</span>
+                        <h2>Request product guidance</h2>
+                        <p>Fill the details below and we will call back with the best matching purifier or spare part option.</p>
+                    </div>
+
+                    <div class="enquiry-process">
+                        <div>
+                            <span>1</span>
+                            <strong>Share requirement</strong>
+                            <small>Product, service, or spare part need</small>
+                        </div>
+                        <div>
+                            <span>2</span>
+                            <strong>Expert callback</strong>
+                            <small>We confirm water usage and location</small>
+                        </div>
+                        <div>
+                            <span>3</span>
+                            <strong>Right solution</strong>
+                            <small>Product, installation, or service plan</small>
+                        </div>
+                    </div>
+
+                    @if ($categories->isNotEmpty())
+                        <div class="enquiry-category-strip">
+                            <span>Popular categories</span>
+                            <div>
+                                @foreach ($categories->take(5) as $item)
+                                    <button type="button" class="enquiry-category-chip" data-category-id="{{ $item['id'] ?? '' }}">
+                                        {{ $item['name'] ?? '' }}
+                                    </button>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    <form class="enquiry-form" id="enquiry-form" action="{{ route('frontend.enquiry.store') }}" method="post">
+                        @csrf
+                        <div id="enquiry-form-errors" class="enquiry-alert enquiry-alert-error" style="display:none;">
+                            <ul></ul>
+                        </div>
+                        <div id="enquiry-form-message" class="enquiry-alert enquiry-alert-success" style="display:none;"></div>
+
+                        <div class="enquiry-grid">
+                            <label class="enquiry-field enquiry-field-wide">
+                                <span>Name <b>*</b></span>
+                                <input name="name" placeholder="Enter your name" type="text" autocomplete="name" />
+                            </label>
+
+                            <label class="enquiry-field">
+                                <span>Mobile <b>*</b></span>
+                                <input name="mobile" placeholder="Mobile number" type="tel" autocomplete="tel" />
+                            </label>
+
+                            <label class="enquiry-field">
+                                <span>Email</span>
+                                <input name="email" placeholder="Email address" type="email" autocomplete="email" />
+                            </label>
+
+                            <label class="enquiry-field">
+                                <span>Category</span>
+                                <select name="category_id">
+                                    <option value="">Select category</option>
+                                    @foreach ($categories as $item)
+                                        <option value="{{ $item['id'] ?? '' }}">{{ $item['name'] ?? '' }}</option>
+                                    @endforeach
+                                </select>
+                            </label>
+
+                            <label class="enquiry-field">
+                                <span>Requirement <b>*</b></span>
+                                <input name="subject" placeholder="RO purifier, service, spare part..." type="text" />
+                            </label>
+
+                            <label class="enquiry-field">
+                                <span>City</span>
+                                <input name="city" placeholder="Your city" type="text" autocomplete="address-level2" />
+                            </label>
+
+                            <label class="enquiry-field">
+                                <span>State</span>
+                                <input name="state" placeholder="Your state" type="text" autocomplete="address-level1" />
+                            </label>
+
+                            <label class="enquiry-field enquiry-field-wide">
+                                <span>Message <b>*</b></span>
+                                <textarea name="message" placeholder="Tell us about usage, current issue, capacity, or preferred product."></textarea>
+                            </label>
+                        </div>
+
+                        <div class="enquiry-submit-row">
+                            <button class="enquiry-submit" type="submit">
+                                <i class="fa-regular fa-paper-plane"></i>
+                                <span>Send Enquiry</span>
+                            </button>
+                            @if ($whatsapp)
+                                <a href="https://wa.me/{{ $whatsapp }}" target="_blank" rel="noopener" class="enquiry-whatsapp">
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                    <span>Chat on WhatsApp</span>
+                                </a>
+                            @endif
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
     @push('scripts')
         <script>
             $(function() {
@@ -137,13 +228,20 @@
                 const $submitButton = $form.find('button[type="submit"]');
                 const $errorBox = $('#enquiry-form-errors');
                 const $messageBox = $('#enquiry-form-message');
+                const $categorySelect = $form.find('select[name="category_id"]');
 
                 function hideBox($box) {
-                    $box.hide().html('');
+                    $box.hide();
+
+                    if ($box.attr('id') === 'enquiry-form-errors') {
+                        $box.html('<ul></ul>');
+                    } else {
+                        $box.text('');
+                    }
                 }
 
                 function showErrors(messages) {
-                    let errorHtml = '<ul style="margin:0; padding-left:18px; list-style:disc;">';
+                    let errorHtml = '<ul>';
 
                     $.each(messages, function(index, message) {
                         errorHtml += '<li>' + message + '</li>';
@@ -180,7 +278,7 @@
                     }
 
                     if (!subject) {
-                        messages.push('Subject is required.');
+                        messages.push('Requirement is required.');
                     }
 
                     if (!message) {
@@ -189,6 +287,13 @@
 
                     return messages;
                 }
+
+                $('.enquiry-category-chip').on('click', function() {
+                    const categoryId = $(this).data('category-id');
+                    $('.enquiry-category-chip').removeClass('active');
+                    $(this).addClass('active');
+                    $categorySelect.val(categoryId);
+                });
 
                 $form.on('submit', function(event) {
                     event.preventDefault();
@@ -204,7 +309,7 @@
                         return;
                     }
 
-                    $submitButton.prop('disabled', true);
+                    $submitButton.prop('disabled', true).addClass('is-loading');
 
                     $.ajax({
                         url: $form.attr('action'),
@@ -221,7 +326,6 @@
                             const message = response.message || 'Enquiry submitted successfully.';
                             showMessage(message);
                             scrollToBox($messageBox);
-                            alert(message);
                             $form[0].reset();
                         },
                         error: function(xhr) {
@@ -253,7 +357,7 @@
                             scrollToBox($errorBox);
                         },
                         complete: function() {
-                            $submitButton.prop('disabled', false);
+                            $submitButton.prop('disabled', false).removeClass('is-loading');
                         }
                     });
                 });

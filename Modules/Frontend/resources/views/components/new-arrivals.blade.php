@@ -1,9 +1,13 @@
 @if ($products && $products->count())
     <section class="arrival-area">
         <div class="container">
-            <div class="section-title">
-                <h2><span>New</span> Arrivals</h2>
-                <a class="ga-viewall" href="{{ route('frontend.shop.new-arrivals') }}">View All <i class="fa-solid fa-angle-right"></i></a>
+            <div class="ga-arrival-head">
+                <div class="section-title">
+                    <h2><span>New</span> Arrivals</h2>
+                </div>
+                <a class="ga-viewall" href="{{ route('frontend.shop.new-arrivals') }}">
+                    View shop <i class="fa-solid fa-arrow-right"></i>
+                </a>
             </div>
 
             <div class="ga-prow">

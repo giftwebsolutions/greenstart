@@ -18,9 +18,8 @@ return [
         'route' => 'frontend.blog.index',
     ],
     [
-        'label' => 'About Page',
-        'route' => 'frontend.cms.view',
-        'params' => ['slug' => 'about'],
+        'label' => 'About Us',
+        'route' => 'frontend.about',
     ],
     [
         'label' => 'Faq',

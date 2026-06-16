@@ -1,269 +1,246 @@
 @php
     use Modules\SysAdmin\Helpers\ImageUploader;
-    // Single main image using helper
-    $mainImage = ImageUploader::getFilePath($product->thumb ?? '', $product->created_at ?? null);
 
-    // If you have gallery images stored somewhere, map them through helper,
-    // otherwise just use the main image as an array with one element.
-    $images = $product->gallery_images ?? [$mainImage];
+    $title = $product->title ?? 'Product';
+    $category = $product->category ?? null;
+    $subCategory = $product->subCategory ?? null;
+    $mainImage = ImageUploader::getFilePath($product->thumb ?? '', $product->created_at ?? null);
+    $thumbImage = ImageUploader::getFilePath($product->thumb ?? '', $product->created_at ?? null, 'thumbnail');
+    $gallery = collect([[
+        'thumb' => $thumbImage,
+        'full' => $mainImage,
+        'alt' => $title,
+    ]]);
+
+    if ($product->relationLoaded('images')) {
+        $gallery = $gallery->merge($product->images->map(fn ($image) => [
+            'thumb' => $image->image_url,
+            'full' => $image->original_image_url,
+            'alt' => $title,
+        ]));
+    }
+
+    $gallery = $gallery->unique('full')->values();
+    $price = (float) ($product->sales_price ?? 0);
+    $mrp = (float) ($product->mrp ?? 0);
+    $hasDiscount = $mrp > 0 && $mrp > $price;
+    $discountPercent = $hasDiscount ? round((($mrp - $price) / $mrp) * 100) : 0;
+    $inStock = (int) ($product->stock ?? 1) > 0;
+    $settings = Config::get('site-settings');
+    $phone = $settings['mobile'] ?? '';
+    $waNumber = preg_replace('/\D+/', '', $settings['whatsapp'] ?? '');
 @endphp
 
 <x-frontend::layouts.master :seo="$seo ?? []" :structuredData="$structuredData ?? []">
-
-    {{-- Breadcrumb --}}
     <div class="breadcrumb-area">
         <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="breadcrumb-content">
-                        <ul class="nav">
-                            <li><a href="{{ route('frontend.home') }}">Home</a></li>
-                            <li>{{ $product->title }}</li>
-                        </ul>
-                    </div>
-                </div>
+            <div class="breadcrumb-content">
+                <ul class="nav">
+                    <li><a href="{{ route('frontend.home') }}">Home</a></li>
+                    <li><a href="{{ route('frontend.shop.index') }}">Shop</a></li>
+                    @if ($category)
+                        <li><a href="{{ route('frontend.shop.category', $category->slug) }}">{{ $category->name }}</a></li>
+                    @endif
+                    <li>{{ $title }}</li>
+                </ul>
             </div>
         </div>
     </div>
 
-    {{-- Product Details --}}
-    <section class="product-details-area ">
+    <section class="pd-hero">
         <div class="container">
-            <div class="container-inner">
-                <div class="row">
-                    {{-- Images --}}
-                    <div class="col-xl-6 col-lg-6 col-md-12">
-                        <div class="product-details-img product-details-tab">
-                            <div class="zoompro-wrap zoompro-2 px-2">
-                                @foreach ($images as $img)
-                                    <div class="zoompro-border zoompro-span">
-                                        <img class="zoompro" src="{{ $img }}"
-                                            data-zoom-image="{{ $img }}" alt="{{ $product->title }}" />
-                                    </div>
-                                @endforeach
-                            </div>
-                            <div id="gallery" class="product-dec-slider-2">
-                                @foreach ($images as $img)
-                                    <div class="single-slide-item">
-                                        <img class="img-responsive" data-image="{{ $img }}"
-                                            data-zoom-image="{{ $img }}" src="{{ $img }}"
-                                            alt="{{ $product->title }}" />
-                                    </div>
-                                @endforeach
-                            </div>
-
-                        </div>
+            <div class="pd-shell">
+                <div class="pd-gallery" data-pd-gallery>
+                    <div class="pd-main-image">
+                        <img src="{{ $gallery->first()['full'] ?? $mainImage }}" alt="{{ $title }}" data-pd-main
+                            onerror="this.onerror=null;this.src='{{ asset('uploads/default.jpg') }}';">
+                        @if ($hasDiscount)
+                            <span class="pd-badge">{{ $discountPercent }}% off</span>
+                        @endif
                     </div>
 
-                    {{-- Info --}}
-                    <div class="col-xl-6 col-lg-6 col-md-12">
-                        <div class="product-details-content px-4">
-                            <h2>{{ $product->title }}</h2>
-
-                            <div class="pro-details-rating-wrap">
-                                <div class="rating-product">
-                                    <i class="ion-android-star"></i>
-                                    <i class="ion-android-star"></i>
-                                    <i class="ion-android-star"></i>
-                                    <i class="ion-android-star"></i>
-                                    <i class="ion-android-star"></i>
-                                </div>
-                            </div>
-
-                            <div class="pricing-meta">
-                                <ul>
-                                    <li class="cuttent-price">
-                                        ₹{{ number_format($product->sales_price ?? 0, 2) }}
-                                    </li>
-                                    <li class="cuttent-price">
-                                        <del class="text-muted fs-6">
-                                            ₹{{ number_format($product->mrp ?? 0, 2) }}
-                                        </del>
-                                    </li>
-
-                                </ul>
-                            </div>
-
-                            <div class="product-classify">
-                                <ul>
-                                    <li>SKU:<span> {{ $product->sku }}</span></li>
-                                    <li>Availability:<span>
-                                            {{ ($product->stock ?? 0) > 0 ? 'In Stock' : 'Out of Stock' }}</span></li>
-                                </ul>
-                            </div>
-
-                            <div class="pro-details-list">
-                                <p>{{ $product->short_description }}</p>
-                            </div>
-
-                            {{-- Simple "Buy Now" for overall product --}}
-                            <div class="pro-details-quality mt-0px mb-3">
-                                <div class="pro-details-cart btn-hover">
-                                    <button type="button" class="btn btn-lg btn-success btn-sm js-enquiry-open"
-                                        data-product-id="{{ $product->id }}"
-                                        data-category-id="{{ $product->category_id ?? 0 }}"
-                                        data-price="{{ $product->price ?? 0 }}"
-                                        data-product-name="{{ $product->name ?? ($product->title ?? '') }}">
-                                        Enquiry
-                                    </button>
-                                </div>
-                            </div>
-
-                            {{-- Variant table (only for variable products type=2) --}}
-                            @if ((int) $product->type === 2 && $product->variants->count())
-                                <h5 class="mb-2">Available Variants</h5>
-                                <div class="table-responsive mb-3">
-                                    <table class="table table-bordered align-middle">
-                                        <thead>
-                                            <tr>
-                                                <th>Variant Name</th>
-                                                <th>SKU</th>
-                                                <th>Price</th>
-                                                <th>Stock</th>
-                                                @php
-                                                    // get distinct configurable attributes from variant values
-                                                    $variantAttributes = collect();
-                                                    foreach ($product->variants as $variant) {
-                                                        foreach ($variant->values as $val) {
-                                                            $variantAttributes->push($val->attribute);
-                                                        }
-                                                    }
-                                                    $variantAttributes = $variantAttributes->filter()->unique('id');
-                                                @endphp
-                                                @foreach ($variantAttributes as $attr)
-                                                    <th>{{ $attr->name }}</th>
-                                                @endforeach
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($product->variants as $variant)
-                                                <tr>
-                                                    <td>{{ $variant->name ?? 'Variant ' . $variant->id }}</td>
-                                                    <td>{{ $variant->sku }}</td>
-                                                    <td>₹{{ number_format($variant->price, 2) }}</td>
-                                                    <td>{{ $variant->stock }}</td>
-
-                                                    @foreach ($variantAttributes as $attr)
-                                                        @php
-                                                            $val = $variant->values->firstWhere(
-                                                                'attribute_id',
-                                                                $attr->id,
-                                                            );
-                                                        @endphp
-                                                        <td>{{ $val?->attributeValue?->value ?? '-' }}</td>
-                                                    @endforeach
-
-                                                    <td>
-
-                                                        <button type="button"
-                                                            class="btn btn-sm btn-primary btn-sm js-enquiry-open"
-                                                            data-product-id="{{ $product->id }}"
-                                                            data-category-id="{{ $product->category_id ?? 0 }}"
-                                                            data-price="{{ $product->price ?? 0 }}"
-                                                            data-product-name="{{ $product->name ?? ($product->title ?? '') }}">
-                                                            Buy Now
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            @endif
-
+                    @if ($gallery->count() > 1)
+                        <div class="pd-thumbs">
+                            @foreach ($gallery as $index => $image)
+                                <button type="button" class="pd-thumb {{ $index === 0 ? 'is-active' : '' }}"
+                                    data-full="{{ $image['full'] }}" aria-label="View image {{ $index + 1 }}">
+                                    <img src="{{ $image['thumb'] }}" alt="{{ $image['alt'] }}" loading="lazy"
+                                        onerror="this.onerror=null;this.src='{{ asset('uploads/default.jpg') }}';">
+                                </button>
+                            @endforeach
                         </div>
+                    @endif
+                </div>
+
+                <div class="pd-summary">
+                    <div class="pd-label-row">
+                        @if ($category)
+                            <a href="{{ route('frontend.shop.category', $category->slug) }}" class="pd-category">{{ $category->name }}</a>
+                        @endif
+                        @if ($subCategory)
+                            <span class="pd-category muted">{{ $subCategory->name }}</span>
+                        @endif
+                    </div>
+
+                    <h1>{{ $title }}</h1>
+
+                    <div class="pd-meta">
+                        @if (!empty($product->sku))
+                            <span>SKU: <strong>{{ $product->sku }}</strong></span>
+                        @endif
+                        <span class="{{ $inStock ? 'is-stock' : 'is-out' }}">{{ $inStock ? 'Available' : 'Out of stock' }}</span>
+                    </div>
+
+                    <div class="pd-price-row">
+                        <strong class="pd-price">₹{{ number_format($price) }}</strong>
+                        @if ($hasDiscount)
+                            <span class="pd-mrp">₹{{ number_format($mrp) }}</span>
+                            <span class="pd-save">Save ₹{{ number_format($mrp - $price) }}</span>
+                        @endif
+                    </div>
+
+                    @if (!empty($product->short_description))
+                        <p class="pd-short">{{ $product->short_description }}</p>
+                    @endif
+
+                    <div class="pd-trust">
+                        <span><i class="fa-solid fa-droplet"></i> Aqua purifier solution</span>
+                        <span><i class="fa-solid fa-screwdriver-wrench"></i> Installation support</span>
+                        <span><i class="fa-solid fa-headset"></i> Service assistance</span>
+                    </div>
+
+                    <div class="pd-actions">
+                        <button type="button" class="pd-primary js-enquiry-open"
+                            data-product-id="{{ $product->id }}"
+                            data-category-id="{{ $product->product_category ?? 0 }}"
+                            data-price="{{ $price }}"
+                            data-product-name="{{ $title }}">
+                            <i class="fa-regular fa-paper-plane"></i> Send Enquiry
+                        </button>
+                        <a class="pd-secondary" href="{{ $phone ? 'tel:' . $phone : route('frontend.contact') }}">
+                            <i class="fa-solid fa-phone"></i> Talk to Expert
+                        </a>
+                        @if ($waNumber)
+                            <a class="pd-whatsapp" href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener">
+                                <i class="fa-brands fa-whatsapp"></i> WhatsApp Chat
+                            </a>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    {{-- Description tabs --}}
-    <div class="description-review-area ptb-60px">
-        <div class="container">
-            <div class="description-review-wrapper">
-                <div class="description-review-topbar nav">
-                    <a class="active" data-bs-toggle="tab" href="#des-details1">Description</a>
-                    <a data-bs-toggle="tab" href="#des-details2">Additional Info</a>
-                </div>
-                <div class="tab-content description-review-bottom">
-                    <div id="des-details1" class="tab-pane active">
-                        <div class="product-description-wrapper">
-                            {!! $product->description !!}
-                        </div>
-                    </div>
-                    <div id="des-details2" class="tab-pane">
-                        <div class="product-anotherinfo-wrapper">
-                            {!! $product->additional_info ?? '<p>No additional information.</p>' !!}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- Related Products --}}
-    @if ($related->count())
-        <div class="arrival-area mb-60px">
+    @if ((int) $product->type === 2 && $product->variants->count())
+        <section class="pd-section">
             <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="section-title">
-                            <h2><span>RELATED </span>PRODUCTS</h2>
-                        </div>
+                <div class="pd-panel">
+                    <div class="pd-section-head">
+                        <h2>Available Variants</h2>
+                        <p>Choose the matching configuration for your water system.</p>
+                    </div>
+                    @php
+                        $variantAttributes = collect();
+                        foreach ($product->variants as $variant) {
+                            foreach ($variant->values as $val) {
+                                $variantAttributes->push($val->attribute);
+                            }
+                        }
+                        $variantAttributes = $variantAttributes->filter()->unique('id');
+                    @endphp
+                    <div class="table-responsive pd-variant-table">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Variant</th>
+                                    <th>SKU</th>
+                                    @foreach ($variantAttributes as $attr)
+                                        <th>{{ $attr->name }}</th>
+                                    @endforeach
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($product->variants as $variant)
+                                    <tr>
+                                        <td>{{ $variant->name ?? 'Variant ' . $variant->id }}</td>
+                                        <td>{{ $variant->sku ?: '-' }}</td>
+                                        @foreach ($variantAttributes as $attr)
+                                            @php $val = $variant->values->firstWhere('attribute_id', $attr->id); @endphp
+                                            <td>{{ $val?->attributeValue?->value ?? '-' }}</td>
+                                        @endforeach
+                                        <td>₹{{ number_format($variant->sales_price ?? $variant->price ?? $price) }}</td>
+                                        <td>{{ $variant->stock ?? '-' }}</td>
+                                        <td>
+                                            <button type="button" class="pd-mini-btn js-enquiry-open"
+                                                data-product-id="{{ $product->id }}"
+                                                data-category-id="{{ $product->product_category ?? 0 }}"
+                                                data-price="{{ $variant->sales_price ?? $variant->price ?? $price }}"
+                                                data-product-name="{{ $title }} - {{ $variant->name ?? 'Variant ' . $variant->id }}">
+                                                Enquire
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <div class="arrival-wrapper">
-                    <div class="arrival-slider slider-nav-style-1">
-                       
-                        @foreach ($related as $rel)
-                            <div class="arrval-slider-item">
-                                <article class="list-product text-left">
-                                    <div class="product-inner">
-                                        <div class="img-block">
-                                            <a href="{{ route('frontend.shop.product.show', $product->slug ?? $product->id) }}"
-                                                class="thumbnail">
-                                                @php
-                                                    $relThumb = ImageUploader::getFilePath(
-                                                        $rel->thumb ?? '',
-                                                        $rel->created_at ?? null,
-                                                        'thumbnail',
-                                                    );
-                                                @endphp
+            </div>
+        </section>
+    @endif
 
-                                                <img class="first-img" src="{{ $relThumb }}"
-                                                    alt="{{ $product->title }}">
-                                            </a>
-                                        </div>
-                                        <div class="product-decs">
-                                            <h2><a href="{{ route('frontend.shop.product.show', $product->slug ?? $product->id) }}"
-                                                    class="product-link">{{ $rel->title }}</a></h2>
-                                            <div class="pricing-meta">
-                                                <ul>
-                                                    <li class="current-price">₹{{ number_format($rel->sales_price ?? 0, 2) }}
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div class="cart-btn">
-                                            <button type="button" class="btn btn-success btn-sm js-enquiry-open"
-                                                data-product-id="{{ $product->id }}"
-                                                data-category-id="{{ $product->category_id ?? 0 }}"
-                                                data-price="{{ $product->price ?? 0 }}"
-                                                data-product-name="{{ $product->name ?? ($product->title ?? '') }}">
-                                                Enquiry
-                                            </button>
-                                        </div>
-
-                                    </div>
-                                </article>
-                            </div>
-                        @endforeach
+    <section class="pd-section">
+        <div class="container">
+            <div class="pd-panel">
+                <div class="description-review-topbar nav pd-tabs">
+                    <a class="active" data-bs-toggle="tab" href="#pd-description">Description</a>
+                    <a data-bs-toggle="tab" href="#pd-info">Additional Info</a>
+                </div>
+                <div class="tab-content pd-tab-content">
+                    <div id="pd-description" class="tab-pane active">
+                        {!! $product->description ?: '<p>No description available.</p>' !!}
+                    </div>
+                    <div id="pd-info" class="tab-pane">
+                        {!! $product->additional_info ?? '<p>No additional information available.</p>' !!}
                     </div>
                 </div>
             </div>
         </div>
+    </section>
+
+    @if ($related->count())
+        <section class="pd-section pd-related">
+            <div class="container">
+                <div class="pd-section-head">
+                    <h2>Related Products</h2>
+                    <p>More aqua purification products from the same range.</p>
+                </div>
+                <div class="row product-grid">
+                    @foreach ($related as $rel)
+                        <div class="col-lg-3 col-md-4 col-6 mb-4 product-item">
+                            @include('frontend::catalog.partials.product-card', ['product' => $rel])
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
     @endif
-    @include('frontend::catalog.modal');
+
+    @include('frontend::catalog.modal')
+
+    @push('scripts')
+        <script>
+            $(function () {
+                $(document).on('click', '.pd-thumb', function () {
+                    var full = $(this).data('full');
+                    $('[data-pd-main]').attr('src', full);
+                    $('.pd-thumb').removeClass('is-active');
+                    $(this).addClass('is-active');
+                });
+            });
+        </script>
+    @endpush
 </x-frontend::layouts.master>

@@ -6,6 +6,15 @@
     $email    = $settings['email'] ?? '';
     $logo     = asset('assets/images/logo/logo.png');
     $brand    = config('app.name', 'Greens Aqua World');
+    $drawerCategories = \Modules\SysAdmin\Models\ProductCategory::query()
+        ->where(function ($query) {
+            $query->where('parent_id', 0)->orWhereNull('parent_id');
+        })
+        ->where('status', '1')
+        ->orderBy('sort')
+        ->orderBy('name')
+        ->limit(10)
+        ->get();
 @endphp
 
 <header class="ga-header" id="gaHeader">
@@ -117,10 +126,11 @@
 
 {{-- Mobile drawer --}}
 <aside class="ga-drawer" id="gaDrawer" aria-hidden="true">
-    <div class="ga-drawer-head">
-        <a href="{{ route('frontend.home') }}" class="ga-drawer-logo">
+    <div class="ga-drawer-head metro-drawer-head">
+        <div class="metro-drawer-brand">
             <img src="{{ $logo }}" alt="{{ $brand }}">
-        </a>
+            <span>The water filter company</span>
+        </div>
         <button class="ga-drawer-close" type="button" data-ga-drawer-close aria-label="Close menu">
             <i class="fa-solid fa-xmark"></i>
         </button>
@@ -131,26 +141,72 @@
         <input type="text" name="q" value="{{ request('q') }}" placeholder="Search products…">
     </form>
 
-    <div class="ga-drawer-quick">
-        @if ($phone)
-            <a href="tel:{{ $phone }}"><i class="fa-solid fa-phone"></i> Call us</a>
-        @endif
-        @if ($waNumber)
-            <a class="is-wa" href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
-        @endif
+    <div class="metro-drawer-section">
+        <p class="ga-drawer-label">Shop categories</p>
+        @forelse ($drawerCategories as $drawerCategory)
+            <a href="{{ route('frontend.shop.category', $drawerCategory->slug) }}"
+               class="metro-drawer-link {{ request()->is('shop/category/' . $drawerCategory->slug) ? 'active' : '' }}">
+                <span class="metro-drawer-icon"><i class="fa-solid fa-droplet"></i></span>
+                <span class="metro-drawer-text">
+                    <strong>{{ $drawerCategory->name }}</strong>
+                    <small>View products and sub categories</small>
+                </span>
+                <i class="fa-solid fa-chevron-right"></i>
+            </a>
+        @empty
+            <a href="{{ route('frontend.shop.index') }}" class="metro-drawer-link">
+                <span class="metro-drawer-icon"><i class="fa-solid fa-layer-group"></i></span>
+                <span class="metro-drawer-text">
+                    <strong>Shop categories</strong>
+                    <small>Explore product groups</small>
+                </span>
+                <i class="fa-solid fa-chevron-right"></i>
+            </a>
+        @endforelse
     </div>
 
-    <div class="ga-drawer-label">Menu</div>
-    <nav class="ga-drawer-menu">
-        <ul class="menu-content">
-            @include('frontend::components.menu-recursive', ['items' => $menus])
-        </ul>
-    </nav>
+    <div class="metro-drawer-section">
+        <p class="ga-drawer-label">More</p>
+        <a href="{{ route('frontend.home') }}" class="metro-drawer-link {{ request()->routeIs('frontend.home') ? 'active' : '' }}">
+            <span class="metro-drawer-icon"><i class="fa-solid fa-house"></i></span>
+            <span class="metro-drawer-text"><strong>Home</strong><small>Latest sections and products</small></span>
+            <i class="fa-solid fa-chevron-right"></i>
+        </a>
+        <a href="{{ route('frontend.shop.index') }}" class="metro-drawer-link {{ request()->routeIs('frontend.shop.index') ? 'active' : '' }}">
+            <span class="metro-drawer-icon"><i class="fa-solid fa-table-cells-large"></i></span>
+            <span class="metro-drawer-text"><strong>Shop</strong><small>All categories</small></span>
+            <i class="fa-solid fa-chevron-right"></i>
+        </a>
+        <a href="{{ route('frontend.about') }}" class="metro-drawer-link {{ request()->routeIs('frontend.about') ? 'active' : '' }}">
+            <span class="metro-drawer-icon"><i class="fa-solid fa-building"></i></span>
+            <span class="metro-drawer-text"><strong>About Us</strong><small>Company and service journey</small></span>
+            <i class="fa-solid fa-chevron-right"></i>
+        </a>
+        <a href="{{ route('frontend.blog.index') }}" class="metro-drawer-link {{ request()->routeIs('frontend.blog.*') ? 'active' : '' }}">
+            <span class="metro-drawer-icon"><i class="fa-solid fa-newspaper"></i></span>
+            <span class="metro-drawer-text"><strong>Blog</strong><small>Guides and updates</small></span>
+            <i class="fa-solid fa-chevron-right"></i>
+        </a>
+        <a href="{{ route('frontend.enquiry') }}" class="metro-drawer-link {{ request()->routeIs('frontend.enquiry') ? 'active' : '' }}">
+            <span class="metro-drawer-icon"><i class="fa-regular fa-paper-plane"></i></span>
+            <span class="metro-drawer-text"><strong>Enquiry</strong><small>Request product support</small></span>
+            <i class="fa-solid fa-chevron-right"></i>
+        </a>
+        <a href="{{ route('frontend.contact') }}" class="metro-drawer-link {{ request()->routeIs('frontend.contact') ? 'active' : '' }}">
+            <span class="metro-drawer-icon"><i class="fa-solid fa-envelope"></i></span>
+            <span class="metro-drawer-text"><strong>Contact</strong><small>Call, WhatsApp, location</small></span>
+            <i class="fa-solid fa-chevron-right"></i>
+        </a>
+    </div>
 
-    <div class="ga-drawer-label">Shop by category</div>
-    <nav class="ga-drawer-cats">
-        <x-frontend::category-menu />
-    </nav>
+    <div class="ga-drawer-quick">
+        @if ($phone)
+            <a href="tel:{{ $phone }}"><i class="fa-solid fa-phone"></i> Call</a>
+        @endif
+        @if ($waNumber)
+            <a class="is-wa" href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Chat</a>
+        @endif
+    </div>
 
     <div class="ga-drawer-social">
         @if ($waNumber)<a href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>@endif
