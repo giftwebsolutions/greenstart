@@ -187,6 +187,11 @@
             <span class="metro-drawer-text"><strong>Blog</strong><small>Guides and updates</small></span>
             <i class="fa-solid fa-chevron-right"></i>
         </a>
+        <a href="{{ route('frontend.faqs') }}" class="metro-drawer-link {{ request()->routeIs('frontend.faqs') ? 'active' : '' }}">
+            <span class="metro-drawer-icon"><i class="fa-solid fa-circle-question"></i></span>
+            <span class="metro-drawer-text"><strong>FAQ</strong><small>Common purifier questions</small></span>
+            <i class="fa-solid fa-chevron-right"></i>
+        </a>
         <a href="{{ route('frontend.enquiry') }}" class="metro-drawer-link {{ request()->routeIs('frontend.enquiry') ? 'active' : '' }}">
             <span class="metro-drawer-icon"><i class="fa-regular fa-paper-plane"></i></span>
             <span class="metro-drawer-text"><strong>Enquiry</strong><small>Request product support</small></span>

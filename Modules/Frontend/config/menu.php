@@ -23,8 +23,7 @@ return [
     ],
     [
         'label' => 'Faq',
-        'route' => 'frontend.cms.view',
-        'params' => ['slug' => 'faq'],
+        'route' => 'frontend.faqs',
     ],
     [
         'label' => 'Enquiry',

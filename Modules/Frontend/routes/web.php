@@ -13,6 +13,8 @@ Route::get('/', [FrontendController::class, 'index'])->name('frontend.home');
 
 Route::get('/about', [FrontendController::class, 'about'])->name('frontend.about');
 
+Route::get('/faq', [FrontendController::class, 'faqs'])->name('frontend.faqs');
+
 Route::get('/enquiry', [FrontendController::class, 'enquiry'])->name('frontend.enquiry');
 
 Route::post('enquiry/store', [FrontendController::class, 'storeEnquiry'])->name('frontend.enquiry.store');
