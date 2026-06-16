@@ -5230,8 +5230,7 @@ a.hero-btn-secondary {
 }
 
 .faq-side-card,
-.faq-accordion,
-.faq-cms-card {
+.faq-accordion {
     background: #fff;
     border: 1px solid var(--aqua-line);
     border-radius: 24px;
@@ -5333,13 +5332,6 @@ a.hero-btn-secondary {
     color: var(--aqua-muted);
     background: #f6fbfb;
     line-height: 1.72;
-}
-
-.faq-cms-card {
-    margin-top: 20px;
-    padding: 24px;
-    color: var(--aqua-muted);
-    line-height: 1.75;
 }
 
 @media (max-width: 991px) {

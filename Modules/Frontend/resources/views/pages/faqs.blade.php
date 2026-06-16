@@ -4,7 +4,24 @@
     $whatsapp = preg_replace('/\D+/', '', $settings['whatsapp'] ?? $phone);
     $page = $faqs ?? null;
     $intro = $page?->description
-        ?: 'Find quick answers about RO water purifiers, installation, service, spare parts, and enquiry support.';
+        ?: 'Understand pure water, TDS levels, RO service timing, filter replacement, installation needs, and common purifier problems before you buy or request service.';
+    $guideItems = [
+        [
+            'title' => 'Check water before choosing',
+            'text' => 'Water from borewell, corporation line, tanker, or open well can have different TDS and impurities. A basic TDS check helps decide whether RO, UV, UF, or a combined purifier is suitable.',
+            'icon' => 'fa-vial-circle-check',
+        ],
+        [
+            'title' => 'Do not delay service',
+            'text' => 'A purifier should be checked when taste, smell, flow, leakage, or tank filling time changes. Timely service protects filters, membrane, pump, and drinking water quality.',
+            'icon' => 'fa-clock-rotate-left',
+        ],
+        [
+            'title' => 'Use genuine spares',
+            'text' => 'Good filters, membranes, fittings, and pumps keep water quality stable and reduce repeat complaints. Low quality spares can affect taste, flow, and purifier life.',
+            'icon' => 'fa-shield-halved',
+        ],
+    ];
     $items = [
         [
             'q' => 'Why is pure drinking water important?',
@@ -96,26 +113,26 @@
             <div class="faq-info-grid">
                 <div class="faq-info-card is-aqua">
                     <i class="fa-solid fa-droplet"></i>
-                    <strong>Product selection</strong>
-                    <span>RO, UV, UF, domestic and commercial purifier guidance.</span>
+                    <strong>Pure water basics</strong>
+                    <span>Know why TDS, taste, smell, and source water matter.</span>
                 </div>
                 <div class="faq-info-card is-green">
                     <i class="fa-solid fa-screwdriver-wrench"></i>
-                    <strong>Installation support</strong>
-                    <span>Setup support for homes, offices, shops, and business use.</span>
+                    <strong>Service timing</strong>
+                    <span>Understand when filters, membrane, and pump need checking.</span>
                 </div>
                 <div class="faq-info-card is-dark">
                     <i class="fa-solid fa-headset"></i>
-                    <strong>Service assistance</strong>
-                    <span>Complaint handling, filter changes, and spare replacement help.</span>
+                    <strong>Right solution</strong>
+                    <span>Choose purifier, spares, or service based on real water condition.</span>
                 </div>
             </div>
 
             <div class="faq-layout">
                 <aside class="faq-side-card">
                     <span>Need direct help?</span>
-                    <h2>Still have a product question?</h2>
-                    <p>Send your water source, usage, and location. We will suggest the right purifier or service option.</p>
+                    <h2>Not sure about TDS or service?</h2>
+                    <p>Share your water source, current purifier issue, usage, and location. We will guide you on the right purifier, service, or spare replacement.</p>
                     @if ($phone)
                         <a href="tel:{{ $phone }}"><i class="fa-solid fa-phone"></i>{{ $phone }}</a>
                     @endif
@@ -142,11 +159,22 @@
                 </div>
             </div>
 
-            @if (!empty($page?->content))
-                <div class="faq-cms-card">
-                    {!! $page->content !!}
+            <div class="faq-guide-card">
+                <div class="faq-guide-head">
+                    <span>RO water guide</span>
+                    <h2>Simple checks before buying or servicing a purifier</h2>
+                    <p>These points help you explain your requirement clearly when you contact us.</p>
                 </div>
-            @endif
+                <div class="faq-guide-grid">
+                    @foreach ($guideItems as $guide)
+                        <div class="faq-guide-item">
+                            <i class="fa-solid {{ $guide['icon'] }}"></i>
+                            <h3>{{ $guide['title'] }}</h3>
+                            <p>{{ $guide['text'] }}</p>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
         </div>
     </section>
 </x-frontend::layouts.master>
