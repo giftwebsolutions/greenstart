@@ -1,273 +1,192 @@
-<?php
-$menus = Config::get('frontend.menus');
-$settings = Config::get('site-settings');
-//dd($settings);
-?>
-<!-- Header Section Start From Here -->
-<header class="header-wrapper">
-    <!-- Header Nav Start -->
-    <div class="header-nav bg-black d-none d-md-block">
-        <div class="container">
-            <div class="header-nav-wrapper d-md-flex d-sm-flex d-xl-flex d-lg-flex justify-content-between">
-                <div class="header-static-nav d-flex">
-                    <p>WELCOME TO GREENS AQUA WORLD WEBSITE</p>
-                    <div class="social-top">
-                        <div class="follow d-flex">
-                            <label>Follow Us:</label>
-                            <ul class="link-follow">
-                                <li><a class="fa-brands fa-whatsapp" title="WhatsApp"
-                                        href="https://wa.me/{{ $settings['whatsapp'] ?? '' }}" target="_blank"></a></li>
-                                <li><a class="fa-brands fa-facebook-f" title="Facebook"
-                                        href="{{ $settings['facebook'] ?? '' }}"> </a></li>
+@php
+    $menus    = Config::get('frontend.menus');
+    $settings = Config::get('site-settings');
+    $waNumber = preg_replace('/\D+/', '', $settings['whatsapp'] ?? '');
+    $phone    = $settings['mobile'] ?? '';
+    $email    = $settings['email'] ?? '';
+    $logo     = asset('assets/images/logo/logo.png');
+    $brand    = config('app.name', 'Greens Aqua World');
+@endphp
 
-                                <li><a class="fa-brands fa-instagram" title="Facebook"
-                                        href="{{ $settings['instagram'] ?? '' }}"></a></li>
+<header class="ga-header" id="gaHeader">
 
-                                <li><a class="fa-brands fa-youtube" title="Facebook"
-                                        href="{{ $settings['youtube'] ?? '' }}"> </a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <!-- Mobile Header Nav Start -->
-
-    <div class="header-nav header-nav-mobile bg-black d-md-none">
-        <div class="container">
-            <div class="header-nav-wrapper ">
-                <div class="header-static-nav f-none text-center">
-                    <p>WELCOME TO GREENS AQUA WORLD WEBSITE</p>
-                </div>
-                <div class="header-menu-nav d-flex justify-content-between">
-                    <div class="social-top align-self-center">
-                        <div class="follow d-none d-md-flex">
-                            <label>Follow Us:</label>
-                            <ul class="link-follow">
-                                <li><a class="facebook ion-social-facebook" title="Facebook" href="#"></a>
-                                </li>
-                                <li><a class="twitter ion-social-twitter" title="Twitter" href="#"></a></li>
-                                <li><a class="google ion-social-googleplus-outline" title="Google" href="#"></a>
-                                </li>
-                                <li><a class="youtube ion-social-youtube" title="Youtube" href="#"></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="mobile-menu-nav">
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Mobile Header Nav End -->
-    <!-- Header Nav End -->
-    <div class="header-top bg-white ptb-10px d-lg-block d-none">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-3 d-flex">
-                    <div class="align-self-center">
-                        <a href="{{ route('frontend.home') }}">
-                            <img class="img-responsive logo w-25 h-100" src="{{ asset('assets/images/logo/logo.png') }}"
-                                alt="{{ env('APP_NAME') }}" />
-                        </a>
-                    </div>
-                </div>
-
-                <div class="col-md-9 align-self-center">
-                    <div class="header-right-element d-flex justify-content-between">
-
-                        <!-- Updated Search Form -->
-                        <div class="search-element media-body me-20px">
-                            <form class="d-flex" method="GET" action="{{ route('frontend.shop.search') }}">
-                                <input type="text" name="q" class="form-control"
-                                    value="{{ $q ?? request('q') }}" placeholder="Search entire store here ..." />
-                                <button class="btn btn-primary" type="submit">
-                                    <i class="icon-search"></i>
-                                </button>
-                            </form>
-                        </div>
-
-                        <!--Cart info Start-->
-                        <!-- Your cart code here -->
-                        <!--Cart info End-->
-
-                    </div>
-                </div>
+    {{-- Utility bar --}}
+    <div class="ga-utility">
+        <div class="container ga-utility-row">
+            <p class="ga-utility-note">
+                <i class="fa-solid fa-droplet"></i> Pure water solutions for homes &amp; businesses
+            </p>
+            <div class="ga-utility-actions">
+                @if ($phone)
+                    <a href="tel:{{ $phone }}"><i class="fa-solid fa-phone"></i> {{ $phone }}</a>
+                @endif
+                @if ($email)
+                    <a href="mailto:{{ $email }}"><i class="fa-regular fa-envelope"></i> {{ $email }}</a>
+                @endif
+                <span class="ga-utility-social">
+                    @if ($waNumber)<a href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>@endif
+                    @if (!empty($settings['facebook']))<a href="{{ $settings['facebook'] }}" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>@endif
+                    @if (!empty($settings['instagram']))<a href="{{ $settings['instagram'] }}" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>@endif
+                    @if (!empty($settings['youtube']))<a href="{{ $settings['youtube'] }}" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>@endif
+                </span>
             </div>
         </div>
     </div>
 
-    <!-- Header Nav End -->
-    <div class="header-menu bg-red sticky-nav d-lg-block d-none padding-0px">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-3">
-                    <div class="header-menu-vertical">
-                        <h4 class="menu-title">Browse Categories </h4>
-                        <x-frontend::category-menu />
-                        <!-- menu content -->
-                    </div>
-                    <!-- header menu vertical -->
-                </div>
-                <div class="col-lg-9">
-                    <div class="header-horizontal-menu">
-                        <ul class="menu-content">
-                            @include('frontend::components.menu-recursive', ['items' => $menus])
-                        </ul>
-                    </div>
-                    <div class="contact-link">
-                        <a href="tel:{{ $settings['mobile'] }}">{{ $settings['mobile'] }}</a>
-                    </div>
-                </div>
-            </div>
-            <!-- row -->
-        </div>
-        <!-- container -->
-    </div>
-    <!-- header menu -->
-</header>
-<!-- Header Section End Here -->
+    {{-- Main bar --}}
+    <div class="ga-main">
+        <div class="container ga-main-row">
+            <button class="ga-burger" type="button" aria-label="Open menu" data-ga-drawer-open>
+                <span></span><span></span><span></span>
+            </button>
 
-<!-- Mobile Header Section Start -->
-<div class="mobile-header d-lg-none sticky-nav white-bg ptb-20px">
-    <div class="container">
-        <div class="row align-items-center">
+            <a href="{{ route('frontend.home') }}" class="ga-logo" aria-label="{{ $brand }}">
+                <img src="{{ $logo }}" alt="{{ $brand }}" width="160" height="56">
+            </a>
 
-            <!-- Header Logo Start -->
-            <div class="col d-flex">
-                <div class="mobile-menu-toggle home-2">
-                    <a href="#offcanvas-mobile-menu" class="offcanvas-toggle">
-                        <svg viewBox="0 0 800 600">
-                            <path
-                                d="M300,220 C300,220 520,220 540,220 C740,220 640,540 520,420 C440,340 300,200 300,200"
-                                id="top"></path>
-                            <path d="M300,320 L540,320" id="middle"></path>
-                            <path
-                                d="M300,210 C300,210 520,210 540,210 C740,210 640,530 520,410 C440,330 300,190 300,190"
-                                id="bottom" transform="translate(480, 320) scale(1, -1) translate(-480, -318) ">
-                            </path>
-                        </svg>
-                    </a>
-                </div>
-                <div class="header-logo  mt-7px">
-                    <a href="{{ route('frontend.home') }}"><img class="img-responsive logo w-25"
-                            src="{{ asset('assets/images/logo/logo.png') }}" alt="{{ env('APP_NAME') }}" /></a>
-                </div>
-            </div>
-            <!-- Header Logo End -->
-
-            <!-- Header Tools Start -->
-            <div class="col-auto">
-                <div class="header-tools justify-content-end">
-                    <div class="cart-info d-flex align-self-center">
-                        <a title="WhatsApp" href="https://wa.me/{{ $settings['whatsapp'] ?? '' }}" class="heart"
-                            data-number="3" target="_blank">
-                            <i class="fa-brands fa-whatsapp"></i>
-                        </a>
-                        <a title="Call Us" href="tel:{{ $settings['mobile'] ?? '' }}" class="bag"
-                            data-number="8">
-                            <i class="fa-solid fa-phone"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <!-- Header Tools End -->
-
-        </div>
-    </div>
-</div>
-
-<!-- Search Category Start -->
-<div class="mobile-search-area d-lg-none mb-15px">
-    <div class="container">
-        <div class="row mb-4">
-            <div class="col-md-12">
-                <div class="search-element media-body">
-                    <form method="GET" action="{{ route('frontend.shop.search') }}" class="d-flex">
-                        <input type="text" name="q" class="form-control" value="{{ $q ?? request('q') }}"
-                            placeholder="Search products..." />
-                        <button class="btn btn-primary" type="submit">
-                            <i class="icon-search"></i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Search Category End -->
-<div class="mobile-category-nav d-lg-none mb-15px">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-
-                <!--=======  category menu  =======-->
-                <div class="hero-side-category">
-
-                    <!-- Category Toggle Wrap -->
-                    <div class="category-toggle-wrap">
-                        <button class="category-toggle">
-                            <i class="fa fa-bars"></i> All Categories
-                        </button>
-                    </div>
-
-                    <!-- Dynamic Category Menu -->
-                    <nav class="category-menu">
-                        <x-frontend::category-menu />
-                    </nav>
-
-                </div>
-                <!--=======  End of category menu =======-->
-
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-<!-- OffCanvas Search Start -->
-<div id="offcanvas-mobile-menu" class="offcanvas offcanvas-mobile-menu">
-    <div class="inner customScroll">
-
-        <!-- Header -->
-        <div class="head d-flex justify-content-between align-items-center">
-            <span class="title">&nbsp;</span>
-            <button class="offcanvas-close">×</button>
-        </div>
-
-        <!-- Search -->
-        <div class="offcanvas-menu-search-form">
-            <form method="GET" action="{{ route('frontend.shop.search') }}">
-                <input type="text" name="q" value="{{ $q ?? request('q') }}"
-                    placeholder="Search products...">
-                <button type="submit"><i class="lnr lnr-magnifier"></i></button>
+            <form class="ga-search" method="GET" action="{{ route('frontend.shop.search') }}" role="search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" name="q" value="{{ request('q') }}" autocomplete="off"
+                    placeholder="Search RO purifiers, filters, spares…">
+                <button type="submit">Search</button>
             </form>
+
+            <div class="ga-actions">
+                <button class="ga-icon-btn ga-only-mobile" type="button" data-ga-search-toggle aria-label="Search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+                @if ($phone)
+                    <a class="ga-icon-btn ga-call" href="tel:{{ $phone }}" aria-label="Call us">
+                        <i class="fa-solid fa-phone"></i>
+                    </a>
+                @endif
+                @if ($waNumber)
+                    <a class="ga-icon-btn ga-wa" href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener" aria-label="WhatsApp">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </a>
+                @endif
+                <a class="ga-enquiry-btn ga-only-desktop" href="{{ route('frontend.enquiry') }}">
+                    <i class="fa-regular fa-paper-plane"></i> Get a Quote
+                </a>
+            </div>
         </div>
 
-        <!-- Dynamic Menu (Matches Desktop Menu) -->
-        <div class="offcanvas-menu">
-            <ul class="menu-content">
-                @include('frontend::components.menu-recursive', ['items' => $menus])
-            </ul>
+        {{-- Mobile expandable search --}}
+        <div class="ga-search-mobile" id="gaSearchMobile">
+            <div class="container">
+                <form method="GET" action="{{ route('frontend.shop.search') }}" role="search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" name="q" value="{{ request('q') }}" placeholder="Search products…">
+                    <button type="submit">Go</button>
+                </form>
+            </div>
         </div>
-
-        <!-- Social Icons -->
-        <div class="offcanvas-social mt-30px">
-            <ul>
-                <li><a class="fa-brands fa-whatsapp" href="https://wa.me/{{ $settings['whatsapp'] ?? '' }}"></a></li>
-                <li><a class="fa-brands fa-facebook-f" href="{{ $settings['facebook'] ?? ' ' }}"></a></li>
-                <li><a class="ion-social-youtube" href="{{ $settings['youtube'] ?? ' ' }}"></a></li>
-                <li><a class="ion-social-instagram" href="{{ $settings['instagram'] ?? ' ' }}"></a></li>
-            </ul>
-        </div>
-
     </div>
-</div>
 
-<!-- Mobile Contact -->
-<div class="offcanvas-overlay"></div>
+    {{-- Primary nav (desktop) --}}
+    <div class="ga-nav">
+        <div class="container ga-nav-row">
+            <div class="ga-cats" data-ga-cats-wrap>
+                <button class="ga-cats-btn" type="button" data-ga-cats aria-expanded="false">
+                    <i class="fa-solid fa-layer-group"></i> Browse Categories
+                    <i class="fa-solid fa-chevron-down ga-cats-caret"></i>
+                </button>
+                <div class="ga-cats-panel">
+                    <x-frontend::category-menu />
+                </div>
+            </div>
+
+            <nav class="ga-menu" aria-label="Primary">
+                <ul class="menu-content">
+                    @include('frontend::components.menu-recursive', ['items' => $menus])
+                </ul>
+            </nav>
+
+            @if ($phone)
+                <a class="ga-nav-phone" href="tel:{{ $phone }}">
+                    <i class="fa-solid fa-headset"></i>
+                    <span>
+                        <small>Talk to an expert</small>
+                        <strong>{{ $phone }}</strong>
+                    </span>
+                </a>
+            @endif
+        </div>
+    </div>
+</header>
+
+{{-- Mobile drawer --}}
+<aside class="ga-drawer" id="gaDrawer" aria-hidden="true">
+    <div class="ga-drawer-head">
+        <a href="{{ route('frontend.home') }}" class="ga-drawer-logo">
+            <img src="{{ $logo }}" alt="{{ $brand }}">
+        </a>
+        <button class="ga-drawer-close" type="button" data-ga-drawer-close aria-label="Close menu">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+
+    <form class="ga-drawer-search" method="GET" action="{{ route('frontend.shop.search') }}" role="search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" name="q" value="{{ request('q') }}" placeholder="Search products…">
+    </form>
+
+    <div class="ga-drawer-quick">
+        @if ($phone)
+            <a href="tel:{{ $phone }}"><i class="fa-solid fa-phone"></i> Call us</a>
+        @endif
+        @if ($waNumber)
+            <a class="is-wa" href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+        @endif
+    </div>
+
+    <div class="ga-drawer-label">Menu</div>
+    <nav class="ga-drawer-menu">
+        <ul class="menu-content">
+            @include('frontend::components.menu-recursive', ['items' => $menus])
+        </ul>
+    </nav>
+
+    <div class="ga-drawer-label">Shop by category</div>
+    <nav class="ga-drawer-cats">
+        <x-frontend::category-menu />
+    </nav>
+
+    <div class="ga-drawer-social">
+        @if ($waNumber)<a href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>@endif
+        @if (!empty($settings['facebook']))<a href="{{ $settings['facebook'] }}" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>@endif
+        @if (!empty($settings['instagram']))<a href="{{ $settings['instagram'] }}" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>@endif
+        @if (!empty($settings['youtube']))<a href="{{ $settings['youtube'] }}" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>@endif
+    </div>
+</aside>
+<div class="ga-overlay" data-ga-drawer-close></div>
+
+{{-- App-style bottom nav (mobile) --}}
+<nav class="ga-bottom-nav" aria-label="Quick navigation">
+    <a href="{{ route('frontend.home') }}" class="{{ request()->routeIs('frontend.home') ? 'is-active' : '' }}">
+        <i class="fa-solid fa-house"></i><span>Home</span>
+    </a>
+    <a href="{{ route('frontend.shop.index') }}" class="{{ request()->routeIs('frontend.shop.*') ? 'is-active' : '' }}">
+        <i class="fa-solid fa-grip"></i><span>Shop</span>
+    </a>
+    <button type="button" data-ga-search-toggle>
+        <i class="fa-solid fa-magnifying-glass"></i><span>Search</span>
+    </button>
+    @if ($waNumber)
+        <a class="ga-bn-wa" href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener">
+            <i class="fa-brands fa-whatsapp"></i><span>WhatsApp</span>
+        </a>
+    @endif
+    @if ($phone)
+        <a class="ga-bn-call" href="tel:{{ $phone }}">
+            <i class="fa-solid fa-phone"></i><span>Call</span>
+        </a>
+    @endif
+</nav>
+
+{{-- Floating WhatsApp (desktop) --}}
+@if ($waNumber)
+    <a class="ga-fab-wa" href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+@endif

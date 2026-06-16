@@ -14,13 +14,21 @@
                                 'thumbnail'
                             )
                             : asset('assets/images/testimonial-image/default.png');
+                        $initials = collect(explode(' ', trim($testimonial->name ?? 'Customer')))
+                            ->filter()
+                            ->take(2)
+                            ->map(fn ($part) => \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($part, 0, 1)))
+                            ->implode('');
                     @endphp
 
                     <div class="swiper-slide">
                         <div class="testimonial-card">
 
                             <div class="testimonial-image">
-                                <img src="{{ $imageUrl }}" alt="{{ $testimonial->name }}">
+                                @if ($testimonial->image)
+                                    <img src="{{ $imageUrl }}" alt="{{ $testimonial->name }}" loading="lazy" onerror="this.closest('.testimonial-image').classList.add('has-initials');this.remove();">
+                                @endif
+                                <span class="testimonial-initials">{{ $initials ?: 'GA' }}</span>
                             </div>
 
                             <p class="testimonial-content">

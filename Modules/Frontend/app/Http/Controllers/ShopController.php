@@ -22,14 +22,17 @@ class ShopController extends Controller
     public function index(Request $request)
     {
         $filters        = $this->buildFilters($request);
-        //dd($filters);
-        $products       = $this->products->paginateForFrontend($filters, 12);
+        $products       = $this->products->paginateForFrontend($filters, $this->perPage($request));
         $filterGroups   = $this->products->getFilterableGroups();
         $rootCategories = $this->categories->getMenuTree();
 
         $home = Page::where('slug', 'shop')->active()->first();
 
         $seoPayload = $home ? SeoData::page($home) : SeoData::basic('Home');
+
+        if ($request->ajax()) {
+            return $this->ajaxListingResponse($products);
+        }
 
         return view('frontend::catalog.shop', array_merge(
             compact('products', 'filterGroups', 'rootCategories', 'filters'),
@@ -46,19 +49,19 @@ class ShopController extends Controller
         $category = $this->categories->findBySlug($slug);
         abort_if(!$category, 404);
 
-        // Force the main category; user may further filter by sub-category
         $filters = $this->buildFilters($request, ['c_cat' => $category->id]);
-        //dd($filters);
-        if (isset($_GET['s_cat'])) {
-            $filters = $this->buildFilters($request, ['s_cat' => $_GET['s_cat']]);
+        if ($request->filled('s_cat')) {
+            $filters = $this->buildFilters($request, ['s_cat' => $request->integer('s_cat')]);
         }
 
-        //dd($filters);
-
-        $products       = $this->products->paginateForFrontend($filters, 12);
+        $products       = $this->products->paginateForFrontend($filters, $this->perPage($request));
         $filterGroups   = $this->products->getFilterableGroups();
         $rootCategories = $this->categories->getMenuTree();
         $subCategories  = $category->children()->where('status', '1')->orderBy('sort')->get();
+
+        if ($request->ajax()) {
+            return $this->ajaxListingResponse($products);
+        }
 
         return view('frontend::catalog.shop', array_merge(
             compact('products', 'filterGroups', 'rootCategories', 'category', 'subCategories', 'filters'),
@@ -73,9 +76,13 @@ class ShopController extends Controller
     public function newArrivals(Request $request)
     {
         $filters        = $this->buildFilters($request);
-        $products       = $this->products->paginateForFrontend($filters, 12);
+        $products       = $this->products->paginateForFrontend($filters, $this->perPage($request));
         $filterGroups   = $this->products->getFilterableGroups();
         $rootCategories = $this->categories->getMenuTree();
+
+        if ($request->ajax()) {
+            return $this->ajaxListingResponse($products);
+        }
 
         return view('frontend::catalog.shop', array_merge(
             compact('products', 'filterGroups', 'rootCategories', 'filters'),
@@ -92,10 +99,14 @@ class ShopController extends Controller
         $q       = trim((string) $request->get('q', ''));
         $filters = $this->buildFilters($request, ['search' => $q]);
 
-        $products       = $this->products->paginateForFrontend($filters, 12);
+        $products       = $this->products->paginateForFrontend($filters, $this->perPage($request));
         $filterGroups   = $this->products->getFilterableGroups();
         $rootCategories = $this->categories->getMenuTree();
         $activeTitle    = $q !== '' ? "Search: {$q}" : 'Search Results';
+
+        if ($request->ajax()) {
+            return $this->ajaxListingResponse($products);
+        }
 
         return view('frontend::catalog.shop', array_merge(
             compact('products', 'filterGroups', 'rootCategories', 'activeTitle', 'filters', 'q'),
@@ -128,5 +139,20 @@ class ShopController extends Controller
             'attrs'  => $attrs,
             'sort'   => $request->get('sort', 'newest'),
         ], $overrides);
+    }
+
+    private function perPage(Request $request): int
+    {
+        return min(max($request->integer('per_page', 12), 6), 36);
+    }
+
+    private function ajaxListingResponse($products)
+    {
+        return response()->json([
+            'grid' => view('frontend::catalog.partials.product-grid', compact('products'))->render(),
+            'pagination' => $products->withQueryString()->links('pagination::bootstrap-5')->render(),
+            'count' => view('frontend::catalog.partials.product-count', compact('products'))->render(),
+            'next_page_url' => $products->nextPageUrl(),
+        ]);
     }
 }

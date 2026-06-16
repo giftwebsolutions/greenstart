@@ -11,7 +11,7 @@ return [
     ],
     [
         'label' => 'Shop',
-        'route' => 'frontend.shop.categories',
+        'route' => 'frontend.shop.index',
     ],
     [
         'label' => 'Blog',

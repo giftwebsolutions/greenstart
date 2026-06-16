@@ -103,7 +103,12 @@
                 {{-- ══════════════════════════════════════════
                      LEFT SIDEBAR
                 ══════════════════════════════════════════ --}}
-                <div class="col-lg-3 col-md-4 mb-4">
+                <div class="col-lg-3 col-md-4 mb-4 shop-sidebar" id="shopSidebar">
+
+                    <div class="shop-filter-head d-lg-none">
+                        <strong><i class="fa-solid fa-sliders"></i> Filters</strong>
+                        <button type="button" class="shop-filter-close" data-shop-filter-close aria-label="Close filters">&times;</button>
+                    </div>
 
                     {{-- Search --}}
                     <div class="sw-box mb-3">
@@ -252,12 +257,20 @@
                         </div>
                     @endif
 
+                    <div class="shop-filter-apply d-lg-none">
+                        <button type="button" class="btn-sw-green" data-shop-filter-close>View results</button>
+                    </div>
+
                 </div>{{-- /sidebar --}}
 
                 {{-- ══════════════════════════════════════════
                      MAIN CONTENT
                 ══════════════════════════════════════════ --}}
                 <div class="col-lg-9 col-md-8">
+
+                    <button type="button" class="shop-filter-trigger d-lg-none" data-shop-filter-open>
+                        <i class="fa-solid fa-sliders"></i> Filters &amp; Categories
+                    </button>
 
                     {{-- Page heading --}}
                     <h4 class="shop-h4 mb-2">{{ $activeTitle }}</h4>
@@ -351,8 +364,7 @@
                                     <input type="hidden" name="sort" value="{{ $currentSort }}">
                                 @endif
                                 <label class="toolbar-label mb-0">Show:</label>
-                                <select name="per_page" class="form-select form-select-sm toolbar-sel"
-                                        onchange="document.getElementById('pp-form').submit()">
+                                <select name="per_page" class="form-select form-select-sm toolbar-sel">
                                     @foreach ([9, 18, 27, 36] as $pp)
                                         <option value="{{ $pp }}" @selected($perPageCount == $pp)>{{ $pp }}</option>
                                     @endforeach
@@ -376,8 +388,7 @@
                                     <input type="hidden" name="per_page" value="{{ $perPageCount }}">
                                 @endif
                                 <label class="toolbar-label mb-0">Sort By:</label>
-                                <select name="sort" class="form-select form-select-sm toolbar-sel"
-                                        onchange="document.getElementById('sort-form').submit()">
+                                <select name="sort" class="form-select form-select-sm toolbar-sel">
                                     <option value="newest"     @selected($currentSort === 'newest')>Default</option>
                                     <option value="price_asc"  @selected($currentSort === 'price_asc')>Price: Low → High</option>
                                     <option value="price_desc" @selected($currentSort === 'price_desc')>Price: High → Low</option>
@@ -388,68 +399,16 @@
                     </div>
 
                     {{-- Product grid --}}
-                    <div class="row product-grid" id="product-grid">
-                        @forelse ($products as $product)
-                            @php
-                                $thumbUrl    = ImageUploader::getFilePath($product->thumb ?? '', $product->created_at ?? null, 'thumbnail');
-                                $hasDiscount = $product->mrp > 0 && $product->mrp > $product->sales_price;
-                                $discPct     = $hasDiscount ? round((($product->mrp - $product->sales_price) / $product->mrp) * 100) : 0;
-                                $isNew = isset($product->created_at)  && Carbon::createFromTimestamp($product->created_at)->diffInDays(now()) <= 30;  
-                            @endphp
-                            <div class="col-lg-4 col-md-6 col-sm-6 mb-4 product-item">
-                                <div class="pcard">
-                                    <div class="pcard-img-wrap">
-                                        <a href="{{ route('frontend.shop.product.show', $product->slug ?? $product->id) }}">
-                                            <img class="pcard-img" src="{{ $thumbUrl }}" alt="{{ $product->title }}">
-                                        </a>
-                                        @if ($hasDiscount)
-                                            <span class="pbadge pbadge-sale">-{{ $discPct }}%</span>
-                                        @elseif ($isNew)
-                                            <span class="pbadge pbadge-new">NEW</span>
-                                        @endif
-                                    </div>
-                                    <div class="pcard-body">
-                                        <h6 class="pcard-title">
-                                            <a href="{{ route('frontend.shop.product.show', $product->slug ?? $product->id) }}">
-                                                {{ $product->title }}
-                                            </a>
-                                        </h6>
-                                        <div class="pcard-stars mb-1">
-                                            <span class="star filled">&#9733;</span><span class="star filled">&#9733;</span><span class="star filled">&#9733;</span><span class="star filled">&#9733;</span><span class="star">&#9733;</span>
-                                        </div>
-                                        <div class="pcard-price">
-                                            @if ($hasDiscount)
-                                                <span class="price-old">₹{{ number_format($product->mrp, 2) }}</span>
-                                            @endif
-                                            <span class="price-new">₹{{ number_format($product->sales_price ?? 0, 2) }}</span>
-                                        </div>
-                                        <div class="mt-2">
-                                            <button type="button"
-                                                    class="btn btn-sw-green btn-sm w-100 js-enquiry-open"
-                                                    data-product-id="{{ $product->id }}"
-                                                    data-category-id="{{ $product->product_category ?? 0 }}"
-                                                    data-price="{{ $product->sales_price ?? 0 }}"
-                                                    data-product-name="{{ $product->title }}">
-                                                Enquiry
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @empty
-                            <div class="col-12">
-                                <p class="text-center py-5 text-muted">No products found. Try adjusting your filters.</p>
-                            </div>
-                        @endforelse
+                    <div class="row product-grid" id="product-grid" aria-live="polite">
+                        @include('frontend::catalog.partials.product-grid', ['products' => $products])
                     </div>
 
                     {{-- Bottom bar: count + pagination --}}
                     <div class="d-flex flex-wrap align-items-center justify-content-between my-3 gap-2">
-                        <span class="toolbar-count">
-                            Showing {{ $from }} to {{ $to }} of {{ $totalProducts }}
-                            ({{ $lastPage }} {{ $lastPage === 1 ? 'Page' : 'Pages' }})
+                        <span class="toolbar-count" data-product-count>
+                            @include('frontend::catalog.partials.product-count', ['products' => $products])
                         </span>
-                        <div class="shop-pager">
+                        <div class="shop-pager" data-product-pagination>
                             {{ $products->withQueryString()->links('pagination::bootstrap-5') }}
                         </div>
                     </div>
@@ -457,344 +416,157 @@
                 </div>{{-- /col main --}}
             </div>
         </div>
+        <div class="shop-filter-overlay" data-shop-filter-close></div>
     </div>
 
     @include('frontend::catalog.modal')
 
     <style>
-        /* ── Green palette ── */
-        :root {
-            --sg: #2e7d32;
-            --sg-h: #1b5e20;
-            --sg-l: #43a047;
-        }
+        :root { --sg:#05a9a6; --sg-h:#087f82; --sg-l:#36a852; }
 
-        /* ── Sidebar widget box ── */
-        .sw-box {
-            background: #fff;
-            border: 1px solid #e4e4e4;
-            border-radius: 4px;
-            padding: 14px 16px;
-        }
-        .sw-title {
-            font-size: .72rem;
-            font-weight: 700;
-            letter-spacing: .08em;
-            color: #333;
-            border-bottom: 2px solid #efefef;
-            padding-bottom: 8px;
-            margin-bottom: 10px;
-        }
+        .shop-area { background: linear-gradient(180deg, #f6fcfc, #fff); }
 
-        /* Search button */
-        .btn-sw-search {
-            background: var(--sg);
-            color: #fff;
-            border: none;
-            padding: 0 12px;
-        }
-        .btn-sw-search:hover { background: var(--sg-h); color: #fff; }
+        /* ── Sidebar widget ── */
+        .sw-box { background:#fff; border:1px solid var(--aqua-line); border-radius:16px; padding:18px; box-shadow:var(--shadow-sm); }
+        .sw-title { font-size:.78rem; font-weight:800; letter-spacing:.06em; color:var(--aqua-ink); padding-bottom:12px; margin-bottom:14px; border-bottom:1px solid var(--aqua-line); }
+
+        .sw-box .input-group .form-control { border:1px solid var(--aqua-line); border-right:0; border-radius:12px 0 0 12px; min-height:44px; }
+        .sw-box .input-group .form-control:focus { box-shadow:none; border-color:var(--aqua); }
+        .btn-sw-search { background:linear-gradient(135deg,var(--aqua),var(--leaf)); color:#fff; border:0; padding:0 14px; border-radius:0 12px 12px 0; }
+        .btn-sw-search:hover { filter:brightness(1.05); color:#fff; }
 
         /* Category list */
-        .sw-cat-list { margin: 0; }
-        .sw-cat-item { border-bottom: 1px solid #f3f3f3; }
-        .sw-cat-item:last-child { border-bottom: none; }
-        .sw-cat-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .sw-cat-link {
-            display: block;
-            flex: 1;
-            padding: 7px 0;
-            font-size: .85rem;
-            color: #444;
-            text-decoration: none;
-        }
-        .sw-cat-link:hover, .sw-cat-link.active { color: var(--sg); font-weight: 600; }
-        .sw-chevron-btn {
-            background: none;
-            border: none;
-            padding: 0 4px;
-            cursor: pointer;
-            color: #888;
-            line-height: 1;
-        }
-        .sw-chevron { transition: transform .2s; }
-        .sw-chevron.open { transform: rotate(180deg); }
-        .sw-chevron-static { color: #bbb; }
-        .sw-sub-list {
-            margin: 2px 0 8px 12px;
-            padding: 0;
-        }
-        .sw-sub-link {
-            display: block;
-            padding: 4px 0;
-            font-size: .8rem;
-            color: #555;
-            text-decoration: none;
-        }
-        .sw-sub-link:hover, .sw-sub-link.active { color: var(--sg); font-weight: 600; }
+        .sw-cat-item { border-bottom:1px solid var(--aqua-line); }
+        .sw-cat-item:last-child { border-bottom:0; }
+        .sw-cat-row { display:flex; align-items:center; justify-content:space-between; }
+        .sw-cat-link { display:block; flex:1; padding:9px 0; font-size:.9rem; font-weight:600; color:var(--aqua-ink); text-decoration:none; }
+        .sw-cat-link:hover, .sw-cat-link.active { color:var(--aqua-dark); }
+        .sw-chevron-btn { background:none; border:0; padding:0 4px; cursor:pointer; color:var(--aqua-muted); line-height:1; }
+        .sw-chevron { transition:transform .2s; }
+        .sw-chevron.open { transform:rotate(180deg); }
+        .sw-chevron-static { color:var(--aqua-muted); }
+        .sw-sub-list { margin:2px 0 10px 10px; padding:0; }
+        .sw-sub-link { display:block; padding:6px 0; font-size:.84rem; color:var(--aqua-muted); text-decoration:none; }
+        .sw-sub-link:hover, .sw-sub-link.active { color:var(--aqua-dark); font-weight:600; }
 
-        /* Price range slider */
-        .sw-price-track {
-            position: relative;
-            height: 5px;
-            background: #ddd;
-            border-radius: 3px;
-            margin: 14px 0 6px;
-        }
-        .sw-price-fill {
-            position: absolute;
-            height: 100%;
-            background: var(--sg);
-            border-radius: 3px;
-            pointer-events: none;
-        }
-        .sw-range-input {
-            position: absolute;
-            width: 100%;
-            top: -6px;
-            left: 0;
-            background: transparent;
-            -webkit-appearance: none;
-            appearance: none;
-            pointer-events: none;
-            height: 18px;
-        }
-        .sw-range-input::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 16px; height: 16px;
-            border-radius: 50%;
-            background: var(--sg);
-            border: 2px solid #fff;
-            box-shadow: 0 0 0 2px var(--sg);
-            cursor: pointer;
-            pointer-events: all;
-        }
-        .sw-range-input::-moz-range-thumb {
-            width: 16px; height: 16px;
-            border-radius: 50%;
-            background: var(--sg);
-            border: 2px solid #fff;
-            box-shadow: 0 0 0 2px var(--sg);
-            cursor: pointer;
-            pointer-events: all;
-        }
+        /* Price slider */
+        .sw-price-track { position:relative; height:5px; background:var(--aqua-line); border-radius:3px; margin:16px 0 8px; }
+        .sw-price-fill { position:absolute; height:100%; background:var(--aqua); border-radius:3px; pointer-events:none; }
+        .sw-range-input { position:absolute; width:100%; top:-6px; left:0; background:transparent; -webkit-appearance:none; appearance:none; pointer-events:none; height:18px; }
+        .sw-range-input::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:18px; height:18px; border-radius:50%; background:#fff; border:3px solid var(--aqua); box-shadow:var(--shadow-sm); cursor:pointer; pointer-events:all; }
+        .sw-range-input::-moz-range-thumb { width:18px; height:18px; border-radius:50%; background:#fff; border:3px solid var(--aqua); cursor:pointer; pointer-events:all; }
 
-        /* Checkbox filter list */
-        .sw-check-list { margin: 0; }
-        .sw-check-list.two-col {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2px 8px;
-        }
-        .sw-check-link {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            padding: 4px 0;
-            font-size: .83rem;
-            color: #444;
-            text-decoration: none;
-        }
-        .sw-check-link:hover, .sw-check-link.checked { color: var(--sg); }
-        .sw-check-link.checked { font-weight: 600; }
-        .sw-cb {
-            flex-shrink: 0;
-            width: 14px; height: 14px;
-            border: 1px solid #aaa;
-            border-radius: 3px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .sw-cb.checked {
-            background: var(--sg);
-            border-color: var(--sg);
-        }
-        .sw-cb.checked::after {
-            content: '✓';
-            color: #fff;
-            font-size: 9px;
-            line-height: 1;
-        }
+        /* Checkbox list */
+        .sw-check-list { margin:0; }
+        .sw-check-list.two-col { display:grid; grid-template-columns:1fr 1fr; gap:2px 10px; }
+        .sw-check-link { display:flex; align-items:center; gap:9px; padding:6px 0; font-size:.86rem; color:var(--aqua-ink); text-decoration:none; }
+        .sw-check-link:hover { color:var(--aqua-dark); }
+        .sw-check-link.checked { color:var(--aqua-dark); font-weight:600; }
+        .sw-cb { flex-shrink:0; width:18px; height:18px; border:1.5px solid var(--aqua-line); border-radius:6px; display:inline-flex; align-items:center; justify-content:center; transition:.15s; }
+        .sw-cb.checked { background:var(--aqua); border-color:var(--aqua); }
+        .sw-cb.checked::after { content:'✓'; color:#fff; font-size:11px; line-height:1; }
 
-        /* Green button */
-        .btn-sw-green {
-            background: var(--sg);
-            color: #fff;
-            border: none;
-            border-radius: 3px;
-            font-size: .82rem;
-        }
-        .btn-sw-green:hover { background: var(--sg-h); color: #fff; }
+        .btn-sw-green { background:linear-gradient(135deg,var(--aqua-dark),var(--aqua)); color:#fff; border:0; border-radius:999px; font-weight:800; padding:9px 22px; }
+        .btn-sw-green:hover { filter:brightness(1.05); color:#fff; }
 
-        /* ── Main: headings / refine ── */
-        .shop-h4 { font-size: 1.4rem; font-weight: 700; color: #222; }
-        .refine-box {
-            background: #f9f9f9;
-            border: 1px solid #e8e8e8;
-            border-radius: 4px;
-            padding: 12px 16px;
-            font-size: .85rem;
-        }
-        .refine-label { font-size: .85rem; color: #333; }
-        .refine-list { margin: 6px 0 0; display: flex; flex-wrap: wrap; gap: 2px 0; }
-        .refine-list li { margin-right: 12px; }
-        .refine-link { color: #555; text-decoration: none; }
-        .refine-link:hover, .refine-link.active { color: var(--sg); font-weight: 600; }
+        /* ── Main headings / refine ── */
+        .shop-h4 { font-size:1.5rem; font-weight:900; color:var(--aqua-ink); }
+        .refine-box { background:#fff; border:1px solid var(--aqua-line); border-radius:14px; padding:14px 16px; box-shadow:var(--shadow-sm); }
+        .refine-label { font-weight:800; color:var(--aqua-ink); }
+        .refine-list { margin:8px 0 0; display:flex; flex-wrap:wrap; gap:8px; }
+        .refine-list li { margin:0; }
+        .refine-link { display:inline-flex; padding:6px 13px; border-radius:999px; background:var(--aqua-soft); color:var(--aqua-dark); font-weight:600; font-size:.82rem; text-decoration:none; }
+        .refine-link:hover, .refine-link.active { background:var(--aqua); color:#fff; }
 
-        /* Active filter chips */
-        .chip-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: #666;
-            color: #fff;
-            font-size: .75rem;
-            padding: 3px 9px;
-            border-radius: 20px;
-            text-decoration: none;
-        }
-        .chip-badge:hover { background: #444; color: #fff; }
+        /* Active chips */
+        .chip-badge { display:inline-flex; align-items:center; gap:6px; background:var(--aqua-soft); color:var(--aqua-dark); font-size:.78rem; font-weight:700; padding:5px 12px; border-radius:999px; text-decoration:none; }
+        .chip-badge span { font-size:1rem; line-height:1; }
+        .chip-badge:hover { background:var(--danger); color:#fff; }
 
         /* ── Toolbar ── */
-        .shop-toolbar {
-            background: #f5f5f5;
-            border: 1px solid #e4e4e4;
-            border-radius: 4px;
-            padding: 8px 12px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-        }
-        .view-btns { display: flex; gap: 3px; }
-        .vbtn {
-            background: #fff;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-            padding: 5px 7px;
-            cursor: pointer;
-            color: #777;
-            line-height: 1;
-        }
-        .vbtn:hover, .vbtn.active {
-            background: var(--sg);
-            border-color: var(--sg);
-            color: #fff;
-        }
-        .toolbar-count { font-size: .8rem; color: #666; }
-        .toolbar-label { font-size: .8rem; color: #666; white-space: nowrap; }
-        .toolbar-sel   { font-size: .8rem; min-width: 75px; }
+        .shop-toolbar { background:#fff; border:1px solid var(--aqua-line); border-radius:14px; padding:10px 14px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; box-shadow:var(--shadow-sm); }
+        .view-btns { display:flex; gap:4px; }
+        .vbtn { background:#fff; border:1px solid var(--aqua-line); border-radius:10px; padding:7px 9px; cursor:pointer; color:var(--aqua-muted); line-height:1; }
+        .vbtn:hover, .vbtn.active { background:var(--aqua); border-color:var(--aqua); color:#fff; }
+        .toolbar-count { font-size:.84rem; color:var(--aqua-muted); }
+        .toolbar-label { font-size:.84rem; color:var(--aqua-muted); white-space:nowrap; font-weight:600; }
+        .toolbar-sel { font-size:.84rem; min-width:90px; border-radius:10px; border-color:var(--aqua-line); }
 
         /* ── Product cards ── */
-        .product-grid { }
-        .pcard {
-            border: 1px solid #e4e4e4;
-            border-radius: 4px;
-            background: #fff;
-            overflow: hidden;
-            transition: box-shadow .2s ease;
-            height: 100%;
-        }
-        .pcard:hover { box-shadow: 0 4px 18px rgba(0,0,0,.10); }
-        .pcard-img-wrap {
-            position: relative;
-            background: #fafafa;
-            text-align: center;
-            padding: 12px;
-            overflow: hidden;
-        }
-        .pcard-img {
-            max-height: 190px;
-            width: auto;
-            max-width: 100%;
-            object-fit: contain;
-            transition: transform .3s ease;
-        }
-        .pcard:hover .pcard-img { transform: scale(1.06); }
-        .pbadge {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            font-size: .7rem;
-            font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 3px;
-            color: #fff;
-            letter-spacing: .02em;
-        }
-        .pbadge-sale { background: #e53935; }
-        .pbadge-new  { background: #1a237e; }
-        .pcard-body { padding: 12px 14px 14px; }
-        .pcard-title {
-            font-size: .875rem;
-            font-weight: 500;
-            color: #333;
-            margin-bottom: 6px;
-            line-height: 1.4;
-        }
-        .pcard-title a { color: inherit; text-decoration: none; }
-        .pcard-title a:hover { color: var(--sg); }
-        .pcard-stars .star { color: #ddd; font-size: .9rem; }
-        .pcard-stars .star.filled { color: #f5a623; }
-        .pcard-price { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-        .price-old { font-size: .78rem; color: #aaa; text-decoration: line-through; }
-        .price-new { font-size: 1rem; font-weight: 700; color: var(--sg); }
+        .pcard { border:1px solid var(--aqua-line); border-radius:16px; background:#fff; overflow:hidden; height:100%; transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+        .pcard:hover { transform:translateY(-3px); border-color:rgba(5,169,166,.45); box-shadow:var(--shadow-md); }
+        .pcard-img-wrap { position:relative; display:block; background:linear-gradient(180deg,#f7fcfc,#edf8f7); text-align:center; padding:18px; }
+        .pcard-img { max-height:200px; width:auto; max-width:100%; object-fit:contain; transition:transform .25s ease; }
+        .pcard:hover .pcard-img { transform:scale(1.05); }
+        .pbadge { position:absolute; top:10px; left:10px; font-size:.7rem; font-weight:800; padding:4px 9px; border-radius:999px; color:#fff; }
+        .pbadge-sale { background:var(--danger); }
+        .pbadge-new { background:var(--aqua-dark); }
+        .pcard-body { padding:14px; display:grid; gap:8px; }
+        .pcard-kicker { color:var(--aqua-dark); font-size:.7rem; font-weight:800; text-transform:uppercase; letter-spacing:.03em; }
+        .pcard-title { font-size:.92rem; font-weight:700; color:var(--aqua-ink); margin:0; line-height:1.35; min-height:2.5em; }
+        .pcard-title a { color:inherit; text-decoration:none; }
+        .pcard-title a:hover { color:var(--aqua-dark); }
+        .pcard-price { display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
+        .price-old { font-size:.8rem; color:#9fb0b5; text-decoration:line-through; }
+        .price-new { font-size:1.05rem; font-weight:900; color:var(--aqua-dark); }
 
         /* ── Pagination ── */
-        .shop-pager .pagination { margin: 0; gap: 3px; flex-wrap: wrap; }
-        .shop-pager .page-link {
-            border-radius: 3px !important;
-            font-size: .82rem !important;
-            font-family: inherit !important;
-            line-height: 1.4 !important;
-            padding: 5px 10px;
-            color: #555;
-            border-color: #ddd;
-        }
-        .shop-pager .page-item.active .page-link {
-            background: var(--sg);
-            border-color: var(--sg);
-            color: #fff;
-        }
-        .shop-pager .page-link:hover {
-            background: var(--sg-l);
-            border-color: var(--sg-l);
-            color: #fff;
-        }
-        .shop-pager .page-item.disabled .page-link { opacity: .5; }
+        .shop-pager .pagination { margin:0; gap:4px; flex-wrap:wrap; }
+        .shop-pager .page-link { border-radius:10px !important; font-size:.85rem !important; font-family:inherit !important; padding:7px 12px; color:var(--aqua-ink); border-color:var(--aqua-line); }
+        .shop-pager .page-item.active .page-link { background:var(--aqua); border-color:var(--aqua); color:#fff; }
+        .shop-pager .page-link:hover { background:var(--aqua-soft); border-color:var(--aqua); color:var(--aqua-dark); }
+        .shop-pager .page-item.disabled .page-link { opacity:.5; }
 
-        /* ── List view ── */
-        #product-grid.list-view .product-item {
-            flex: 0 0 100%;
-            max-width: 100%;
-        }
-        #product-grid.list-view .pcard {
-            display: flex;
-            flex-direction: row;
-        }
-        #product-grid.list-view .pcard-img-wrap {
-            width: 170px;
-            flex-shrink: 0;
-        }
-        #product-grid.list-view .pcard-img { max-height: 140px; }
-        #product-grid.list-view .pcard-body { flex: 1; padding: 16px; }
+        /* ── Empty state ── */
+        .shop-empty-state { border:1px dashed var(--aqua-line); border-radius:16px; padding:48px 20px; text-align:center; display:grid; gap:6px; color:var(--aqua-muted); background:var(--aqua-soft); }
+        .shop-empty-state strong { color:var(--aqua-ink); font-size:1.15rem; }
 
-        /* ── Grid 4 ── */
-        #product-grid.grid-4 .product-item {
-            flex: 0 0 25%;
-            max-width: 25%;
+        /* ── List / grid-4 views ── */
+        #product-grid.list-view .product-item { flex:0 0 100%; max-width:100%; }
+        #product-grid.list-view .pcard { display:flex; flex-direction:row; }
+        #product-grid.list-view .pcard-img-wrap { width:200px; flex-shrink:0; }
+        #product-grid.list-view .pcard-img { max-height:150px; }
+        #product-grid.list-view .pcard-body { flex:1; align-content:start; }
+        #product-grid.grid-4 .product-item { flex:0 0 25%; max-width:25%; }
+        #product-grid.is-loading { opacity:.55; pointer-events:none; transition:opacity .18s ease; }
+
+        /* ── Mobile filter drawer ── */
+        .shop-filter-trigger { width:100%; display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:48px; border:0; border-radius:14px; font-weight:800; color:#fff; background:linear-gradient(135deg,var(--aqua-dark),var(--aqua)); margin-bottom:16px; }
+        .shop-filter-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+        .shop-filter-head strong { font-size:1.05rem; color:var(--aqua-ink); }
+        .shop-filter-close { width:40px; height:40px; border:0; border-radius:12px; background:var(--aqua-soft); color:var(--aqua-dark); font-size:20px; }
+        .shop-filter-apply { position:sticky; bottom:0; background:#fbfdfd; padding:12px 0 4px; margin-top:8px; }
+        .shop-filter-apply .btn-sw-green { width:100%; min-height:48px; }
+        .shop-filter-overlay { display:none; }
+
+        @media (min-width:992px) {
+            .shop-sidebar { position:sticky; top:90px; align-self:flex-start; }
         }
+        @media (max-width:991px) {
+            .shop-sidebar { position:fixed; top:0; left:0; height:100%; width:min(88vw,360px); background:#fbfdfd; z-index:1200; transform:translateX(-100%); transition:transform .28s ease; overflow-y:auto; padding:16px !important; box-shadow:0 18px 50px rgba(6,40,46,.25); }
+            body.shop-filter-open .shop-sidebar { transform:none; }
+            .shop-filter-overlay { display:block; position:fixed; inset:0; background:rgba(6,40,46,.5); opacity:0; visibility:hidden; transition:.28s; z-index:1100; }
+            body.shop-filter-open .shop-filter-overlay { opacity:1; visibility:visible; }
+            body.shop-filter-open { overflow:hidden; }
+        }
+        @media (max-width:767px) {
+            #product-grid.grid-4 .product-item,
+            #product-grid .product-item { flex:0 0 50%; max-width:50%; }
+            #product-grid.list-view .pcard { display:block; }
+            #product-grid.list-view .pcard-img-wrap { width:100%; }
+            .pcard-title { font-size:.85rem; min-height:2.4em; }
+            .price-new { font-size:.98rem; }
+        }
+
     </style>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    @push('scripts')
     <script>
     $(function () {
+
+        /* ── Mobile filter drawer ── */
+        $(document).on('click', '[data-shop-filter-open]', function () { $('body').addClass('shop-filter-open'); });
+        $(document).on('click', '[data-shop-filter-close]', function () { $('body').removeClass('shop-filter-open'); });
+        $(document).on('keyup', function (e) { if (e.key === 'Escape') $('body').removeClass('shop-filter-open'); });
 
         /* ── View toggles ── */
         var $grid = $('#product-grid');
@@ -854,7 +626,64 @@
             updateSlider();
         }
 
+        var ajaxTimer;
+
+        function loadListing(url, pushState) {
+            $grid.addClass('is-loading').attr('aria-busy', 'true');
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                },
+                success: function (response) {
+                    $grid.html(response.grid || '');
+                    $('[data-product-pagination]').html(response.pagination || '');
+                    $('[data-product-count]').html(response.count || '');
+                    if (pushState !== false) {
+                        window.history.pushState({}, '', url);
+                    }
+                },
+                complete: function () {
+                    $grid.removeClass('is-loading').removeAttr('aria-busy');
+                }
+            });
+        }
+
+        $(document).on('click', '.sw-box a, .chip-badge, .refine-link, [data-product-pagination] a', function (event) {
+            var href = $(this).attr('href');
+            if (!href || href === '#') {
+                return;
+            }
+            event.preventDefault();
+            loadListing(href);
+        });
+
+        $('#sort-form, #pp-form, #price-filter-form').on('submit', function (event) {
+            event.preventDefault();
+            var $form = $(this);
+            loadListing($form.attr('action') + '?' + $form.serialize());
+        });
+
+        $('#sort-form select, #pp-form select').on('change', function () {
+            $(this).closest('form').trigger('submit');
+        });
+
+        $('#price-filter-form input').on('input', function () {
+            clearTimeout(ajaxTimer);
+            ajaxTimer = setTimeout(function () {
+                $('#price-filter-form').trigger('submit');
+            }, 450);
+        });
+
+        window.addEventListener('popstate', function () {
+            loadListing(window.location.href, false);
+        });
+
     });
     </script>
+    @endpush
 
 </x-frontend::layouts.master>

@@ -12,4 +12,6 @@
 
 <!-- Main Style CSS -->
 <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/aqua-ui.css') }}">
 @yield('css')
+@stack('styles')

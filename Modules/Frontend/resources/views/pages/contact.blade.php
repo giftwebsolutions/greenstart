@@ -52,7 +52,7 @@
                             </div>
                             <div class="contact-info-dec">
                                
-                              <p>{{$settings['address']}}</p>
+                              <p>{{ $settings['address'] ?? '' }}</p>
                             </div>
                         </div>
                         <div class="contact-social">

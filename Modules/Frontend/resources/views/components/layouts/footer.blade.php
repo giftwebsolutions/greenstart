@@ -1,94 +1,68 @@
 @php
     $settings = Config::get('site-settings');
-    // dd($settings);
-    $menus = Config::get('frontend.menus');
+    $menus    = Config::get('frontend.menus');
+    $waNumber = preg_replace('/\D+/', '', $settings['whatsapp'] ?? '');
+    $phone    = $settings['mobile'] ?? '';
+    $email    = $settings['email'] ?? '';
+    $address  = $settings['address'] ?? '';
+    $logo     = asset('assets/images/logo/logo.png');
+    $brand    = config('app.name', 'Greens Aqua World');
 @endphp
 
-<div class="footer-area">
-    <div class="footer-container">
-        <div class="footer-top">
-            <div class="container">
-                <div class="row">
+<footer class="ga-footer">
+    <div class="ga-footer-top">
+        <div class="container ga-footer-grid">
 
-                    <!-- FOOTER COLUMN 1 -->
-                    <div class="col-md-4 col-lg-4">
-                        <div class="single-wedge">
-                            <div class="footer-logo">
-                                <a href="{{ route('frontend.home') }}">
-                                    <img class="img-responsive logo w-25 h-100" src="{{ asset('assets/images/logo/logo.png') }}" alt="{{ env('APP_NAME') }}">
-                                </a>
-                            </div>
+            <div class="ga-footer-brand">
+                <a href="{{ route('frontend.home') }}" class="ga-footer-logo">
+                    <img src="{{ $logo }}" alt="{{ $brand }}">
+                </a>
+                <p>Domestic &amp; industrial RO purifiers, filters, spares and trusted service support.</p>
+                @if ($address)
+                    <p class="ga-footer-addr"><i class="fa-solid fa-location-dot"></i> {{ $address }}</p>
+                @endif
+            </div>
 
-                            <div class="need_help">
-                                <p class="add">
-                                    <span class="address">Address</span>
-                                    {{ $settings['address'] ?? '' }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+            <div class="ga-footer-col">
+                <h4>Quick Links</h4>
+                <ul class="ga-footer-links">
+                    @foreach ($menus as $item)
+                        <li>
+                            <a href="{{ \Modules\Frontend\Helpers\MenuHelper::url($item) }}">{{ $item['label'] }}</a>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
 
-                    <!-- FOOTER COLUMN 2 (DYNAMIC MENU) -->
-                    <div class="col-md-4 col-lg-4">
-                        <div class="single-wedge">
-                            <h4 class="footer-herading">CUSTOM LINKS</h4>
-                            <div class="footer-links">
-                                <ul class="align-items-center">
-                                    @include('frontend::components.menu-recursive', [
-                                        'items' => $menus
-                                    ])
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+            <div class="ga-footer-col">
+                <h4>Get in touch</h4>
+                <ul class="ga-footer-contact">
+                    @if ($phone)
+                        <li><a href="tel:{{ $phone }}"><i class="fa-solid fa-phone"></i> {{ $phone }}</a></li>
+                    @endif
+                    @if ($waNumber)
+                        <li><a href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp</a></li>
+                    @endif
+                    @if ($email)
+                        <li><a href="mailto:{{ $email }}"><i class="fa-regular fa-envelope"></i> {{ $email }}</a></li>
+                    @endif
+                </ul>
 
-                    <!-- FOOTER COLUMN 3 -->
-                    <div class="col-12 col-sm-6 col-md-4 mb-4">
-                        <div class="single-wedge">
-                            <h4 class="footer-herading">Follow Us:</h4>
-                            <div class="social-info">
-                                <ul class="link-follow row gy-1 gx-0">                        
-                                  <li class="col-6 mb-0">
-                                      <a class="fa-brands fa-whatsapp"
-                                         title="WhatsApp"
-                                          href="https://wa.me/{{ $settings['whatsapp'] ?? '' }}"
-                                         target="_blank">
-                                          <span>Whatsapp</span>
-                                      </a>
-                                 </li>
-
-
-                                    <li class="col-6 mb-0"><a class="fa-brands fa-facebook-f" title="Facebook"
-                                              href="{{ $settings['facebook'] ?? '' }}" 
-                                                ><span>Facebook</span>
-                                        </a>
-                                    </li>
-
-                                    <li class="col-6 mb-0"><a class="fa-brands fa-instagram" title="Facebook"
-                                              href="{{ $settings['instagram'] ?? '' }}" 
-                                                ><span>Instagram</span>
-                                        </a>
-                                    </li>
-
-                                    <li class="col-6 mb-0"><a class="fa-brands fa-youtube" title="Facebook"
-                                              href="{{ $settings['youtube'] ?? '' }}" 
-                                                ><span>Youtube</span>
-                                        </a>
-                                    </li>
-
-
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
- 
-
+                <div class="ga-footer-social">
+                    @if ($waNumber)<a href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>@endif
+                    @if (!empty($settings['facebook']))<a href="{{ $settings['facebook'] }}" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>@endif
+                    @if (!empty($settings['instagram']))<a href="{{ $settings['instagram'] }}" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>@endif
+                    @if (!empty($settings['youtube']))<a href="{{ $settings['youtube'] }}" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>@endif
                 </div>
             </div>
-        </div>
 
-        <div class="footer-bottom text-center">
-            <p>Copyright{{ date('Y') }} © Developed By Gift Web Solutions </p>
         </div>
     </div>
-</div>
+
+    <div class="ga-footer-bottom">
+        <div class="container">
+            <p>© {{ date('Y') }} {{ $brand }}. All rights reserved.</p>
+            <p>Developed by Gift Web Solutions</p>
+        </div>
+    </div>
+</footer>

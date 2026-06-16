@@ -130,7 +130,7 @@ class SeoData
         ], $overrides), [
             static::breadcrumb([
                 ['name' => 'Home', 'url' => route('frontend.home')],
-                ['name' => 'Shop', 'url' => route('frontend.shop.categories')],
+                ['name' => 'Shop', 'url' => route('frontend.shop.index')],
                 ['name' => $title, 'url' => $overrides['canonical'] ?? url()->current()],
             ]),
             static::product($product),

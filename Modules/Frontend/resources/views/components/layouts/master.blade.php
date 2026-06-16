@@ -66,6 +66,7 @@
 
     @include('frontend::components.layouts.footer')
     @include('frontend::components.layouts.script')
+    <script src="{{ asset('assets/js/aqua-ui.js') }}"></script>
     @stack('scripts')
 </body>
 

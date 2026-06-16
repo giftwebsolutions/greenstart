@@ -22,7 +22,7 @@
 
                             @if($page->parent)
                                 <li>
-                                    <a href="{{ route('cms.view', $page->parent->slug) }}">
+                                    <a href="{{ route('frontend.cms.view', $page->parent->slug) }}">
                                         {{ $page->parent->name }}
                                     </a>
                                 </li>
@@ -97,7 +97,7 @@
                                     <p>
                                         {{ \Illuminate\Support\Str::limit(strip_tags($child->description ?? $child->content), 140) }}
                                     </p>
-                                    <a href="{{ route('cms.view', $child->slug) }}" class="read-more-btn">
+                                    <a href="{{ route('frontend.cms.view', $child->slug) }}" class="read-more-btn">
                                         Read More
                                     </a>
                                 </div>
