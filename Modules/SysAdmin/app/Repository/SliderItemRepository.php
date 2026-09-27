@@ -3,7 +3,7 @@
 namespace Modules\SysAdmin\Repository;
 
 use App\Models\Slider;
-use Prettus\Repository\Criteria\RequestCriteria;
+use Modules\SysAdmin\Core\Eloquent\RequestCriteria;
 use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
 use Modules\SysAdmin\Helpers\ImageUploader;
 use Modules\SysAdmin\Interfaces\SliderItemInterface;

@@ -102,7 +102,7 @@
 
             });
         </script>
-        {!! JsValidator::formRequest('Modules\SysAdmin\Requests\SettingsFormRequest', '#settings-new') !!}
+
     @endpush
 @endsection
 

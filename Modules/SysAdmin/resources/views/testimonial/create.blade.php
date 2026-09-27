@@ -61,7 +61,7 @@
 
                         {{-- IMAGE --}}
 
-                           
+
                         <div class="mb-3">
                             <label class="col-form-label">Image</label>
                             <input type="file"
@@ -99,10 +99,7 @@
 @pushOnce('scripts')
 
 {{-- JS VALIDATION --}}
-{!! JsValidator::formRequest(
-    'Modules\SysAdmin\Requests\TestimonialFormRequest',
-    '#create-testimonial'
-) !!}
+
 
 {{-- IMAGE PREVIEW SCRIPT --}}
 <script>

@@ -41,7 +41,7 @@
                 <p class="mb-1"><strong>Type:</strong> {{ (int)$product->type === 2 ? 'Variable' : 'Simple' }}</p>
                 <p class="mb-1"><strong>Category:</strong> {{ $category->name ?? '-' }}</p>
                 <p class="mb-1"><strong>Sub Category:</strong> {{ $subCategory->name ?? '-' }}</p>
-                <p class="mb-1"><strong>Attribute Set:</strong> {{ $attributeSet->name ?? '-' }}</p>
+                <p class="mb-1"><strong>Attribute family:</strong> {{ $attributeFamily->name ?? '-' }}</p>
 
                 <hr>
 

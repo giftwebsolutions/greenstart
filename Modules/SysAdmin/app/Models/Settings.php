@@ -4,8 +4,6 @@ namespace Modules\SysAdmin\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Prettus\Repository\Contracts\Transformable;
-use Prettus\Repository\Traits\TransformableTrait;
 use Illuminate\Support\Facades\Cache;
 
 /**
@@ -20,9 +18,9 @@ use Illuminate\Support\Facades\Cache;
  *
  * @package Modules\SysAdmin\Models
  */
-class Settings extends Model implements Transformable
+class Settings extends Model
 {
-    use HasFactory, TransformableTrait;
+    use HasFactory;
 
     public static $cache_key = 'settings';
 

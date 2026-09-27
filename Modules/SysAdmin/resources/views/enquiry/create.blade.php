@@ -236,7 +236,7 @@
                             class="form-select @error('status') is-invalid @enderror"
                             required>
                         <option value="">Select status</option>
-                       
+
                         @foreach ($statuses as $key => $value)
                             <option value="{{ $key }}"
                                 {{ (string)$key === (string)old('status', 1) ? 'selected' : '' }}>
@@ -271,7 +271,7 @@
 
 @pushOnce('scripts')
 <script type="module" src="{{ asset('admin/js/select2/select2.full.min.js') }}"></script>
-{!! JsValidator::formRequest('Modules\SysAdmin\Requests\EnquiryFormRequest', '#create-enquiry') !!}
+
 <script type="module">
     $('.select2').select2({ width: '100%' });
 

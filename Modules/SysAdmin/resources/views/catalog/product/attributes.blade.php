@@ -47,69 +47,51 @@
                     {{-- ATTRIBUTES CARD --}}
                     <div class="card">
                         <div class="card-header p-3">
-                            <h5 class="mb-0">
-                                Attributes from: {{ $group->name ?? 'Attribute Set' }}
-                            </h5>
+                            <h5 class="mb-0">{{ $family->name }} attributes</h5>
                             <small class="text-muted">
                                 Fill values and (for dropdown attributes) mark which ones will be used for variants.
                             </small>
                         </div>
 
                         <div class="card-body p-3">
-                            @foreach ($group->attributes as $attribute)
-                                @php
-                                    $existing = $productAttributeValues->get($attribute->id) ?? null;
-                                    $existingValue = $existing->attribute_value_id ?? ($existing->value ?? null);
-                                    $currentValue = old("attributes.{$attribute->id}", $existingValue);
-
-                                    $isConfigurableAttr = in_array(
-                                        $attribute->id,
-                                        old('configurable_attributes', $existingConfigurable),
-                                    );
-
-                                    $canBeVariant =
-                                        (int) $attribute->configurable === 1 && (int) $attribute->type === 3;
-                                @endphp
-
-                                <div class="border rounded p-3 mb-3">
-                                    <div class="row">
-                                        <label class="col-md-12 col-form-label mb-2">
-                                            {{ $attribute->name }}
-                                        </label>
-
-                                        <div class="col-md-12 mb-2">
-                                            @if ($attribute->type == 2 && $attribute->values->count())
-                                                <select name="attributes[{{ $attribute->id }}]" class="form-select">
-                                                    <option value="">Select {{ $attribute->name }}</option>
-                                                    @foreach ($attribute->values as $v)
-                                                        <option value="{{ $v->id }}"
-                                                            {{ (string) $currentValue === (string) $v->id ? 'selected' : '' }}>
-                                                            {{ $v->value }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            @else
-                                                <input type="text" name="attributes[{{ $attribute->id }}]"
-                                                    class="form-control" value="{{ $currentValue }}">
-                                            @endif
-                                        </div>
-
-                                        @if ($canBeVariant)
-                                            <div class="col-md-12">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox"
-                                                        name="configurable_attributes[]" value="{{ $attribute->id }}"
-                                                        id="configurable_{{ $attribute->id }}"
-                                                        {{ $isConfigurableAttr ? 'checked' : '' }}>
-                                                    <label class="form-check-label"
-                                                        for="configurable_{{ $attribute->id }}">
-                                                        Use this attribute for variants (configurable)
-                                                    </label>
+                            @foreach ($family->groups as $group)
+                                <fieldset class="family-choice mb-4">
+                                    <legend>{{ $group->name }}</legend>
+                                    <div class="row g-3">
+                                        @forelse ($group->attributes as $attribute)
+                                            @php
+                                                $existing = $productAttributeValues->get($attribute->id);
+                                                $existingValue = $existing?->attribute_value_id ?? $existing?->value;
+                                                $currentValue = old("attributes.{$attribute->id}", $existingValue);
+                                                $isConfigurableAttr = in_array($attribute->id, old('configurable_attributes', $existingConfigurable));
+                                                $canBeVariant = (bool) $attribute->configurable && in_array((int) $attribute->type, [2, 3], true);
+                                            @endphp
+                                            <div class="col-lg-6">
+                                                <div class="border rounded p-3 h-100">
+                                                    <label class="form-label" for="attribute-{{ $attribute->id }}">{{ $attribute->name }} @if ($attribute->require)<span class="text-danger">*</span>@endif</label>
+                                                    @if (in_array((int) $attribute->type, [2, 3], true) && $attribute->values->count())
+                                                        <select id="attribute-{{ $attribute->id }}" name="attributes[{{ $attribute->id }}]" class="form-select">
+                                                            <option value="">Select {{ $attribute->name }}</option>
+                                                            @foreach ($attribute->values as $value)
+                                                                <option value="{{ $value->id }}" @selected((string) $currentValue === (string) $value->id)>{{ $value->value }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    @else
+                                                        <input id="attribute-{{ $attribute->id }}" type="text" name="attributes[{{ $attribute->id }}]" class="form-control" value="{{ $currentValue }}">
+                                                    @endif
+                                                    @if ($canBeVariant)
+                                                        <div class="form-check mt-2">
+                                                            <input class="form-check-input" type="checkbox" name="configurable_attributes[]" value="{{ $attribute->id }}" id="configurable-{{ $attribute->id }}" @checked($isConfigurableAttr)>
+                                                            <label class="form-check-label" for="configurable-{{ $attribute->id }}">Use for variants</label>
+                                                        </div>
+                                                    @endif
                                                 </div>
                                             </div>
-                                        @endif
+                                        @empty
+                                            <div class="col-12 text-muted">No attributes assigned to this group.</div>
+                                        @endforelse
                                     </div>
-                                </div>
+                                </fieldset>
                             @endforeach
                         </div>
                     </div>
@@ -358,10 +340,7 @@
                                 <strong>Type:</strong>
                                 {{ (int) $product->type === 2 ? 'Variable' : 'Simple' }}
                             </p>
-                            <p class="mb-0">
-                                <strong>Attribute Set:</strong>
-                                {{ $group->name ?? '-' }}
-                            </p>
+                            <p class="mb-0"><strong>Attribute family:</strong> {{ $family->name }}</p>
                         </div>
                     </div>
                 </div>

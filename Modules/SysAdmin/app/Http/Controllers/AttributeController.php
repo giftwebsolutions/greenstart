@@ -7,10 +7,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\ValidationException;
 use Modules\SysAdmin\Interfaces\AttributeInterface;
 use Modules\SysAdmin\Interfaces\AttributeValueInterface;
-use Modules\SysAdmin\DataTables\AttributeDataTable;
-use Modules\SysAdmin\Requests\AttributeFormRequest;
 use Modules\SysAdmin\Models\AttributeValue;
 use Modules\SysAdmin\Models\ProductVariantValue;
+use Modules\SysAdmin\Requests\AttributeFormRequest;
 
 class AttributeController extends Controller
 {
@@ -19,18 +18,14 @@ class AttributeController extends Controller
         protected AttributeValueInterface $attributeValueRepository
     ) {}
 
-    public function index(AttributeDataTable $dataTable)
+    public function index()
     {
-        return $dataTable->render('sysadmin::catalog.attribute.index');
+        return view('sysadmin::catalog.attribute.index');
     }
 
     public function create()
     {
-        return view('sysadmin::catalog.attribute.create')->with([
-            'groups'   => $this->attributeRepository->getAttributeSets(),
-            'types'    => $this->attributeRepository->getAttributeTypes(),
-            'statuses' => $this->attributeRepository->getStatus(),
-        ]);
+        return view('sysadmin::catalog.attribute.create');
     }
 
     public function store(AttributeFormRequest $request): RedirectResponse
@@ -42,7 +37,7 @@ class AttributeController extends Controller
 
         // 2) If values[] sent (for select / checkbox) → create attribute_values
         $values = $request->input('values', []);
-        if (!empty($values) && is_array($values)) {
+        if (! empty($values) && is_array($values)) {
             $sort = 0;
             foreach ($values as $value) {
                 $value = trim((string) $value);
@@ -53,8 +48,8 @@ class AttributeController extends Controller
 
                 $this->attributeValueRepository->create([
                     'attribute_id' => $attribute->id,
-                    'value'        => $value,
-                    'sort_order'   => $sort++,
+                    'value' => $value,
+                    'sort_order' => $sort++,
                 ]);
             }
         }
@@ -77,28 +72,8 @@ class AttributeController extends Controller
 
     public function edit($id)
     {
-        $attribute = $this->attributeRepository->findOrFail($id);
-
-        // load existing values for this attribute (id + value)
-        $values = $attribute->values()
-            ->orderBy('sort_order')
-            ->get(['id', 'value'])
-            ->map(function ($v) {
-                return [
-                    'id'    => $v->id,
-                    'value' => $v->value,
-                ];
-            })
-            ->toArray();
-
-        //dd($this->attributeRepository->getAttributeSets());
-        return view('sysadmin::catalog.attribute.edit', compact('attribute', 'values'))->with([
-            'groups'   => $this->attributeRepository->getAttributeSets(),
-            'types'    => $this->attributeRepository->getAttributeTypes(),
-            'statuses' => $this->attributeRepository->getStatus(),
-        ]);
+        return view('sysadmin::catalog.attribute.edit', ['id' => (int) $id]);
     }
-
 
     public function update(AttributeFormRequest $request, $id): RedirectResponse
     {
@@ -110,7 +85,7 @@ class AttributeController extends Controller
 
             // 2) Handle values WITHOUT deleting everything
             $submittedValues = $request->input('values', []); // each: ['id' => ?, 'value' => ?]
-            $submittedIds    = [];
+            $submittedIds = [];
 
             $sort = 0;
 
@@ -128,15 +103,15 @@ class AttributeController extends Controller
                     $submittedIds[] = (int) $id;
 
                     $this->attributeValueRepository->update([
-                        'value'      => $valueText,
+                        'value' => $valueText,
                         'sort_order' => $sort++,
                     ], $id);
                 } else {
                     // CREATE new value
                     $value = $this->attributeValueRepository->create([
                         'attribute_id' => $attribute->id,
-                        'value'        => $valueText,
-                        'sort_order'   => $sort++,
+                        'value' => $valueText,
+                        'sort_order' => $sort++,
                     ]);
 
                     $submittedIds[] = $value->id;

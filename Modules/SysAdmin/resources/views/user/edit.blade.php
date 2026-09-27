@@ -104,7 +104,7 @@
     </div>
 @endsection
 @pushOnce('scripts')
-    {!! JsValidator::formRequest('Modules\SysAdmin\Requests\UserFormRequest', '#user-update') !!}
+
     <script type="module">
         $('#cancel-button').click(function() {
             window.location.href = "{{ route('sysadmin.user.index') }}";

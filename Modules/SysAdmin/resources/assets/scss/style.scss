@@ -2,12 +2,6 @@
 @import "bootstrap/scss/bootstrap";
 @import "./utils/variables";
 
-@import 'bootstrap-icons/font/bootstrap-icons.css';
-@import "datatables.net-bs5/css/dataTables.bootstrap5.min.css";
-@import "datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css";
-@import 'datatables.net-select-bs5/css/select.bootstrap5.css';
-
-
 :root {
     --theme-default: #7366FF;
     --theme-secondary: #838383;
@@ -169,7 +163,7 @@
 @import "components/buttons";
 @import "components/block-ui";
 @import "components/card";
-@import "components/datatable";
+@import "components/livewire-admin";
 @import "components/datepicker";
 @import "components/dropdown";
 @import "components/form-input";

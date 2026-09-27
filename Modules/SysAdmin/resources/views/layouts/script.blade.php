@@ -11,7 +11,6 @@
 <script type="module" src="{{ asset('admin/js/slick/slick.js') }}"></script>
 <script type="module" src="{{ asset('admin/js/header-slick.js') }}"></script>
 <script type="module" src="{{ asset('admin/js/script.js') }}"></script>
-<script type="module" src="{{ asset('vendor/jsvalidation/js/jsvalidation.js')}}"></script>
 @yield('script')
 @if (Route::currentRouteName() == 'index')
     <script>

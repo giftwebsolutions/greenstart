@@ -2,7 +2,7 @@
 
 namespace Modules\SysAdmin\Repository;
 
-use Prettus\Repository\Criteria\RequestCriteria;
+use Modules\SysAdmin\Core\Eloquent\RequestCriteria;
 use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
 use Modules\SysAdmin\Models\Product;
 use Modules\SysAdmin\Interfaces\ProductInterface;
@@ -102,7 +102,7 @@ class ProductRepository extends BaseRepository implements ProductInterface
             ->toArray();
     }
 
-    public function getSubCategories(int $parentId = null): array
+    public function getSubCategories(?int $parentId = null): array
     {
         return [];
     }

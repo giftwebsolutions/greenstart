@@ -2,7 +2,7 @@
 
 namespace Modules\SysAdmin\Repository;
 
-use Prettus\Repository\Criteria\RequestCriteria;
+use Modules\SysAdmin\Core\Eloquent\RequestCriteria;
 use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
 use Modules\SysAdmin\Models\AttributeType;
 use Modules\SysAdmin\Interfaces\AttributeTypeInterface;

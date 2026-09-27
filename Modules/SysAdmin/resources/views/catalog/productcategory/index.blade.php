@@ -3,9 +3,7 @@
 @section('css')
 @endsection
 
-@section('style')
-    <link rel="stylesheet" type="text/css" href="{{ asset('admin/css/vendors/datatables.css') }}">
-@endsection
+@section('style')@endsection
 
 @section('breadcrumb-title')
     <h3>Products</h3>

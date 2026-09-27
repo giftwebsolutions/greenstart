@@ -3,7 +3,7 @@
 
 namespace Modules\SysAdmin\Repository;
 
-use Prettus\Repository\Criteria\RequestCriteria;
+use Modules\SysAdmin\Core\Eloquent\RequestCriteria;
 use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
 use Modules\SysAdmin\Models\Attribute;
 use Modules\SysAdmin\Interfaces\AttributeInterface;
@@ -53,7 +53,7 @@ class AttributeRepository extends BaseRepository implements AttributeInterface
 
     public function getAttributeSets()
     {
-        return app(AttributeGroupRepository::class)->all()->pluck('name', 'id')->toArray();
+        return \Modules\SysAdmin\Models\AttributeFamily::query()->orderBy('name')->pluck('name', 'id')->toArray();
     }
 
     public function getAttributeTypes()

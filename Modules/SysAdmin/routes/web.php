@@ -21,9 +21,6 @@ Route::prefix('sysadmin')->as('sysadmin.')->group(function () {
         Route::get('login', 'index')->name('login.form');
         Route::post('login', 'login')->name('login.attempt');
 
-        Route::get('registration', 'registration')->name('register');
-        Route::post('registration', 'submitRegistration')->name('register.submit');
-
         Route::post('signout', 'signOut')->name('logout');
     });
 
@@ -37,16 +34,6 @@ Route::prefix('sysadmin')->as('sysadmin.')->group(function () {
         Route::post('reset-password', 'resetPassword')->name('reset-password.post');
     });
 
-    // ---------------------------
-    // Cache & Maintenance Tools (for dev/admin)
-    // ---------------------------
-    Route::prefix('tools')->as('tools.')->group(function () {
-        Route::get('/config-clear', fn() => Artisan::call('config:clear'))->name('config-clear');
-        Route::get('/config-cache', fn() => Artisan::call('config:cache'))->name('config-cache');
-        Route::get('/cache-clear', fn() => Artisan::call('cache:clear'))->name('cache-clear');
-        Route::get('/view-clear', fn() => Artisan::call('view:clear'))->name('view-clear');
-        Route::get('/optimize-clear', fn() => Artisan::call('optimize:clear'))->name('optimize-clear');
-    });
 });
 
 
@@ -64,6 +51,14 @@ Route::prefix('sysadmin')
         // Dashboard
         Route::get('/', [DashboardController::class, 'index'])->name('index');
 
+        Route::prefix('tools')->as('tools.')->group(function () {
+            Route::post('/config-clear', fn() => Artisan::call('config:clear'))->name('config-clear');
+            Route::post('/config-cache', fn() => Artisan::call('config:cache'))->name('config-cache');
+            Route::post('/cache-clear', fn() => Artisan::call('cache:clear'))->name('cache-clear');
+            Route::post('/view-clear', fn() => Artisan::call('view:clear'))->name('view-clear');
+            Route::post('/optimize-clear', fn() => Artisan::call('optimize:clear'))->name('optimize-clear');
+        });
+
         // ===============================
         // 🔑 Role Management
         // ===============================
@@ -74,7 +69,7 @@ Route::prefix('sysadmin')
             Route::post('create', 'store')->name('store');
             Route::get('edit/{id}', 'edit')->name('edit');
             Route::patch('update/{id}', 'update')->name('update');
-            Route::get('destroy/{id}', 'destroy')->name('delete');
+            Route::delete('destroy/{id}', 'destroy')->name('delete');
         });
 
         // ===============================
@@ -87,7 +82,7 @@ Route::prefix('sysadmin')
             Route::post('create', 'store')->name('store');
             Route::get('edit/{id}', 'edit')->name('edit');
             Route::patch('update/{id}', 'update')->name('update');
-            Route::get('destroy/{id}', 'destroy')->name('delete');
+            Route::delete('destroy/{id}', 'destroy')->name('delete');
         });
 
         Route::prefix('slider')
@@ -112,7 +107,7 @@ Route::prefix('sysadmin')
                     Route::patch('/update/{id}', 'update')->name('update');
 
                     // Delete
-                    Route::get('/delete/{id}', 'destroy')->name('delete');
+                    Route::delete('/delete/{id}', 'destroy')->name('delete');
                     Route::post('/item-delete/{id}', 'itemDelete')->name('item-delete');
                     Route::post('/item-save/{id}', 'itemCreate')->name('item-create');
             });
@@ -127,7 +122,7 @@ Route::prefix('sysadmin')
             Route::post('create', 'store')->name('store');
             Route::get('edit/{id}', 'edit')->name('edit');
             Route::patch('update/{id}', 'update')->name('update');
-            Route::get('destroy/{id}', 'destroy')->name('delete');
+            Route::delete('destroy/{id}', 'destroy')->name('delete');
         });
 
         // ===============================
@@ -141,7 +136,7 @@ Route::prefix('sysadmin')
                 Route::post('create', 'store')->name('store');
                 Route::get('edit/{id}', 'edit')->name('edit');
                 Route::patch('update/{id}', 'update')->name('update');
-                Route::get('destroy/{id}', 'destroy')->name('delete');
+                Route::delete('destroy/{id}', 'destroy')->name('delete');
             });
 
             Route::controller(Modules\SysAdmin\Http\Controllers\BlockController::class)->prefix('block')->as('block.')->group(function () {
@@ -151,11 +146,17 @@ Route::prefix('sysadmin')
                 Route::post('create', 'store')->name('store');
                 Route::get('edit/{id}', 'edit')->name('edit');
                 Route::patch('update/{id}', 'update')->name('update');
-                Route::get('destroy/{id}', 'destroy')->name('delete');
+                Route::delete('destroy/{id}', 'destroy')->name('delete');
             });
         });
 
         Route::prefix('catalog')->as('catalog.')->group(function () {
+            Route::controller(Modules\SysAdmin\Http\Controllers\AttributeFamilyController::class)->prefix('attribute-family')->as('attribute.family.')->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('create', 'create')->name('create');
+                Route::get('edit/{id}', 'edit')->name('edit');
+            });
+
             Route::controller(Modules\SysAdmin\Http\Controllers\AttributeController::class)->prefix('attribute')->as('attribute.')->group(function () {
                 Route::get('/', 'index')->name('index');
                 Route::get('view/{id}', 'show')->name('view');
@@ -163,17 +164,12 @@ Route::prefix('sysadmin')
                 Route::post('create', 'store')->name('store');
                 Route::get('edit/{id}', 'edit')->name('edit');
                 Route::patch('update/{id}', 'update')->name('update');
-                Route::get('destroy/{id}', 'destroy')->name('delete');
+                Route::delete('destroy/{id}', 'destroy')->name('delete');
             });
 
             Route::controller(Modules\SysAdmin\Http\Controllers\AttributeGroupController::class)->prefix('group')->as('attribute.group.')->group(function () {
                 Route::get('/', 'index')->name('index');
                 Route::get('view/{id}', 'show')->name('view');
-                Route::get('create', 'create')->name('create');
-                Route::post('create', 'store')->name('store');
-                Route::get('edit/{id}', 'edit')->name('edit');
-                Route::patch('update/{id}', 'update')->name('update');
-                Route::get('destroy/{id}', 'destroy')->name('delete');
             });
 
             Route::controller(Modules\SysAdmin\Http\Controllers\AttributeTypeController::class)->prefix('attribute-type')->as('attribute.type.')->group(function () {
@@ -183,7 +179,7 @@ Route::prefix('sysadmin')
                 Route::post('create', 'store')->name('store');
                 Route::get('edit/{id}', 'edit')->name('edit');
                 Route::patch('update/{id}', 'update')->name('update');
-                Route::get('destroy/{id}', 'destroy')->name('delete');
+                Route::delete('destroy/{id}', 'destroy')->name('delete');
             });
 
             Route::controller(Modules\SysAdmin\Http\Controllers\ProductController::class)->prefix('product')->as('product.')->group(function () {
@@ -193,9 +189,9 @@ Route::prefix('sysadmin')
                 Route::post('create', 'store')->name('store');
                 Route::get('edit/{id}', 'edit')->name('edit');
                 Route::patch('update/{id}', 'update')->name('update');
-                Route::get('destroy/{id}', 'destroy')->name('delete');
+                Route::delete('destroy/{id}', 'destroy')->name('delete');
 
-                Route::post('load-attributes', 'loadAttributeSetAttributes')
+                Route::post('load-family-attributes', 'loadFamilyAttributes')
                     ->name('load-attributes');
 
                 Route::get('{product}/attributes', 'attributes')
@@ -217,7 +213,7 @@ Route::prefix('sysadmin')
                 Route::post('create', 'store')->name('store');
                 Route::get('edit/{id}', 'edit')->name('edit');
                 Route::patch('update/{id}', 'update')->name('update');
-                Route::get('destroy/{id}', 'destroy')->name('delete');
+                Route::delete('destroy/{id}', 'destroy')->name('delete');
             });
         });
 
@@ -231,7 +227,7 @@ Route::prefix('sysadmin')
         Route::post('create', 'store')->name('store');       // Save new testimonial
         Route::get('edit/{id}', 'edit')->name('edit');       // Form to edit
         Route::patch('update/{id}', 'update')->name('update'); // Update testimonial
-        Route::get('destroy/{id}', 'destroy')->name('delete'); // Delete testimonial
+        Route::delete('destroy/{id}', 'destroy')->name('delete'); // Delete testimonial
     });
 });
 
@@ -247,7 +243,7 @@ Route::prefix('sysadmin')
                 Route::post('create', 'store')->name('store');
                 Route::get('edit/{id}', 'edit')->name('edit');
                 Route::patch('update/{id}', 'update')->name('update');
-                Route::get('destroy/{id}', 'destroy')->name('delete');
+                Route::delete('destroy/{id}', 'destroy')->name('delete');
             });
 
             Route::controller(Modules\SysAdmin\Http\Controllers\BlogCategoryController::class)->prefix('category')->as('category.')->group(function () {
@@ -257,7 +253,7 @@ Route::prefix('sysadmin')
                 Route::post('create', 'store')->name('store');
                 Route::get('edit/{id}', 'edit')->name('edit');
                 Route::patch('update/{id}', 'update')->name('update');
-                Route::get('destroy/{id}', 'destroy')->name('delete');
+                Route::delete('destroy/{id}', 'destroy')->name('delete');
             });
 
             Route::controller(Modules\SysAdmin\Http\Controllers\TagController::class)->prefix('tags')->as('tags.')->group(function () {
@@ -268,7 +264,7 @@ Route::prefix('sysadmin')
                 Route::post('create', 'store')->name('store');
                 Route::get('edit/{id}', 'edit')->name('edit');
                 Route::patch('update/{id}', 'update')->name('update');
-                Route::get('destroy/{id}', 'destroy')->name('delete');
+                Route::delete('destroy/{id}', 'destroy')->name('delete');
             });
         });
 
@@ -283,7 +279,7 @@ Route::prefix('sysadmin')
             Route::get('ajax-view/{id}', 'ajaxShow')->name('ajax-view');
             Route::get('edit/{id}', 'edit')->name('edit');
             Route::patch('update/{id}', 'update')->name('update');
-            Route::get('destroy/{id}', 'destroy')->name('delete');
+            Route::delete('destroy/{id}', 'destroy')->name('delete');
         });
 
         // ===============================
@@ -297,7 +293,7 @@ Route::prefix('sysadmin')
                 Route::post('create', 'store')->name('store');
                 Route::get('edit/{id}', 'edit')->name('edit');
                 Route::patch('update/{id}', 'update')->name('update');
-                Route::get('destroy/{id}', 'destroy')->name('delete');
+                Route::delete('destroy/{id}', 'destroy')->name('delete');
                 Route::post('add-item/{id}/{created_at}', 'uploadItem')->name('item.upload');
                 Route::delete('remove-item/{id}', 'removeItem')->name('item.remove');
             });
@@ -315,32 +311,3 @@ Route::prefix('sysadmin')
             });
         });
     });
-
-
-Route::middleware(['web', 'sysadmin'])->prefix('sysadmin/tools')->as('sysadmin.tools.')->group(function () {
-
-    Route::get('/config-clear', function () {
-        Artisan::call('config:clear');
-        return ' Config cache cleared successfully!';
-    })->name('config-clear');
-
-    Route::get('/config-cache', function () {
-        Artisan::call('config:cache');
-        return ' Configuration cached successfully!';
-    })->name('config-cache');
-
-    Route::get('/cache-clear', function () {
-        Artisan::call('cache:clear');
-        return ' Application cache cleared successfully!';
-    })->name('cache-clear');
-
-    Route::get('/view-clear', function () {
-        Artisan::call('view:clear');
-        return ' Compiled views cleared successfully!';
-    })->name('view-clear');
-
-    Route::get('/optimize-clear', function () {
-        Artisan::call('optimize:clear');
-        return ' Optimized files cleared successfully!';
-    })->name('optimize-clear');
-});

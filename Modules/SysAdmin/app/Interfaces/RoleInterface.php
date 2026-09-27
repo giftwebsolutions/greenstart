@@ -2,7 +2,7 @@
 
 namespace Modules\SysAdmin\Interfaces;
 
-use Prettus\Repository\Contracts\RepositoryInterface;
+use Modules\SysAdmin\Core\Contracts\RepositoryInterface;
 
 interface RoleInterface extends RepositoryInterface
 {

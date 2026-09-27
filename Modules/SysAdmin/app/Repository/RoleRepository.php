@@ -4,7 +4,7 @@ namespace Modules\SysAdmin\Repository;
 
 use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
 use Modules\SysAdmin\Interfaces\RoleInterface;
-use Prettus\Repository\Criteria\RequestCriteria;
+use Modules\SysAdmin\Core\Eloquent\RequestCriteria;
 use Spatie\Permission\Models\Role;
 
 class RoleRepository extends BaseRepository implements RoleInterface

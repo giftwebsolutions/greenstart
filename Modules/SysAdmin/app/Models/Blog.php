@@ -4,8 +4,6 @@ namespace Modules\SysAdmin\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Prettus\Repository\Contracts\Transformable;
-use Prettus\Repository\Traits\TransformableTrait;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
@@ -32,9 +30,9 @@ use Illuminate\Support\Str;
  *
  * @package Modules\SysAdmin\Models
  */
-class Blog extends Model implements Transformable
+class Blog extends Model
 {
-    use HasFactory, TransformableTrait;
+    use HasFactory;
 
     protected $table = 'blogs';
 
@@ -112,7 +110,7 @@ class Blog extends Model implements Transformable
         return $query->where('status', 1);
     }
 
-    public function scopeOrderBy(Builder $query)
+    public function scopeLatestFirst(Builder $query)
     {
         $query->orderBy("id", "DESC");
     }

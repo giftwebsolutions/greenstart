@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Attribute
- * 
+ *
  * @property int $id
  * @property string $name
  * @property int $group_id
@@ -15,73 +15,73 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $comparable
  * @property string $require
  * @property int $status
- * 
  * @property AttributeGroup $attribute_group
  * @property AttributeType $attribute_type
- *
- * @package App\Models
  */
 class Attribute extends Model
 {
-	protected $table = 'attribute';
-	public $timestamps = false;
+    protected $table = 'attribute';
 
-	public $statuses = [
-		0 => 'Delete',
-		1 => 'Published',
-		2 => 'Draft',
-	];
+    public $timestamps = false;
 
-	protected $casts = [
-		'group_id' => 'int',
-		'sort_order' => 'int',
-		'type' => 'int',
-		'comparable' => 'bool',
-		'configurable' => 'bool',
-		'filterable' => 'bool',
-		'status' => 'int'
-	];
+    public $statuses = [
+        0 => 'Delete',
+        1 => 'Published',
+        2 => 'Draft',
+    ];
 
-	protected $fillable = [
-		'name',
-		'group_id',
-		'sort_order',
-		'type',
-		'comparable',
-		'configurable',
-		'filterable',
-		'require',
-		'status'
-	];
+    protected $casts = [
+        'group_id' => 'int',
+        'sort_order' => 'int',
+        'type' => 'int',
+        'comparable' => 'bool',
+        'configurable' => 'bool',
+        'filterable' => 'bool',
+        'status' => 'int',
+    ];
 
-	public function attribute_group()
-	{
-		return $this->belongsTo(AttributeGroup::class, 'group_id');
-	}
+    protected $fillable = [
+        'name',
+        'code',
+        'group_id',
+        'sort_order',
+        'type',
+        'comparable',
+        'configurable',
+        'filterable',
+        'require',
+        'status',
+    ];
 
-	public function attribute_type()
-	{
-		return $this->belongsTo(AttributeType::class, 'type');
-	}
+    public function attribute_group()
+    {
+        return $this->belongsTo(AttributeGroup::class, 'group_id');
+    }
 
-	public function groups()
-	{
-		return $this->belongsToMany(
-			AttributeGroup::class,
-			'attribute_mapping',
-			'attribute_id',
-			'group_id'
-		)->withPivot(['value'])
-			->withTimestamps();
-	}
+    public function attribute_type()
+    {
+        return $this->belongsTo(AttributeType::class, 'type');
+    }
 
-	public function mappings()
-	{
-		return $this->hasMany(AttributeMapping::class, 'attribute_id');
-	}
+    public function groups()
+    {
+        return $this->belongsToMany(
+            AttributeGroup::class,
+            'attribute_mapping',
+            'attribute_id',
+            'group_id'
+        )->withPivot(['value', 'position'])
+            ->orderByPivot('position')
+            ->withTimestamps();
+    }
 
-	public function values()
-	{
-		return $this->hasMany(AttributeValue::class, 'attribute_id');
-	}
+    public function mappings()
+    {
+        return $this->hasMany(AttributeMapping::class, 'attribute_id');
+    }
+
+    public function values()
+    {
+        return $this->hasMany(AttributeValue::class, 'attribute_id');
+    }
 }

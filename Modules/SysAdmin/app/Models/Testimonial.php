@@ -4,8 +4,6 @@ namespace Modules\SysAdmin\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Prettus\Repository\Contracts\Transformable;
-use Prettus\Repository\Traits\TransformableTrait;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -18,9 +16,9 @@ use Illuminate\Database\Eloquent\Builder;
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  */
-class Testimonial extends Model implements Transformable
+class Testimonial extends Model
 {
-    use HasFactory, TransformableTrait;
+    use HasFactory;
 
     protected $table = 'testimonials';
 

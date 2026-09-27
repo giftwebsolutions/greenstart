@@ -224,7 +224,7 @@
     </div>
 @endsection
 @pushOnce('scripts')
-    {!! JsValidator::formRequest('Modules\SysAdmin\Requests\PageFormRequest', '#update-page') !!}
+
     <script type="module">
         let file;
         $('a#cancel-button').click(function() {

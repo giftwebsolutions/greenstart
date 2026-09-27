@@ -42,7 +42,7 @@
     </div>
 </form>
 @pushOnce('scripts')
-    {!! JsValidator::formRequest('Modules\SysAdmin\Requests\SettingsFormRequest', '#settings-new') !!}
+
     <script type="module">
         $('a#cancel-button').click(function() {
             $(".customizer-contain").removeClass("open");

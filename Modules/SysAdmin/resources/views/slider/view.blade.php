@@ -152,7 +152,7 @@
 </div>
 
 @pushOnce('scripts')
-    {!! JsValidator::formRequest('Modules\SysAdmin\Requests\SliderFormRequest', '#slider-item') !!}
+
     <script>
         document.getElementById('thumbnail').addEventListener('change', function() {
             const file = this.files[0];

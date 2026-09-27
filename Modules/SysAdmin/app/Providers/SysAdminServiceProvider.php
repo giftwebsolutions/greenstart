@@ -4,6 +4,13 @@ namespace Modules\SysAdmin\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
+use Modules\SysAdmin\Livewire\Catalog\Attributes\Form as AttributeForm;
+use Modules\SysAdmin\Livewire\Catalog\Attributes\Index as AttributeIndex;
+use Modules\SysAdmin\Livewire\Catalog\Families\Builder as FamilyBuilder;
+use Modules\SysAdmin\Livewire\Catalog\Families\Index as FamilyIndex;
+use Modules\SysAdmin\Livewire\Catalog\Products\FormWizard as ProductFormWizard;
+use Modules\SysAdmin\Livewire\Tables\ResourceTable;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -27,6 +34,17 @@ class SysAdminServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+
+        foreach ([
+            'sysadmin.catalog.attributes.index' => AttributeIndex::class,
+            'sysadmin.catalog.attributes.form' => AttributeForm::class,
+            'sysadmin.catalog.families.index' => FamilyIndex::class,
+            'sysadmin.catalog.families.builder' => FamilyBuilder::class,
+            'sysadmin.catalog.products.form-wizard' => ProductFormWizard::class,
+            'sysadmin.resource-table' => ResourceTable::class,
+        ] as $alias => $component) {
+            Livewire::component($alias, $component);
+        }
     }
 
     /**
@@ -131,7 +149,7 @@ class SysAdminServiceProvider extends ServiceProvider
 
         $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), $this->nameLower);
 
-        Blade::componentNamespace(config('modules.namespace').'\\' . $this->name . '\\View\\Components', $this->nameLower);
+        Blade::componentNamespace(config('modules.namespace').'\\'.$this->name.'\\View\\Components', $this->nameLower);
     }
 
     /**

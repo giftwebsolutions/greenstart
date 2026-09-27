@@ -7,6 +7,21 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Product Catalog setup
+
+This application runs on Laravel 13, PHP 8.3+, Livewire 4, Bootstrap 5 and MySQL. The public storefront remains Bootstrap/jQuery; Livewire is scoped to the SysAdmin and installer interfaces.
+
+1. Install PHP dependencies with `composer install`.
+2. Copy `.env.example` to `.env` when `.env` does not exist.
+3. Create an empty MySQL database; the browser installer creates the tables.
+4. Build SysAdmin assets:
+   `cd Modules/SysAdmin && npm install && npm run build`.
+5. Point the web server at `public/`, then open `/install`.
+
+The installation wizard checks PHP extensions and permissions, verifies the database connection, writes environment settings, runs the schema and migrations, and creates the first administrator. Completion is recorded in `storage/app/installed.json`.
+
+Catalog attributes are global reusable definitions. Attribute families own ordered groups, groups map ordered attributes through `attribute_mapping`, and each product belongs to one family. Manage this structure from **SysAdmin → Catalog → Attribute Families**.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

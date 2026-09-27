@@ -3,7 +3,7 @@
 namespace Modules\SysAdmin\Repository;
 
 use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
+use Modules\SysAdmin\Core\Eloquent\RequestCriteria;
 use Modules\SysAdmin\Models\ProductVariant;
 use Modules\SysAdmin\Interfaces\ProductVariantInterface;
 

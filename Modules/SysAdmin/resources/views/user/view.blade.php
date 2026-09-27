@@ -23,7 +23,11 @@
                     <div class="card-header">
                         <a href="{{ route('sysadmin.user.index') }}" class="btn btn-primary mx-2">Back</a>
                         <a href="{{ route('sysadmin.user.edit', $user['id']) }}" class="btn btn-secondary mx-2">Update</a>
-                        <a href="{{ route('sysadmin.user.delete', $user['id']) }}" class="btn btn-danger mx-2">Delete</a>
+                        <form method="POST" action="{{ route('sysadmin.user.delete', $user['id']) }}" class="d-inline" onsubmit="return confirm('Delete this user?')">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-danger mx-2">Delete</button>
+                        </form>
                     </div>
                     <div class="card-body table-responsive">
                         <table class="table table-striped">

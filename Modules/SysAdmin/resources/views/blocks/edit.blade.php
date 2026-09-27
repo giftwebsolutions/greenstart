@@ -147,7 +147,7 @@
 @endsection
 @pushOnce('scripts')
     <script type="module" src="{{ asset('vendor/ckeditor/ckeditor.js') }}"></script>
-    {!! JsValidator::formRequest('Modules\SysAdmin\Requests\BlockFormRequest', '#update-block') !!}
+
     <script type="module">
         let file;
         $('a#cancel-button').click(function() {

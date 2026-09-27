@@ -21,6 +21,7 @@
 
     @include('sysadmin::layouts.css')
     @yield('style')
+    @livewireStyles
     <script>
         var base_url = '{{ config('app.url') }}/sysadmin/';
     </script>
@@ -97,6 +98,7 @@
     <!-- latest jquery-->
     @include('sysadmin::layouts.script')
     @stack('scripts')
+    @livewireScripts
     <!-- Plugin used-->
 
     {{-- <script type="text/javascript">

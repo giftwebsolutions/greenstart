@@ -6,7 +6,7 @@ export default defineConfig({
     build: {
         outDir: '../../public/build-sysadmin/',
         emptyOutDir: true,
-        manifest: true,
+        manifest: 'manifest.json',
         chunkSizeWarningLimit: 1600,
         sourcemap: false,
     },

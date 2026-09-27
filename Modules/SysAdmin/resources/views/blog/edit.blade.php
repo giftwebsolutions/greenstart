@@ -212,7 +212,7 @@
 @pushOnce('scripts')
     <script type="module" src="{{ asset('vendor/ckeditor/ckeditor.js') }}"></script>
     <script type="module" src="{{ asset('admin/js/select2/select2.full.min.js') }}"></script>
-    {!! JsValidator::formRequest('Modules\SysAdmin\Requests\BlogFormRequest', '#update-blog') !!}
+
     <script type="module">
         let file;
         let published_at = '{{ $blog->published_at ?? date('d/m/Y h:m') }}';

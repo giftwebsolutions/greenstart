@@ -180,7 +180,7 @@
                                 <option>Select Category</option>
                                 @foreach ($parentCategory as $category)
                                     <option value="{{ $category['id'] }}"
-                                  
+
                                         {{ $category['id'] == old('category_id') ? 'selected' : '' }}>
                                         {{ $category['name'] }}
                                     </option>
@@ -213,7 +213,7 @@
 @endsection
 @pushOnce('scripts')
     <script type="module" src="{{ asset('admin/js/select2/select2.full.min.js') }}"></script>
-    {!! JsValidator::formRequest('Modules\SysAdmin\Requests\BlogFormRequest', '#create-blog') !!}
+
     <script type="module">
         let file;
 

@@ -140,7 +140,7 @@
 @endsection
 
 @pushOnce('scripts')
-    {!! JsValidator::formRequest('Modules\SysAdmin\Requests\GalleryFormRequest', '#edit-gallery') !!}
+
     <script>
         const galleryId   = {{ $gallery['id'] }};
         const createdAt   = '{{ urlencode($gallery['created_at']) }}';

@@ -2,7 +2,7 @@
 
 namespace Modules\Frontend\Interfaces;
 
-use Prettus\Repository\Contracts\RepositoryInterface;
+use Modules\SysAdmin\Core\Contracts\RepositoryInterface;
 use Modules\SysAdmin\Models\Product;
 use Illuminate\Database\Eloquent\Collection;
 

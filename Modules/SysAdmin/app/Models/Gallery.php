@@ -61,7 +61,7 @@ class Gallery extends Model
 		return $query->where('status', 1);
 	}
 
-	public function scopeOrderBy(Builder $query)
+	public function scopeLatestFirst(Builder $query)
 	{
 		$query->orderBy("id", "DESC");
 	}

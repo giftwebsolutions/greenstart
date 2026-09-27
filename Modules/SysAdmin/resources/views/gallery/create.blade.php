@@ -92,7 +92,7 @@
 @endsection
 
 @pushOnce('scripts')
-    {!! JsValidator::formRequest('Modules\SysAdmin\Requests\GalleryFormRequest', '#create-gallery') !!}
+
     <script>
         document.getElementById('thumbnail').addEventListener('change', function () {
             const file = this.files[0];

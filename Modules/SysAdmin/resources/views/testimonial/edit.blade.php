@@ -65,9 +65,9 @@
 
                         <div class="card-body p-3">
                         <div class="mb-3">
-                            
+
                             @error('image')
-                            
+
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -89,7 +89,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
 
                     </div>
 
@@ -112,14 +112,11 @@
 @pushOnce('scripts')
 
 {{-- JS VALIDATION --}}
-{!! JsValidator::formRequest(
-    'Modules\SysAdmin\Requests\TestimonialFormRequest',
-    '#update-testimonial'
-) !!}
+
 
 {{-- IMAGE PREVIEW SCRIPT --}}
  <script type="module">
-   
+
       $('#image').change(function (e) {
            var file = this.files[0];
             if (file) {

@@ -2,7 +2,7 @@
 
 namespace Modules\SysAdmin\Repository;
 
-use Prettus\Repository\Criteria\RequestCriteria;
+use Modules\SysAdmin\Core\Eloquent\RequestCriteria;
 use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
 use Illuminate\Support\Facades\Cache;
 use Modules\SysAdmin\Interfaces\ProductCategoryInterface;
@@ -88,7 +88,7 @@ class ProductCategoryRepository extends BaseRepository implements ProductCategor
     /**
      * Get subcategories for dropdowns.
      */
-    public function getSubCategories(int $parentId = null): array
+    public function getSubCategories(?int $parentId = null): array
     {
         $query = ProductCategory::query()->orderBy('name');
 

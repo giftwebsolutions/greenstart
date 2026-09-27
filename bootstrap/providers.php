@@ -7,7 +7,5 @@ return [
     App\Providers\AppServiceProvider::class,
     SysAdminServiceProvider::class,
     FrontendServiceProvider::class,
-    Yajra\DataTables\DataTablesServiceProvider::class,
-    Yajra\DataTables\HtmlServiceProvider::class,
     Intervention\Image\Laravel\ServiceProvider::class,
 ];

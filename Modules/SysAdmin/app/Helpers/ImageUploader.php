@@ -14,7 +14,7 @@ class ImageUploader
     const DISK = 'uploads';
     public static array $extensions = ['jpg', 'jpeg', 'gif', 'png', 'pdf'];
 
-    public static function upload($file, string $date = null, $thumbnail = true): string
+    public static function upload($file, ?string $date = null, $thumbnail = true): string
     {
         if ($date == null) {
             $yearMonth = now()->format('Y/m');
@@ -56,7 +56,7 @@ class ImageUploader
         return $filename;
     }
 
-    public static function uploadFile($file, string $date = null, $thumbnail = true): string
+    public static function uploadFile($file, ?string $date = null, $thumbnail = true): string
     {
         if ($date == null) {
             $yearMonth = now()->format('Y/m');
@@ -80,7 +80,7 @@ class ImageUploader
         return $filename;
     }
 
-    public static function getFilePath(string $filename = null, $date = null, string $type = null): string
+    public static function getFilePath(?string $filename = null, $date = null, ?string $type = null): string
     {
         if (empty($filename)) {
             return asset('uploads/default.jpg');
@@ -114,7 +114,7 @@ class ImageUploader
     }
 
 
-    public static function getFileRootPath(string $filename, string $date, string $type = null): string
+    public static function getFileRootPath(string $filename, string $date, ?string $type = null): string
     {
         $yearMonth = date('Y/m', strtotime($date));
         if ($type !== null) {

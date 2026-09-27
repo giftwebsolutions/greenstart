@@ -2,194 +2,198 @@
 
 namespace Modules\SysAdmin\Core\Eloquent;
 
-use Prettus\Repository\Contracts\CacheableInterface;
-use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Traits\CacheableRepository;
+use Closure;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use InvalidArgumentException;
+use Modules\SysAdmin\Core\Contracts\RepositoryInterface;
 
-abstract class Repository extends BaseRepository implements CacheableInterface
+abstract class Repository implements RepositoryInterface
 {
-    use CacheableRepository;
+    protected Model $modelInstance;
 
-    /**
-     * @var bool
-     */
-    protected $cacheEnabled = false;
+    /** @deprecated Prefer getModel(); retained for existing repositories. */
+    protected Model $model;
 
-    /**
-     * @param $method
-     * @return bool
-     */
-    public function allowedClean()
+    protected ?Builder $queryBuilder = null;
+
+    abstract public function model();
+
+    public function __construct()
     {
-        if (!isset($this->cleanEnabled)) {
-            return config('repository.cache.clean.enabled', true);
+        $model = app($this->model());
+
+        if (! $model instanceof Model) {
+            throw new InvalidArgumentException('Repository model must be an Eloquent model.');
         }
 
-        return $this->cleanEnabled;
+        $this->modelInstance = $model;
+        $this->model = $model;
+
+        if (method_exists($this, 'boot')) {
+            $this->boot();
+        }
     }
 
-    /**
-     * @return bool
-     */
-    protected function allowedCache($method)
+    public function getModel(): Model
     {
-        $className = get_class($this);
-
-        $cacheEnabled = config("repository.cache.repositories.{$className}.enabled", config('repository.cache.enabled', true));
-
-        if (!$cacheEnabled) {
-            return false;
-        }
-
-        $cacheOnly = isset($this->cacheOnly) ? $this->cacheOnly : config("repository.cache.repositories.{$className}.allowed.only", config('repository.cache.allowed.only', null));
-        $cacheExcept = isset($this->cacheExcept) ? $this->cacheExcept : config("repository.cache.repositories.{$className}.allowed.except", config('repository.cache.allowed.only', null));
-
-        if (is_array($cacheOnly)) {
-            return in_array($method, $cacheOnly);
-        }
-
-        if (is_array($cacheExcept)) {
-            return !in_array($method, $cacheExcept);
-        }
-
-        if (is_null($cacheOnly) && is_null($cacheExcept)) {
-            return true;
-        }
-
-        return false;
+        return $this->modelInstance;
     }
 
-    /**
-     * @throws RepositoryException
-     */
-    public function resetModel()
+    public function resetModel(): static
     {
-        $this->makeModel();
+        $this->queryBuilder = null;
 
         return $this;
     }
 
-    /**
-     * Find data by field and value
-     *
-     * @param  string  $field
-     * @param  string  $value
-     * @param  array  $columns
-     * @return mixed
-     */
-    public function findOneByField($field, $value = null, $columns = ['*'])
+    public function pushCriteria(mixed $criteria): static
     {
-        $model = $this->findByField($field, $value, $columns = ['*']);
-
-        return $model->first();
+        return $this;
     }
 
-    /**
-     * Find data by field and value
-     *
-     * @param  string  $field
-     * @param  string  $value
-     * @param  array  $columns
-     * @return mixed
-     */
-    public function findOneWhere(array $where, $columns = ['*'])
+    public function scopeQuery(Closure $scope): static
     {
-        $model = $this->findWhere($where, $columns);
+        $query = $scope($this->query());
+        $this->queryBuilder = $query instanceof Builder ? $query : $this->query();
 
-        return $model->first();
+        return $this;
     }
 
-    /**
-     * Find data by id
-     *
-     * @param  int  $id
-     * @param  array  $columns
-     * @return mixed
-     */
-    public function find($id, $columns = ['*'])
+    public function with(array|string $relations): static
     {
-        $this->applyCriteria();
-        $this->applyScope();
-        $model = $this->model->find($id, $columns);
-        $this->resetModel();
+        $this->queryBuilder = $this->query()->with($relations);
 
-        return $this->parserResult($model);
+        return $this;
     }
 
-    /**
-     * Find data by id
-     *
-     * @param  int  $id
-     * @param  array  $columns
-     * @return mixed
-     */
-    public function findOrFail($id, $columns = ['*'])
+    public function all(array $columns = ['*'])
     {
-        $this->applyCriteria();
-        $this->applyScope();
-        $model = $this->model->findOrFail($id, $columns);
-        $this->resetModel();
-
-        return $this->parserResult($model);
+        return $this->consume(fn (Builder $query) => $query->get($columns));
     }
 
-    /**
-     * Count results of repository
-     *
-     * @param  string  $columns
-     * @return int
-     */
-    public function count(array $where = [], $columns = '*')
+    public function get(array $columns = ['*'])
     {
-        $this->applyCriteria();
-        $this->applyScope();
+        return $this->all($columns);
+    }
 
-        if ($where) {
-            $this->applyConditions($where);
+    public function first(array $columns = ['*'])
+    {
+        return $this->consume(fn (Builder $query) => $query->first($columns));
+    }
+
+    public function paginate(int $perPage = 15, array $columns = ['*'])
+    {
+        return $this->consume(fn (Builder $query) => $query->paginate($perPage, $columns));
+    }
+
+    public function find(int|string $id, array $columns = ['*'])
+    {
+        return $this->consume(fn (Builder $query) => $query->find($id, $columns));
+    }
+
+    public function findOrFail(int|string $id, array $columns = ['*'])
+    {
+        return $this->consume(fn (Builder $query) => $query->findOrFail($id, $columns));
+    }
+
+    public function findWhere(array $where, array $columns = ['*'])
+    {
+        return $this->consume(fn (Builder $query) => $this->applyWhere($query, $where)->get($columns));
+    }
+
+    public function findOneWhere(array $where, array $columns = ['*'])
+    {
+        return $this->consume(fn (Builder $query) => $this->applyWhere($query, $where)->first($columns));
+    }
+
+    public function findByField(string $field, mixed $value = null, array $columns = ['*'])
+    {
+        return $this->consume(fn (Builder $query) => $query->where($field, $value)->get($columns));
+    }
+
+    public function findOneByField(string $field, mixed $value = null, array $columns = ['*'])
+    {
+        return $this->consume(fn (Builder $query) => $query->where($field, $value)->first($columns));
+    }
+
+    public function create(array $attributes)
+    {
+        return $this->modelInstance->newQuery()->create($attributes);
+    }
+
+    public function update(array $attributes, int|string $id)
+    {
+        $model = $this->modelInstance->newQuery()->findOrFail($id);
+        $model->update($attributes);
+
+        return $model->refresh();
+    }
+
+    public function delete(int|string $id): bool
+    {
+        return (bool) $this->modelInstance->newQuery()->findOrFail($id)->delete();
+    }
+
+    public function deleteWhere(array $where): int
+    {
+        return $this->applyWhere($this->modelInstance->newQuery(), $where)->delete();
+    }
+
+    public function count(array $where = [], string $column = '*'): int
+    {
+        return $this->consume(fn (Builder $query) => $this->applyWhere($query, $where)->count($column));
+    }
+
+    public function sum(string $column): int|float
+    {
+        return $this->consume(fn (Builder $query) => $query->sum($column));
+    }
+
+    public function avg(string $column): int|float|null
+    {
+        return $this->consume(fn (Builder $query) => $query->avg($column));
+    }
+
+    public function select(array|string ...$columns): Builder
+    {
+        $columns = count($columns) === 1 && is_array($columns[0]) ? $columns[0] : $columns;
+
+        return $this->query()->select($columns);
+    }
+
+    public function where(...$arguments): Builder
+    {
+        return $this->query()->where(...$arguments);
+    }
+
+    public function __call(string $method, array $arguments): mixed
+    {
+        return $this->query()->{$method}(...$arguments);
+    }
+
+    protected function query(): Builder
+    {
+        return $this->queryBuilder ??= $this->modelInstance->newQuery();
+    }
+
+    protected function consume(Closure $callback): mixed
+    {
+        try {
+            return $callback($this->query());
+        } finally {
+            $this->resetModel();
+        }
+    }
+
+    protected function applyWhere(Builder $query, array $where): Builder
+    {
+        foreach ($where as $field => $value) {
+            is_int($field) && is_array($value)
+                ? $query->where(...$value)
+                : $query->where($field, $value);
         }
 
-        $result = $this->model->count($columns);
-        $this->resetModel();
-        $this->resetScope();
-
-        return $result;
-    }
-
-    /**
-     * @param  string  $columns
-     * @return mixed
-     */
-    public function sum($columns)
-    {
-        $this->applyCriteria();
-        $this->applyScope();
-
-        $sum = $this->model->sum($columns);
-        $this->resetModel();
-
-        return $sum;
-    }
-
-    /**
-     * @param  string  $columns
-     * @return mixed
-     */
-    public function avg($columns)
-    {
-        $this->applyCriteria();
-        $this->applyScope();
-
-        $avg = $this->model->avg($columns);
-        $this->resetModel();
-
-        return $avg;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getModel()
-    {
-        return $this->model;
+        return $query;
     }
 }

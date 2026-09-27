@@ -137,7 +137,7 @@
 @endsection
 @pushOnce('scripts')
     <script type="module" src="{{ asset('vendor/ckeditor/ckeditor.js') }}"></script>
-    {!! JsValidator::formRequest('Modules\SysAdmin\Requests\BlockFormRequest', '#create-block') !!}
+
     <script type="module">
         let file;
         $('a#cancel-button').click(function() {
@@ -164,6 +164,6 @@
             $('#remove-image-block').addClass('d-none')
         });
 
-        
+
     </script>
 @endPushOnce

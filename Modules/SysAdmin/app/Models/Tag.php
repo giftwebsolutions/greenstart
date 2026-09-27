@@ -6,8 +6,6 @@ namespace Modules\SysAdmin\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Prettus\Repository\Contracts\Transformable;
-use Prettus\Repository\Traits\TransformableTrait;
 
 /**
  * Class Tag
@@ -20,10 +18,9 @@ use Prettus\Repository\Traits\TransformableTrait;
  *
  *  @package Modules\SysAdmin\Models
  */
-class Tag extends Model implements Transformable
+class Tag extends Model
 {
-	use TransformableTrait;
-	protected $table = 'tags';
+		protected $table = 'tags';
 
 	protected $fillable = [
 		'name',

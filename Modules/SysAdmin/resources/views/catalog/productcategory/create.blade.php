@@ -131,5 +131,5 @@
 @endsection
 
 @pushOnce('scripts')
-    {!! JsValidator::formRequest('Modules\SysAdmin\Requests\ProductCategoryFormRequest', '#create-category') !!}
+
 @endPushOnce

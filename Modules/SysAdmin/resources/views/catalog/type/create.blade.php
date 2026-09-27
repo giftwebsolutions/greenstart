@@ -86,5 +86,5 @@
 @endsection
 
 @pushOnce('scripts')
-    {!! JsValidator::formRequest('Modules\SysAdmin\Requests\AttributeTypeFormRequest', '#create-attribute-type') !!}
+
 @endPushOnce

@@ -5,6 +5,8 @@ namespace Modules\Frontend\Providers;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Throwable;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -28,7 +30,9 @@ class FrontendServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
-        $this->setSiteSettings();
+        if (! $this->app->runningInConsole()) {
+            $this->setSiteSettings();
+        }
     }
 
     /**
@@ -179,9 +183,13 @@ class FrontendServiceProvider extends ServiceProvider
 
     protected function setSiteSettings()
     {
-        if (DB::table('settings')->where('type', 'system')->exists()) {
-            $settings  = \Modules\SysAdmin\Models\Settings::getSettingByType('system');
-            config()->set('site-settings', array_merge(config('site-settings'), $settings));
+        try {
+            if (Schema::hasTable('settings') && DB::table('settings')->where('type', 'system')->exists()) {
+                $settings = \Modules\SysAdmin\Models\Settings::getSettingByType('system');
+                config()->set('site-settings', array_merge(config('site-settings', []), $settings));
+            }
+        } catch (Throwable) {
+            // A fresh installation must be able to boot before a database is configured.
         }
     }
 

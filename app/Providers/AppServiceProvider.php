@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Livewire\Installer\Wizard as InstallerWizard;
+use App\Support\InstallationState;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Schema;
+use Livewire\Livewire;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -12,7 +14,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // A fresh installation cannot use database-backed cache or sessions.
+        // The installer switches to the configured drivers after writing its lock.
+        if (
+            ! is_file(InstallationState::lockPath())
+            && ! $this->app->runningInConsole()
+            && request()->is('install', 'livewire/*')
+        ) {
+            config([
+                'cache.default' => 'file',
+                'session.driver' => 'file',
+            ]);
+        }
     }
 
     /**
@@ -20,7 +33,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-         Schema::defaultStringLength(191);
-         $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'frontend');
+        Livewire::component('installer.wizard', InstallerWizard::class);
+        // Each module owns and registers its own view namespace.
     }
 }

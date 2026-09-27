@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
 use Modules\SysAdmin\Interfaces\TagInterface;
 use Modules\SysAdmin\Models\Tag;
-use Prettus\Repository\Criteria\RequestCriteria;
+use Modules\SysAdmin\Core\Eloquent\RequestCriteria;
 
 class TagRepository extends BaseRepository implements TagInterface
 {

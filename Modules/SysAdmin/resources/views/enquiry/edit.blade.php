@@ -267,7 +267,7 @@
 
 @pushOnce('scripts')
 <script type="module" src="{{ asset('admin/js/select2/select2.full.min.js') }}"></script>
-{!! JsValidator::formRequest('Modules\SysAdmin\Requests\EnquiryFormRequest', '#edit-enquiry') !!}
+
 <script type="module">
     $('.select2').select2({ width: '100%' });
 

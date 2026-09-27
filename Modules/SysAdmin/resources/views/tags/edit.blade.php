@@ -62,5 +62,5 @@
 @endsection
 
 @pushOnce('scripts')
-    {!! JsValidator::formRequest('Modules\SysAdmin\Requests\TagFormRequest', '#edit-tag') !!}
+
 @endPushOnce

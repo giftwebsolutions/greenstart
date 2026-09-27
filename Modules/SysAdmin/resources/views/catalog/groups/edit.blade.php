@@ -132,5 +132,5 @@
 @endsection
 
 @pushOnce('scripts')
-    {!! JsValidator::formRequest('Modules\SysAdmin\Requests\AttributeGroupFormRequest', '#update-attribute-group') !!}
+
 @endPushOnce

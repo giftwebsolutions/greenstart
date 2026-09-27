@@ -4,12 +4,10 @@ namespace Modules\SysAdmin\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Prettus\Repository\Contracts\Transformable;
-use Prettus\Repository\Traits\TransformableTrait;
 
-class Blocks extends Model implements Transformable
+class Blocks extends Model
 {
-    use HasFactory, TransformableTrait;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.

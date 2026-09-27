@@ -4,7 +4,7 @@
 @endsection
 
 @section('style')
-   
+
 @endsection
 
 @section('breadcrumb-title')
@@ -35,9 +35,9 @@
                                         class="form-control @error('name') is-invalid @enderror" name="name"
                                         value="{{ old('name') }}" required autocomplete="name" autofocus>
 
-                               
-                               
-                               
+
+
+
                                         @error('name')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -187,9 +187,9 @@
     </div>
 @endsection
 @pushOnce('scripts')
-   
+
     <script type="module" src="{{ asset('admin/js/select2/select2.full.min.js') }}"></script>
-    {!! JsValidator::formRequest('Modules\SysAdmin\Requests\PageFormRequest', '#create-page') !!}
+
     <script type="module">
         let file;
         $('a#cancel-button').click(function() {
@@ -236,6 +236,6 @@
             $('#remove-banner-image').addClass('d-none')
         });
 
-        
+
     </script>
 @endPushOnce

@@ -11,14 +11,12 @@ import * as bootstrap from 'bootstrap';
 window.bootstrap = bootstrap;
 
 import * as Popper from '@popperjs/core';
-window.Popper = Popper.defaults;
+window.Popper = Popper;
 import moment from "moment";
-window.moment = moment();
+window.moment = moment;
 
 import tempusDominus from '@eonasdan/tempus-dominus/dist/js/tempus-dominus';
 window.tempusDominus = tempusDominus;
-
-import '@nextapps-be/livewire-sortablejs';
 
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/xml/xml'; // Example mode
@@ -28,4 +26,3 @@ window.CodeMirror = CodeMirror;
 import axios from 'axios';
 window.axios = axios;
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-

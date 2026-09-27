@@ -4,7 +4,7 @@ namespace Modules\SysAdmin\Repository;
 
 use Modules\SysAdmin\Interfaces\AttributeGroupInterface;
 use Modules\SysAdmin\Models\AttributeGroup;
-use Prettus\Repository\Criteria\RequestCriteria;
+use Modules\SysAdmin\Core\Eloquent\RequestCriteria;
 use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
 
 class AttributeGroupRepository extends BaseRepository implements AttributeGroupInterface

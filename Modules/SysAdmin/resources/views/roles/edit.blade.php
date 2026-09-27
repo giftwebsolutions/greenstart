@@ -69,5 +69,5 @@
 @endsection
 
 @pushOnce('scripts')
-    {!! JsValidator::formRequest('Modules\SysAdmin\Requests\RoleFormRequest', '#edit-role') !!}
+
 @endPushOnce

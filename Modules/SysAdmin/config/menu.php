@@ -91,9 +91,9 @@ return [
                 'icon'       => 'icon-gear',
             ],
             [
-                'key'        => 'attribute-group',
-                'name'       => 'Attribute Groups',
-                'route'      => 'sysadmin.catalog.attribute.group.index',
+                'key'        => 'attribute-family',
+                'name'       => 'Attribute Families',
+                'route'      => 'sysadmin.catalog.attribute.family.index',
                 'sort'       => 1,
                 'icon'       => 'icon-gear',
             ],
