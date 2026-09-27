@@ -3,14 +3,14 @@
 namespace Modules\SysAdmin\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 /**
  * Class BlogCategory
- * 
+ *
  * @property int $id
  * @property string $name
  * @property string $slug
@@ -22,14 +22,10 @@ use Illuminate\Support\Str;
  * @property string|null $featured_image
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * 
  * @property BlogCategory|null $blog_category
  * @property Collection|BlogCategory[] $blog_categories
  * @property Collection|Blog[] $blogs
- *
- * @package Modules\SysAdmin\Models
  */
-
 class BlogCategory extends Model
 {
     use HasFactory;
@@ -44,7 +40,7 @@ class BlogCategory extends Model
 
     protected $casts = [
         'parent_id' => 'int',
-        'status' => 'int'
+        'status' => 'int',
     ];
 
     protected $fillable = [
@@ -55,7 +51,7 @@ class BlogCategory extends Model
         'keywords',
         'description',
         'status',
-        'featured_image'
+        'featured_image',
     ];
 
     protected function setNameAttribute($value)
@@ -66,14 +62,14 @@ class BlogCategory extends Model
 
     protected function setParentIdAttribute($value)
     {
-        $this->attributes['parent_id'] =  $value ?? NULL;
+        $this->attributes['parent_id'] = $value ?? 0;
     }
 
     protected function status(): Attribute
     {
         return Attribute::make(
             set: fn (int $value) => $value ?? 1,
-            //get: fn (int $value) => $this->statuses[$value]
+            // get: fn (int $value) => $this->statuses[$value]
         );
     }
 

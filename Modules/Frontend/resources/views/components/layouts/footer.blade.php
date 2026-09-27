@@ -1,12 +1,15 @@
 @php
-    $settings = Config::get('site-settings');
+    $settings = Config::get('site-settings', []);
     $menus    = Config::get('frontend.menus');
-    $waNumber = preg_replace('/\D+/', '', $settings['whatsapp'] ?? '');
+    $enableWhatsApp = filter_var($settings['enable_whatsapp'] ?? true, FILTER_VALIDATE_BOOL);
+    $waNumber = $enableWhatsApp ? preg_replace('/\D+/', '', $settings['whatsapp'] ?? '') : '';
     $phone    = $settings['mobile'] ?? '';
     $email    = $settings['email'] ?? '';
     $address  = $settings['address'] ?? '';
-    $logo     = asset('assets/images/logo/logo.png');
-    $brand    = config('app.name', 'Greens Aqua World');
+    $logoPath = $settings['footer_logo'] ?? $settings['site_logo'] ?? null;
+    $logo     = \Modules\SysAdmin\Models\Settings::assetUrl($logoPath, 'assets/images/logo/logo.png');
+    $brand    = $settings['site_name'] ?? $settings['title'] ?? config('app.name', 'Greens Aqua World');
+    $tagline  = $settings['tagline'] ?? 'Domestic & industrial RO purifiers, filters, spares and trusted service support.';
 @endphp
 
 <footer class="ga-footer">
@@ -17,7 +20,7 @@
                 <a href="{{ route('frontend.home') }}" class="ga-footer-logo">
                     <img src="{{ $logo }}" alt="{{ $brand }}">
                 </a>
-                <p>Domestic &amp; industrial RO purifiers, filters, spares and trusted service support.</p>
+                <p>{{ $tagline }}</p>
                 @if ($address)
                     <p class="ga-footer-addr"><i class="fa-solid fa-location-dot"></i> {{ $address }}</p>
                 @endif
@@ -53,6 +56,8 @@
                     @if (!empty($settings['facebook']))<a href="{{ $settings['facebook'] }}" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>@endif
                     @if (!empty($settings['instagram']))<a href="{{ $settings['instagram'] }}" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>@endif
                     @if (!empty($settings['youtube']))<a href="{{ $settings['youtube'] }}" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>@endif
+                    @if (!empty($settings['x_twitter']))<a href="{{ $settings['x_twitter'] }}" target="_blank" rel="noopener" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>@endif
+                    @if (!empty($settings['linkedin']))<a href="{{ $settings['linkedin'] }}" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>@endif
                 </div>
             </div>
 

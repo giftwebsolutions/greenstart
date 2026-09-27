@@ -1,128 +1,119 @@
-<form wire:submit="save" class="catalog-workspace" novalidate>
-    <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4">
-        <div>
-            <a href="{{ route('sysadmin.catalog.product.index') }}" class="small text-decoration-none">← Products</a>
-            <h4 class="mt-2 mb-1">{{ $productId ? 'Edit product' : 'Create product' }}</h4>
-            <p class="text-muted mb-0">Complete the guided setup, then manage family attributes and variants.</p>
-        </div>
-        @if ($productId)
-            <a href="{{ route('sysadmin.catalog.product.attributes', $productId) }}" class="btn btn-outline-primary">Manage attributes</a>
-        @endif
-    </div>
+<form wire:submit="save" class="grid gap-5" novalidate>
+    <div class="flex flex-wrap items-end justify-between gap-3"><div><a href="{{ route('sysadmin.catalog.product.index') }}" class="inline-flex items-center gap-1 text-xs font-semibold text-primary">{!! \Modules\SysAdmin\Support\Icon::get('arrow-left', 'h-3.5 w-3.5') !!} Products</a><h1 class="mt-2 text-[22px] font-bold tracking-tight text-ink">{{ $productId ? 'Edit product' : 'Create product' }}</h1><p class="mt-1 text-[13px] text-ink-muted">Complete the guided setup, then manage family attributes and variants.</p></div>@if($productId)<x-sysadmin::btn :href="route('sysadmin.catalog.product.attributes', $productId)">Manage attributes</x-sysadmin::btn>@endif</div>
 
-    @include('sysadmin::layouts.alert')
-
-    @if ($errors->any())
-        <div class="alert alert-danger"><strong>Please check the highlighted fields.</strong></div>
-    @endif
-
-    <nav class="product-wizard mb-4" aria-label="Product setup progress">
-        @foreach ([1 => ['Basics', 'Identity and content'], 2 => ['Commerce', 'Price and classification'], 3 => ['Media', 'Images and visibility'], 4 => ['Review', 'Confirm and save']] as $number => [$label, $help])
-            <button type="button" wire:click="goToStep({{ $number }})" class="wizard-step {{ $step === $number ? 'active' : '' }} {{ $step > $number ? 'complete' : '' }}" @disabled($number > $step)>
-                <span>{{ $step > $number ? '✓' : $number }}</span>
-                <strong>{{ $label }}</strong>
-                <small>{{ $help }}</small>
-            </button>
+    <nav class="grid overflow-hidden rounded-xl border border-hairline bg-white shadow-sm sm:grid-cols-2 xl:grid-cols-4" aria-label="Product setup progress">
+        @foreach([1=>['Basics','Identity and content'],2=>['Commerce','Price and classification'],3=>['Media','Images and visibility'],4=>['Review','Confirm and save']] as $number=>[$label,$help])
+        <button type="button" wire:click="goToStep({{ $number }})" @disabled($number > $step) class="relative flex items-center gap-3 border-b border-hairline px-4 py-4 text-left last:border-0 sm:border-r xl:border-b-0 {{ $step === $number ? 'bg-primary-50' : 'bg-white' }} disabled:cursor-not-allowed disabled:opacity-50"><span class="grid size-8 shrink-0 place-items-center rounded-full text-xs font-bold {{ $step >= $number ? 'bg-primary text-white' : 'bg-slate-100 text-ink-muted' }}">{{ $step > $number ? '✓' : $number }}</span><span><strong class="block text-[13px] {{ $step === $number ? 'text-primary-600' : 'text-ink' }}">{{ $label }}</strong><small class="text-[10.5px] text-ink-muted">{{ $help }}</small></span>@if($step === $number)<span class="absolute inset-x-0 bottom-0 h-0.5 bg-primary"></span>@endif</button>
         @endforeach
     </nav>
 
-    <div class="row g-4">
-        <div class="col-xl-8">
-            <div class="card border-0 shadow-sm">
-                @if ($step === 1)
-                    <div class="card-header bg-white py-3"><h5 class="mb-1">Product basics</h5><small class="text-muted">Use clear searchable names and stable catalog identifiers.</small></div>
-                    <div class="card-body">
-                        <div class="row g-3">
-                            <div class="col-12"><label class="form-label">Product title <span class="text-danger">*</span></label><input wire:model="title" class="form-control @error('title') is-invalid @enderror" autofocus>@error('title')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
-                            <div class="col-md-6"><label class="form-label">Slug</label><input wire:model="slug" class="form-control font-monospace @error('slug') is-invalid @enderror" placeholder="Generated from title when empty">@error('slug')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
-                            <div class="col-md-3"><label class="form-label">Product code</label><input wire:model="productCode" class="form-control @error('productCode') is-invalid @enderror">@error('productCode')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
-                            <div class="col-md-3"><label class="form-label">Model</label><input wire:model="modelNumber" class="form-control @error('modelNumber') is-invalid @enderror">@error('modelNumber')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
-                            <div class="col-md-6"><label class="form-label">Parent SKU</label><input wire:model="sku" class="form-control @error('sku') is-invalid @enderror"><div class="form-text">Variant products can use a parent SKU plus individual variant SKUs.</div>@error('sku')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
-                            <div class="col-md-6"><label class="form-label">Search keywords</label><input wire:model="keywords" class="form-control @error('keywords') is-invalid @enderror">@error('keywords')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
-                            <div class="col-12"><label class="form-label">Short description</label><textarea wire:model="shortDescription" rows="3" class="form-control @error('shortDescription') is-invalid @enderror"></textarea>@error('shortDescription')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
-                            <div class="col-12"><label class="form-label">Description</label><textarea wire:model="description" rows="9" class="form-control @error('description') is-invalid @enderror"></textarea>@error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
-                        </div>
+    <div class="grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
+        <x-sysadmin::card class="overflow-hidden">
+            <div class="border-b border-hairline px-5 py-4"><h2 class="text-base font-bold text-ink">{{ [1=>'Product basics',2=>'Commerce and classification',3=>'Media and visibility',4=>'Review product'][$step] }}</h2><p class="mt-1 text-xs text-ink-muted">{{ [1=>'Use clear searchable names and stable catalog identifiers.',2=>'The selected family controls grouped product fields and variants.',3=>'Upload optimized images and choose storefront placement.',4=>'Confirm the setup before saving.'][$step] }}</p></div>
+            <div class="p-5" wire:key="product-wizard-step-{{ $step }}">
+                @if($step === 1)
+                <div class="grid gap-4 md:grid-cols-2">
+                    <div class="md:col-span-2"><x-sysadmin::input label="Product title" name="title" wire:model="title" required autofocus/></div>
+                    <x-sysadmin::input label="Slug" name="slug" wire:model="slug" placeholder="Generated from title when empty" class="font-mono"/>
+                    <x-sysadmin::input label="Parent SKU" name="sku" wire:model="sku" hint="Variant products use this as their parent SKU."/>
+                    <x-sysadmin::input label="Product code" name="productCode" wire:model="productCode"/>
+                    <x-sysadmin::input label="Model" name="modelNumber" wire:model="modelNumber"/>
+                    <div class="md:col-span-2"><x-sysadmin::input label="Search keywords" name="keywords" wire:model="keywords"/></div>
+                    <x-sysadmin::rich-text label="Short description" model="shortDescription" hint="A concise formatted summary shown in compact product views." class="md:col-span-2" />
+                    <x-sysadmin::rich-text label="Description" model="description" hint="Use headings, lists, links and emphasis for structured product content." class="md:col-span-2" />
+                </div>
+                @elseif($step === 2)
+                <div class="grid gap-4 md:grid-cols-2">
+                    <x-sysadmin::input label="MRP (₹)" name="mrp" type="number" min="0" step="0.01" wire:model="mrp" required/>
+                    <x-sysadmin::input label="Sales price (₹)" name="salesPrice" type="number" min="0" step="0.01" wire:model="salesPrice" required/>
+                    <x-sysadmin::select label="Main category" name="productCategory" wire:model.live.change="productCategory" placeholder="Choose main category" required>
+                        @foreach($categories as $category)<option value="{{ $category->id }}">{{ $category->name }}</option>@endforeach
+                    </x-sysadmin::select>
+                    <div wire:key="subcategory-field-{{ $productCategory ?: 'none' }}">
+                        <x-sysadmin::select label="Subcategory" name="subProductCategory" wire:model="subProductCategory" placeholder="{{ $productCategory ? ($subCategories->isEmpty() ? 'No subcategories available' : 'Choose subcategory') : 'Select a main category first' }}" :disabled="! $productCategory || $subCategories->isEmpty()">
+                            @foreach($subCategories as $category)<option value="{{ $category->id }}">{{ $category->name }}</option>@endforeach
+                        </x-sysadmin::select>
+                        <p class="mt-1.5 text-[11px] text-ink-muted" wire:loading.remove wire:target="productCategory">
+                            {{ $productCategory ? $subCategories->count().' matching subcategories' : 'Options load after selecting a main category.' }}
+                        </p>
+                        <p class="mt-1.5 text-[11px] font-medium text-primary" wire:loading wire:target="productCategory">Loading subcategories…</p>
                     </div>
-                @elseif ($step === 2)
-                    <div class="card-header bg-white py-3"><h5 class="mb-1">Commerce and classification</h5><small class="text-muted">The selected family controls the grouped product fields in the next screen.</small></div>
-                    <div class="card-body">
-                        <div class="row g-3">
-                            <div class="col-md-6"><label class="form-label">MRP <span class="text-danger">*</span></label><div class="input-group"><span class="input-group-text">₹</span><input wire:model="mrp" type="number" min="0" step="0.01" class="form-control @error('mrp') is-invalid @enderror"></div>@error('mrp')<div class="text-danger small mt-1">{{ $message }}</div>@enderror</div>
-                            <div class="col-md-6"><label class="form-label">Sales price <span class="text-danger">*</span></label><div class="input-group"><span class="input-group-text">₹</span><input wire:model="salesPrice" type="number" min="0" step="0.01" class="form-control @error('salesPrice') is-invalid @enderror"></div>@error('salesPrice')<div class="text-danger small mt-1">{{ $message }}</div>@enderror</div>
-                            <div class="col-md-6"><label class="form-label">Category <span class="text-danger">*</span></label><select wire:model.live="productCategory" class="form-select @error('productCategory') is-invalid @enderror"><option value="">Choose category</option>@foreach ($categories as $category)<option value="{{ $category->id }}">{{ $category->name }}</option>@endforeach</select>@error('productCategory')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
-                            <div class="col-md-6"><label class="form-label">Subcategory</label><select wire:model="subProductCategory" class="form-select @error('subProductCategory') is-invalid @enderror"><option value="">No subcategory</option>@foreach ($subCategories as $category)<option value="{{ $category->id }}">{{ $category->name }}</option>@endforeach</select>@error('subProductCategory')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
-                            <div class="col-12">
-                                <label class="form-label">Attribute family <span class="text-danger">*</span></label>
-                                <div class="family-selector">
-                                    @forelse ($families as $family)
-                                        <label class="family-selector-option {{ (string) $attributeFamilyId === (string) $family->id ? 'selected' : '' }}">
-                                            <input wire:model.live="attributeFamilyId" type="radio" value="{{ $family->id }}">
-                                            <span><strong>{{ $family->name }}</strong><small><code>{{ $family->code }}</code> · {{ $family->groups_count }} groups · {{ $family->products_count }} products</small></span>
-                                        </label>
-                                    @empty
-                                        <div class="alert alert-warning mb-0">Create an attribute family before adding products.</div>
-                                    @endforelse
-                                </div>
-                                @error('attributeFamilyId')<div class="text-danger small mt-2">{{ $message }}</div>@enderror
+                    <fieldset class="md:col-span-2"><legend class="mb-2 text-[12.5px] font-bold">Attribute family <span class="text-red-600">*</span></legend><div class="grid gap-2 md:grid-cols-2">@forelse($families as $family)<label class="flex cursor-pointer items-center gap-3 rounded-xl border p-4 transition {{ (string)$attributeFamilyId === (string)$family->id ? 'border-primary bg-primary-50 ring-1 ring-primary' : 'border-hairline hover:border-primary/40' }}"><input wire:model.live="attributeFamilyId" type="radio" value="{{ $family->id }}" class="size-4 text-primary"><span><strong class="block text-[13px] text-ink">{{ $family->name }}</strong><small class="text-[11px] text-ink-muted">{{ $family->code }} · {{ $family->groups_count }} groups · {{ $family->products_count }} products</small></span></label>@empty<div class="rounded-xl bg-amber-50 px-4 py-3 text-[13px] text-amber-700">Create an attribute family before adding products.</div>@endforelse</div>@error('attributeFamilyId')<p class="mt-2 text-xs text-red-600">{{ $message }}</p>@enderror</fieldset>
+                </div>
+                @elseif($step === 3)
+                <div class="grid gap-4 md:grid-cols-2">
+                    <div>
+                        <label class="mb-1.5 block text-[12.5px] font-bold">Primary thumbnail</label>
+                        <input wire:model="thumb" type="file" accept="image/jpeg,image/png,image/webp" class="block w-full rounded-xl border border-hairline-strong bg-white text-xs file:mr-3 file:border-0 file:bg-primary-50 file:px-3 file:py-3 file:font-semibold file:text-primary">
+                        <p class="mt-1.5 text-[11px] text-ink-muted">JPG, PNG or WebP up to 4 MB.</p>
+                        <p class="mt-1.5 text-[11px] font-medium text-primary" wire:loading wire:target="thumb">Preparing thumbnail…</p>
+                        @error('thumb')<p class="mt-1 text-xs font-medium text-red-600">{{ $message }}</p>@enderror
+                    </div>
+                    <div>
+                        <label class="mb-1.5 block text-[12.5px] font-bold">Gallery images</label>
+                        <input wire:model="galleryImages" type="file" multiple accept="image/jpeg,image/png,image/webp" class="block w-full rounded-xl border border-hairline-strong bg-white text-xs file:mr-3 file:border-0 file:bg-primary-50 file:px-3 file:py-3 file:font-semibold file:text-primary">
+                        <p class="mt-1.5 text-[11px] text-ink-muted">Up to 12 images total. New images are appended in selection order.</p>
+                        <p class="mt-1.5 text-[11px] font-medium text-primary" wire:loading wire:target="galleryImages">Preparing gallery previews…</p>
+                        @error('galleryImages')<p class="mt-1 text-xs font-medium text-red-600">{{ $message }}</p>@enderror
+                        @error('galleryImages.*')<p class="mt-1 text-xs font-medium text-red-600">{{ $message }}</p>@enderror
+                    </div>
+
+                    @if($thumb || ($product?->thumb && ! $removeThumb))
+                        <div class="md:col-span-2 flex items-center justify-between gap-3 rounded-xl border border-hairline bg-[#fafbfc] p-3" wire:key="product-thumbnail-preview">
+                            <div class="flex items-center gap-3">
+                                <img src="{{ $thumb ? $thumb->temporaryUrl() : $product->thumb_url }}" alt="Product thumbnail preview" class="size-20 rounded-lg border border-hairline object-cover">
+                                <span><strong class="block text-xs text-ink">{{ $thumb ? 'New thumbnail' : 'Current thumbnail' }}</strong><small class="mt-1 block text-[11px] text-ink-muted">Used on product cards and listing pages.</small></span>
                             </div>
+                            <button type="button" wire:click="removeThumbnail" class="rounded-lg px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50">Remove</button>
                         </div>
-                    </div>
-                @elseif ($step === 3)
-                    <div class="card-header bg-white py-3"><h5 class="mb-1">Media and visibility</h5><small class="text-muted">Upload optimized product images and choose storefront placement.</small></div>
-                    <div class="card-body">
-                        <div class="row g-3">
-                            <div class="col-md-6"><label class="form-label">Thumbnail</label><input wire:model="thumb" type="file" accept="image/jpeg,image/png,image/webp" class="form-control @error('thumb') is-invalid @enderror">@error('thumb')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
-                            <div class="col-md-6"><label class="form-label">Gallery images</label><input wire:model="galleryImages" type="file" multiple accept="image/jpeg,image/png,image/webp" class="form-control @error('galleryImages.*') is-invalid @enderror">@error('galleryImages.*')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
-                            @if ($thumb || $product?->thumb)
-                                <div class="col-12"><div class="media-preview">@if ($thumb)<img src="{{ $thumb->temporaryUrl() }}" alt="New thumbnail">@elseif ($product)<img src="{{ $product->thumb_url }}" alt="Current thumbnail">@endif<span>{{ $thumb ? 'New thumbnail' : 'Current thumbnail' }}</span></div></div>
-                            @endif
-                            <div class="col-md-6"><label class="form-label">Video URL</label><input wire:model="video" type="url" class="form-control @error('video') is-invalid @enderror" placeholder="https://…">@error('video')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
-                            <div class="col-md-6"><label class="form-label">Catalog URL</label><input wire:model="catalog" type="url" class="form-control @error('catalog') is-invalid @enderror" placeholder="https://…">@error('catalog')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
-                            <div class="col-sm-4"><label class="form-label">Status</label><select wire:model="status" class="form-select"><option value="1">Published</option><option value="2">Draft</option><option value="0">Disabled</option></select></div>
-                            <div class="col-sm-4"><label class="form-label">Sort order</label><input wire:model="sortOrder" type="number" min="0" class="form-control @error('sortOrder') is-invalid @enderror"></div>
-                            <div class="col-sm-4"><label class="form-label">Slider order</label><input wire:model="displayOrder" type="number" min="0" class="form-control @error('displayOrder') is-invalid @enderror"></div>
-                            <div class="col-md-6"><label class="behavior-switch"><span><strong>Featured product</strong><small>Highlight this product on curated storefront areas.</small></span><input wire:model="isFeatured" type="checkbox" class="form-check-input" role="switch"></label></div>
-                            <div class="col-md-6"><label class="behavior-switch"><span><strong>Homepage slider</strong><small>Allow this product in slider placements.</small></span><input wire:model="slider" type="checkbox" class="form-check-input" role="switch"></label></div>
-                        </div>
-                    </div>
+                    @endif
+
+                    @if($existingGalleryImages !== [] || $galleryImages !== [])
+                        <section class="md:col-span-2 overflow-hidden rounded-xl border border-hairline" wire:key="product-gallery-manager">
+                            <header class="flex items-center justify-between border-b border-hairline bg-[#fafbfc] px-4 py-3">
+                                <div><h3 class="text-xs font-bold text-ink">Gallery order</h3><p class="mt-0.5 text-[10.5px] text-ink-muted">Existing images can be reordered before saving.</p></div>
+                                <span class="rounded-full bg-white px-2.5 py-1 text-[10.5px] font-semibold text-ink-muted">{{ count($existingGalleryImages) + count($galleryImages) }} / 12</span>
+                            </header>
+                            <div class="grid gap-3 p-3 sm:grid-cols-2 xl:grid-cols-3">
+                                @foreach($existingGalleryImages as $index => $image)
+                                    <article class="overflow-hidden rounded-lg border border-hairline bg-white" wire:key="stored-gallery-{{ $image['id'] }}">
+                                        <img src="{{ $image['url'] }}" alt="Gallery image {{ $index + 1 }}" class="h-32 w-full object-cover">
+                                        <footer class="flex items-center justify-between gap-2 p-2">
+                                            <span class="text-[10.5px] font-semibold text-ink-muted">Position {{ $index + 1 }}</span>
+                                            <div class="flex gap-1">
+                                                <button type="button" wire:click="moveExistingGalleryImage({{ $index }}, 'up')" class="grid size-7 place-items-center rounded-md border border-hairline text-xs disabled:opacity-30" title="Move left" @disabled($loop->first)>←</button>
+                                                <button type="button" wire:click="moveExistingGalleryImage({{ $index }}, 'down')" class="grid size-7 place-items-center rounded-md border border-hairline text-xs disabled:opacity-30" title="Move right" @disabled($loop->last)>→</button>
+                                                <button type="button" wire:click="removeExistingGalleryImage({{ $image['id'] }})" wire:confirm="Remove this gallery image when the product is saved?" class="grid size-7 place-items-center rounded-md border border-red-100 text-sm text-red-600" title="Remove image">×</button>
+                                            </div>
+                                        </footer>
+                                    </article>
+                                @endforeach
+                                @foreach($galleryImages as $index => $image)
+                                    <article class="overflow-hidden rounded-lg border border-primary/25 bg-primary-50/30" wire:key="pending-gallery-{{ $index }}">
+                                        <img src="{{ $image->temporaryUrl() }}" alt="New gallery image {{ $index + 1 }}" class="h-32 w-full object-cover">
+                                        <footer class="flex items-center justify-between gap-2 p-2">
+                                            <span class="text-[10.5px] font-semibold text-primary">New image</span>
+                                            <button type="button" wire:click="removePendingGalleryImage({{ $index }})" class="rounded-md px-2 py-1 text-[10.5px] font-semibold text-red-600 hover:bg-red-50">Remove</button>
+                                        </footer>
+                                    </article>
+                                @endforeach
+                            </div>
+                        </section>
+                    @endif
+
+                    <x-sysadmin::input label="Video URL" name="video" type="url" wire:model="video" placeholder="https://…"/>
+                    <x-sysadmin::input label="Catalog URL" name="catalog" type="url" wire:model="catalog" placeholder="https://…"/>
+                    <x-sysadmin::select label="Status" name="status" wire:model="status"><option value="1">Published</option><option value="2">Draft</option><option value="0">Disabled</option></x-sysadmin::select>
+                    <x-sysadmin::input label="Sort order" name="sortOrder" type="number" min="0" wire:model="sortOrder"/>
+                    @foreach([['isFeatured','Featured product','Highlight in curated storefront areas.'],['slider','Homepage slider','Allow this product in slider placements.']] as [$model,$label,$help])<label class="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-hairline p-4"><span><strong class="block text-[13px]">{{ $label }}</strong><small class="text-[11px] text-ink-muted">{{ $help }}</small></span><input type="checkbox" wire:model="{{ $model }}" class="peer sr-only"><span class="relative h-6 w-11 rounded-full bg-slate-200 peer-checked:bg-primary after:absolute after:left-1 after:top-1 after:size-4 after:rounded-full after:bg-white after:transition peer-checked:after:translate-x-5"></span></label>@endforeach
+                </div>
                 @else
-                    <div class="card-header bg-white py-3"><h5 class="mb-1">Review product</h5><small class="text-muted">Confirm the core setup. Attributes and variants are managed immediately after save.</small></div>
-                    <div class="card-body">
-                        <dl class="review-grid">
-                            <div><dt>Product</dt><dd>{{ $title ?: '—' }}<small>{{ $sku ?: 'No SKU' }} · {{ $productCode ?: 'No product code' }}</small></dd></div>
-                            <div><dt>Pricing</dt><dd>₹{{ number_format((float) $salesPrice, 2) }}<small>MRP ₹{{ number_format((float) $mrp, 2) }}</small></dd></div>
-                            <div><dt>Category</dt><dd>{{ $categories->firstWhere('id', (int) $productCategory)?->name ?? '—' }}<small>{{ $subCategories->firstWhere('id', (int) $subProductCategory)?->name ?? 'No subcategory' }}</small></dd></div>
-                            <div><dt>Attribute family</dt><dd>{{ $families->firstWhere('id', (int) $attributeFamilyId)?->name ?? '—' }}<small>Determines grouped fields and variants</small></dd></div>
-                            <div><dt>Visibility</dt><dd>{{ [0 => 'Disabled', 1 => 'Published', 2 => 'Draft'][$status] ?? 'Draft' }}<small>{{ $isFeatured ? 'Featured' : 'Standard' }}{{ $slider ? ' · Slider' : '' }}</small></dd></div>
-                            <div><dt>Media</dt><dd>{{ $thumb || $product?->thumb ? 'Thumbnail ready' : 'No thumbnail' }}<small>{{ count($galleryImages) }} new gallery image(s)</small></dd></div>
-                        </dl>
-                        <div class="alert alert-info mb-0"><strong>Next:</strong> save and continue to fill family attributes and configure product variants.</div>
-                    </div>
+                <dl class="grid gap-3 md:grid-cols-2">@foreach([['Product',$title ?: '—',($sku ?: 'No SKU').' · '.($productCode ?: 'No product code')],['Pricing','₹'.number_format((float)$salesPrice,2),'MRP ₹'.number_format((float)$mrp,2)],['Category',$categories->firstWhere('id',(int)$productCategory)?->name ?? '—',$subCategories->firstWhere('id',(int)$subProductCategory)?->name ?? 'No subcategory'],['Attribute family',$families->firstWhere('id',(int)$attributeFamilyId)?->name ?? '—','Determines grouped fields and variants'],['Visibility',[0=>'Disabled',1=>'Published',2=>'Draft'][$status] ?? 'Draft',$isFeatured ? 'Featured product' : 'Standard product'],['Media',$thumb || ($product?->thumb && ! $removeThumb) ? 'Thumbnail ready' : 'No thumbnail',(count($existingGalleryImages) + count($galleryImages)).' gallery image(s)']] as [$term,$value,$detail])<div class="rounded-xl border border-hairline p-4"><dt class="text-[11px] font-bold uppercase tracking-wide text-ink-muted">{{ $term }}</dt><dd class="mt-1 text-[14px] font-bold text-ink">{{ $value }}</dd><small class="mt-1 block text-[11px] text-ink-muted">{{ $detail }}</small></div>@endforeach</dl><div class="mt-4 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-[13px] text-blue-700"><strong>Next:</strong> save and continue to family attributes and product variants.</div>
                 @endif
-
-                <div class="card-footer bg-white d-flex justify-content-between gap-2 py-3">
-                    <div>@if ($step > 1)<button type="button" wire:click="previousStep" class="btn btn-outline-secondary">← Back</button>@endif</div>
-                    <div class="d-flex gap-2">
-                        @if ($step < 4)
-                            <button type="button" wire:click="nextStep" class="btn btn-primary">Continue →</button>
-                        @else
-                            <button type="button" wire:click="save(false)" wire:loading.attr="disabled" class="btn btn-outline-primary">Save product</button>
-                            <button type="submit" wire:loading.attr="disabled" class="btn btn-primary">Save & manage attributes →</button>
-                        @endif
-                    </div>
-                </div>
             </div>
-        </div>
+            <div class="flex items-center justify-between gap-2 border-t border-hairline bg-[#fafbfc] px-5 py-4"><div>@if($step > 1)<x-sysadmin::btn wire:click="previousStep">← Back</x-sysadmin::btn>@endif</div><div class="flex gap-2">@if($step < 4)<x-sysadmin::btn variant="primary" wire:click="nextStep">Continue →</x-sysadmin::btn>@else<x-sysadmin::btn wire:click="save(false)" wire:loading.attr="disabled">Save product</x-sysadmin::btn><x-sysadmin::btn type="submit" variant="primary" wire:loading.attr="disabled">Save & manage attributes →</x-sysadmin::btn>@endif</div></div>
+        </x-sysadmin::card>
 
-        <aside class="col-xl-4">
-            <div class="card border-0 shadow-sm sticky-xl-top" style="top: 1rem">
-                <div class="card-header bg-white py-3"><h5 class="mb-1">Setup summary</h5><small class="text-muted">Progress is validated one section at a time.</small></div>
-                <div class="card-body">
-                    <div class="d-flex justify-content-between mb-2"><span class="text-muted">Completed</span><strong>{{ $step - 1 }} of 4</strong></div>
-                    <div class="progress mb-4" style="height: .45rem"><div class="progress-bar" style="width: {{ (($step - 1) / 4) * 100 }}%"></div></div>
-                    <div class="summary-list"><div><span>Title</span><strong>{{ $title ?: 'Not set' }}</strong></div><div><span>Family</span><strong>{{ $families->firstWhere('id', (int) $attributeFamilyId)?->name ?? 'Not selected' }}</strong></div><div><span>Price</span><strong>₹{{ number_format((float) $salesPrice, 2) }}</strong></div></div>
-                </div>
-            </div>
-        </aside>
+        <aside><x-sysadmin::card class="sticky top-24 p-5"><h2 class="text-base font-bold text-ink">Setup summary</h2><p class="mt-1 text-xs text-ink-muted">Validated one section at a time.</p><div class="mt-5 flex justify-between text-xs"><span class="text-ink-muted">Completed</span><strong>{{ $step - 1 }} of 4</strong></div><div class="mt-2 h-2 overflow-hidden rounded-full bg-slate-100"><div class="h-full rounded-full bg-primary transition-all" style="width: {{ (($step - 1) / 4) * 100 }}%"></div></div><dl class="mt-5 divide-y divide-hairline">@foreach([['Title',$title ?: 'Not set'],['Family',$families->firstWhere('id',(int)$attributeFamilyId)?->name ?? 'Not selected'],['Price','₹'.number_format((float)$salesPrice,2)]] as [$label,$value])<div class="flex justify-between gap-3 py-3 text-[12.5px]"><dt class="text-ink-muted">{{ $label }}</dt><dd class="truncate font-semibold text-ink">{{ $value }}</dd></div>@endforeach</dl></x-sysadmin::card></aside>
     </div>
 </form>

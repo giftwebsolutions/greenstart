@@ -2,17 +2,15 @@
 
 namespace Modules\SysAdmin\Repository;
 
+use Illuminate\Support\Carbon;
 use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
 use Modules\SysAdmin\Core\Eloquent\RequestCriteria;
-use Modules\SysAdmin\Models\Blog;
-use Illuminate\Support\Carbon;
-use Modules\SysAdmin\Interfaces\BlogInterface;
 use Modules\SysAdmin\Helpers\ImageUploader;
+use Modules\SysAdmin\Interfaces\BlogInterface;
+use Modules\SysAdmin\Models\Blog;
 
 /**
  * Class BlogRepositoryEloquent.
- *
- * @package namespace Modules\SysAdmin\Repository;
  */
 class BlogRepository extends BaseRepository implements BlogInterface
 {
@@ -33,21 +31,28 @@ class BlogRepository extends BaseRepository implements BlogInterface
 
     public function saveOrUpdate($data, $id = 0)
     {
-        $response = '';
-        
-        if ($id !== 0) {
-            $blog = $this->getModel()->find($id);
-            if (isset($data['featured_image'])) {
-                $data['featured_image'] = ImageUploader::upload($data['featured_image'], $blog->created_at);
-            }
-            $response =  parent::update($data, $id);
-        } else {
-            if (isset($data['featured_image'])) {
-                $data['featured_image'] = ImageUploader::upload($data['featured_image'], $this->getModel()->created_at);
-            }
-            $response = parent::create($data);
+        $blog = $id !== 0 ? $this->find($id) : null;
+        $oldImage = null;
+
+        if (! empty($data['featured_image'])) {
+            $data['featured_image'] = ImageUploader::upload($data['featured_image'], $blog?->created_at);
+            $oldImage = $blog?->featured_image;
+        } elseif ($blog?->featured_image && ! empty($data['remove_featured_image'])) {
+            $data['featured_image'] = null;
+            $oldImage = $blog->featured_image;
         }
-        return $response;
+
+        unset($data['remove_featured_image']);
+
+        $savedBlog = $id !== 0
+            ? parent::update($data, $id)
+            : parent::create($data);
+
+        if ($oldImage) {
+            ImageUploader::remove((string) $savedBlog->created_at, $oldImage);
+        }
+
+        return $savedBlog;
     }
 
     /**
@@ -94,7 +99,7 @@ class BlogRepository extends BaseRepository implements BlogInterface
     {
         return $this->frontendBaseQuery($with)
             ->where('id', '!=', $blogId)
-            ->when($categoryId, fn($q) => $q->where('category_id', $categoryId))
+            ->when($categoryId, fn ($q) => $q->where('category_id', $categoryId))
             ->orderByDesc('published_at')
             ->orderByDesc('id')
             ->limit($limit)
@@ -104,7 +109,7 @@ class BlogRepository extends BaseRepository implements BlogInterface
     public function recentFrontend(int $limit = 4, ?int $excludeId = null, array $with = ['category'])
     {
         return $this->frontendBaseQuery($with)
-            ->when($excludeId, fn($q) => $q->where('id', '!=', $excludeId))
+            ->when($excludeId, fn ($q) => $q->where('id', '!=', $excludeId))
             ->orderByDesc('published_at')
             ->orderByDesc('id')
             ->limit($limit)

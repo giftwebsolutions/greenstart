@@ -3,13 +3,25 @@
 namespace Modules\Frontend\Providers;
 
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Throwable;
+use Illuminate\Support\ServiceProvider;
+use Modules\Frontend\Http\Components\BlogWidget;
+use Modules\Frontend\Http\Components\CategoryMenu;
+use Modules\Frontend\Http\Components\CategoryTabSlider;
+use Modules\Frontend\Http\Components\HomeCategoryProducts;
+use Modules\Frontend\Http\Components\NewArrivals;
+use Modules\Frontend\Http\Components\PopularCategories;
+use Modules\Frontend\Http\Components\Testimonials;
+use Modules\Frontend\Interfaces\ProductInterface;
+use Modules\Frontend\Repository\ProductRepository;
+use Modules\SysAdmin\Interfaces\ProductCategoryInterface;
+use Modules\SysAdmin\Models\Settings;
+use Modules\SysAdmin\Repository\ProductCategoryRepository;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Throwable;
 
 class FrontendServiceProvider extends ServiceProvider
 {
@@ -30,9 +42,7 @@ class FrontendServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
-        if (! $this->app->runningInConsole()) {
-            $this->setSiteSettings();
-        }
+        $this->setSiteSettings();
     }
 
     /**
@@ -43,13 +53,13 @@ class FrontendServiceProvider extends ServiceProvider
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
         $this->app->bind(
-            \Modules\Frontend\Interfaces\ProductInterface::class,
-            \Modules\Frontend\Repository\ProductRepository::class
+            ProductInterface::class,
+            ProductRepository::class
         );
 
         $this->app->bind(
-            \Modules\SysAdmin\Interfaces\ProductCategoryInterface::class,
-            \Modules\SysAdmin\Repository\ProductCategoryRepository::class
+            ProductCategoryInterface::class,
+            ProductCategoryRepository::class
         );
     }
 
@@ -77,7 +87,7 @@ class FrontendServiceProvider extends ServiceProvider
      */
     public function registerTranslations(): void
     {
-        $langPath = resource_path('lang/modules/' . $this->nameLower);
+        $langPath = resource_path('lang/modules/'.$this->nameLower);
 
         if (is_dir($langPath)) {
             $this->loadTranslationsFrom($langPath, $this->nameLower);
@@ -100,9 +110,9 @@ class FrontendServiceProvider extends ServiceProvider
 
             foreach ($iterator as $file) {
                 if ($file->isFile() && $file->getExtension() === 'php') {
-                    $config = str_replace($configPath . DIRECTORY_SEPARATOR, '', $file->getPathname());
+                    $config = str_replace($configPath.DIRECTORY_SEPARATOR, '', $file->getPathname());
                     $config_key = str_replace([DIRECTORY_SEPARATOR, '.php'], ['.', ''], $config);
-                    $segments = explode('.', $this->nameLower . '.' . $config_key);
+                    $segments = explode('.', $this->nameLower.'.'.$config_key);
 
                     // Remove duplicated adjacent segments
                     $normalized = [];
@@ -138,14 +148,14 @@ class FrontendServiceProvider extends ServiceProvider
      */
     public function registerViews(): void
     {
-        $viewPath = resource_path('views/modules/' . $this->nameLower);
+        $viewPath = resource_path('views/modules/'.$this->nameLower);
         $sourcePath = module_path($this->name, 'resources/views');
 
-        $this->publishes([$sourcePath => $viewPath], ['views', $this->nameLower . '-module-views']);
+        $this->publishes([$sourcePath => $viewPath], ['views', $this->nameLower.'-module-views']);
 
         $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), $this->nameLower);
 
-        Blade::componentNamespace(config('modules.namespace') . '\\' . $this->name . '\\View\\Components', $this->nameLower);
+        Blade::componentNamespace(config('modules.namespace').'\\'.$this->name.'\\View\\Components', $this->nameLower);
         $this->registerWidgets();
     }
 
@@ -161,8 +171,8 @@ class FrontendServiceProvider extends ServiceProvider
     {
         $paths = [];
         foreach (config('view.paths') as $path) {
-            if (is_dir($path . '/modules/' . $this->nameLower)) {
-                $paths[] = $path . '/modules/' . $this->nameLower;
+            if (is_dir($path.'/modules/'.$this->nameLower)) {
+                $paths[] = $path.'/modules/'.$this->nameLower;
             }
         }
 
@@ -171,28 +181,48 @@ class FrontendServiceProvider extends ServiceProvider
 
     public function registerWidgets()
     {
-        Blade::component('frontend::new-arrivals', \Modules\Frontend\Http\Components\NewArrivals::class);
-        Blade::component('frontend::category-tab-slider', \Modules\Frontend\Http\Components\CategoryTabSlider::class);
-        Blade::component('frontend::category-menu', \Modules\Frontend\Http\Components\CategoryMenu::class);
-        Blade::component('frontend::popular-categories', \Modules\Frontend\Http\Components\PopularCategories::class);
-        Blade::component('frontend::home-category-products', \Modules\Frontend\Http\Components\HomeCategoryProducts::class);
-        Blade::component('frontend::home-blog', \Modules\Frontend\Http\Components\BlogWidget::class);
-        Blade::component('frontend::testimonials', \Modules\Frontend\Http\Components\Testimonials::class);
+        Blade::component('frontend::new-arrivals', NewArrivals::class);
+        Blade::component('frontend::category-tab-slider', CategoryTabSlider::class);
+        Blade::component('frontend::category-menu', CategoryMenu::class);
+        Blade::component('frontend::popular-categories', PopularCategories::class);
+        Blade::component('frontend::home-category-products', HomeCategoryProducts::class);
+        Blade::component('frontend::home-blog', BlogWidget::class);
+        Blade::component('frontend::testimonials', Testimonials::class);
     }
-
 
     protected function setSiteSettings()
     {
         try {
-            if (Schema::hasTable('settings') && DB::table('settings')->where('type', 'system')->exists()) {
-                $settings = \Modules\SysAdmin\Models\Settings::getSettingByType('system');
+            if (Schema::hasTable('settings') && DB::table('settings')->exists()) {
+                $settings = Settings::getSettingByType('system');
                 config()->set('site-settings', array_merge(config('site-settings', []), $settings));
+                if (! empty($settings['site_name'] ?? $settings['title'] ?? null)) {
+                    config()->set('app.name', $settings['site_name'] ?? $settings['title']);
+                }
+                if (! empty($settings['mail_from_name'])) {
+                    config()->set('mail.from.name', $settings['mail_from_name']);
+                }
+                if (! empty($settings['mail_from_address'])) {
+                    config()->set('mail.from.address', $settings['mail_from_address']);
+                }
+                if (! empty($settings['mail_mailer'])) {
+                    config()->set('mail.default', $settings['mail_mailer']);
+                }
+                if (! empty($settings['mail_host'])) {
+                    config()->set('mail.mailers.smtp.host', $settings['mail_host']);
+                }
+                if (! empty($settings['mail_port'])) {
+                    config()->set('mail.mailers.smtp.port', (int) $settings['mail_port']);
+                }
+                if (! empty($settings['mail_username'])) {
+                    config()->set('mail.mailers.smtp.username', $settings['mail_username']);
+                }
+                if (array_key_exists('mail_encryption', $settings)) {
+                    config()->set('mail.mailers.smtp.scheme', $settings['mail_encryption'] === 'none' ? null : $settings['mail_encryption']);
+                }
             }
         } catch (Throwable) {
             // A fresh installation must be able to boot before a database is configured.
         }
     }
-
-    
-   
 }

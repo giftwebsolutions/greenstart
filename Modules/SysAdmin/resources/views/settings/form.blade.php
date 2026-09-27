@@ -41,11 +41,3 @@
         </div>
     </div>
 </form>
-@pushOnce('scripts')
-
-    <script type="module">
-        $('a#cancel-button').click(function() {
-            $(".customizer-contain").removeClass("open");
-        });
-    </script>
-@endPushOnce

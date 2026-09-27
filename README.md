@@ -9,7 +9,7 @@
 
 ## Product Catalog setup
 
-This application runs on Laravel 13, PHP 8.3+, Livewire 4, Bootstrap 5 and MySQL. The public storefront remains Bootstrap/jQuery; Livewire is scoped to the SysAdmin and installer interfaces.
+This application runs on Laravel 13, PHP 8.3+, Livewire 4, Tailwind CSS 4 and MySQL. The public storefront keeps its existing Bootstrap/jQuery presentation. SysAdmin and the installation wizard use the independent Tailwind/Livewire build and do not load Bootstrap or jQuery.
 
 1. Install PHP dependencies with `composer install`.
 2. Copy `.env.example` to `.env` when `.env` does not exist.

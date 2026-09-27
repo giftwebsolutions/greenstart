@@ -1,111 +1,22 @@
-<div class="catalog-workspace">
-    @include('sysadmin::layouts.alert')
-
-    @error('delete')
-        <div class="alert alert-danger">{{ $message }}</div>
-    @enderror
-
-    <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4">
-        <div>
-            <h4 class="mb-1">Product attributes</h4>
-            <p class="text-muted mb-0">Reusable field definitions shared across attribute families.</p>
-        </div>
-        <a href="{{ route('sysadmin.catalog.attribute.create') }}" class="btn btn-primary">
-            <i class="fa fa-plus me-1"></i> New attribute
-        </a>
+<div class="grid gap-5">
+    <div class="flex flex-wrap items-end justify-between gap-3"><div><h1 class="text-[22px] font-bold tracking-tight text-ink">Product attributes</h1><p class="mt-1 text-[13px] text-ink-muted">Reusable fields shared across product families, filters and variants.</p></div><x-sysadmin::btn variant="primary" :href="route('sysadmin.catalog.attribute.create')">{!! \Modules\SysAdmin\Support\Icon::get('plus', 'h-4 w-4') !!} New attribute</x-sysadmin::btn></div>
+    @error('delete')<div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700">{{ $message }}</div>@enderror
+    <x-sysadmin::table-toolbar search-placeholder="Search label or code...">
+        <select wire:model.live="family" class="min-h-11 rounded-xl border border-hairline-strong bg-white px-3 text-[12.5px] font-semibold"><option value="all">All families</option>@foreach($families as $familyOption)<option value="{{ $familyOption->id }}">{{ $familyOption->name }}</option>@endforeach</select>
+        <select wire:model.live="usage" class="min-h-11 rounded-xl border border-hairline-strong bg-white px-3 text-[12.5px] font-semibold"><option value="all">All uses</option><option value="filterable">Filterable</option><option value="configurable">Configurable</option><option value="comparable">Comparable</option></select>
+        <select wire:model.live="status" class="min-h-11 rounded-xl border border-hairline-strong bg-white px-3 text-[12.5px] font-semibold"><option value="all">All statuses</option><option value="1">Published</option><option value="2">Draft</option><option value="0">Disabled</option></select>
+    </x-sysadmin::table-toolbar>
+    <div wire:loading.class="opacity-60" class="overflow-x-auto rounded-xl border border-hairline bg-white shadow-sm transition">
+        <table class="w-full min-w-[900px] border-collapse"><thead><tr><x-sysadmin::th><button wire:click="sort('name')" class="inline-flex items-center gap-1.5 hover:text-primary">Attribute {!! \Modules\SysAdmin\Support\Icon::get('sort', 'h-3.5 w-3.5') !!}</button></x-sysadmin::th><x-sysadmin::th>Type</x-sysadmin::th><x-sysadmin::th>Families / groups</x-sysadmin::th><x-sysadmin::th>Usage</x-sysadmin::th><x-sysadmin::th>Status</x-sysadmin::th><x-sysadmin::th align="right">Actions</x-sysadmin::th></tr></thead>
+            <tbody>@forelse($attributeRows as $attribute)<tr wire:key="attribute-{{ $attribute->id }}" class="hover:bg-[#fafbfc]">
+                <x-sysadmin::td><div class="font-semibold text-ink">{{ $attribute->name }}</div><code class="mt-0.5 block text-[11.5px] text-primary">{{ $attribute->code }}</code></x-sysadmin::td>
+                <x-sysadmin::td><span class="text-[13px] text-ink-soft">{{ $attribute->attribute_type?->type_name ?? 'Unknown' }}</span></x-sysadmin::td>
+                <x-sysadmin::td><div class="flex max-w-md flex-wrap gap-1">@forelse($attribute->groups as $group)<span class="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-600">{{ $group->family?->name }} · {{ $group->name }}</span>@empty<span class="text-xs text-ink-muted">Unassigned</span>@endforelse</div></x-sysadmin::td>
+                <x-sysadmin::td><div class="flex flex-wrap gap-1">@foreach([['require','Required','bg-red-50 text-red-700'],['filterable','Filter','bg-blue-50 text-blue-700'],['configurable','Variant','bg-primary-50 text-primary-600'],['comparable','Compare','bg-slate-100 text-slate-600']] as [$field,$label,$classes])@if($attribute->{$field})<span class="rounded-full px-2 py-1 text-[10.5px] font-semibold {{ $classes }}">{{ $label }}</span>@endif @endforeach</div></x-sysadmin::td>
+                <x-sysadmin::td><span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11.5px] font-semibold {{ $attribute->status === 1 ? 'bg-emerald-50 text-emerald-700' : ($attribute->status === 2 ? 'bg-amber-50 text-amber-700' : 'bg-slate-100 text-slate-600') }}"><span class="size-1.5 rounded-full bg-current"></span>{{ [0=>'Disabled',1=>'Published',2=>'Draft'][$attribute->status] }}</span></x-sysadmin::td>
+                <x-sysadmin::td align="right"><div class="flex justify-end gap-1"><x-sysadmin::icon-button icon="pencil" label="Edit attribute" :href="route('sysadmin.catalog.attribute.edit', $attribute->id)"/><x-sysadmin::icon-button icon="trash" label="Delete attribute" danger wire:click="delete({{ $attribute->id }})" wire:confirm="Delete this attribute?"/></div></x-sysadmin::td>
+            </tr>@empty<tr><td colspan="6" class="px-6 py-14 text-center text-[13px] text-ink-muted">No attributes match these filters.</td></tr>@endforelse</tbody>
+        </table>
     </div>
-
-    <div class="card border-0 shadow-sm">
-        <div class="card-body border-bottom">
-            <div class="row g-2">
-                <div class="col-lg-5">
-                    <div class="input-group">
-                        <span class="input-group-text bg-white"><i class="fa fa-search"></i></span>
-                        <input wire:model.live.debounce.300ms="search" type="search" class="form-control" placeholder="Search label or code">
-                    </div>
-                </div>
-                <div class="col-sm-4 col-lg-3">
-                    <select wire:model.live="family" class="form-select" aria-label="Filter by family">
-                        <option value="all">All families</option>
-                        @foreach ($families as $familyOption)
-                            <option value="{{ $familyOption->id }}">{{ $familyOption->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-sm-4 col-lg-2">
-                    <select wire:model.live="usage" class="form-select" aria-label="Filter by usage">
-                        <option value="all">All uses</option>
-                        <option value="filterable">Filterable</option>
-                        <option value="configurable">Configurable</option>
-                        <option value="comparable">Comparable</option>
-                    </select>
-                </div>
-                <div class="col-sm-4 col-lg-2">
-                    <select wire:model.live="status" class="form-select" aria-label="Filter by status">
-                        <option value="all">All statuses</option>
-                        <option value="1">Published</option>
-                        <option value="2">Draft</option>
-                        <option value="0">Disabled</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <div class="table-responsive">
-            <table class="table align-middle mb-0 catalog-table">
-                <thead>
-                    <tr>
-                        <th><button wire:click="sort('name')" class="table-sort">Attribute</button></th>
-                        <th>Type</th>
-                        <th>Families / groups</th>
-                        <th>Usage</th>
-                        <th><button wire:click="sort('status')" class="table-sort">Status</button></th>
-                        <th class="text-end">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($attributeRows as $attribute)
-                        <tr wire:key="attribute-{{ $attribute->id }}">
-                            <td>
-                                <div class="fw-semibold text-dark">{{ $attribute->name }}</div>
-                                <code class="small">{{ $attribute->code }}</code>
-                            </td>
-                            <td>{{ $attribute->attribute_type?->type_name ?? 'Unknown' }}</td>
-                            <td>
-                                <div class="d-flex flex-wrap gap-1">
-                                    @forelse ($attribute->groups as $group)
-                                        <span class="badge rounded-pill text-bg-light border">{{ $group->family?->name }} · {{ $group->name }}</span>
-                                    @empty
-                                        <span class="text-muted">Unassigned</span>
-                                    @endforelse
-                                </div>
-                            </td>
-                            <td>
-                                <div class="d-flex flex-wrap gap-1">
-                                    @if ($attribute->require)<span class="badge text-bg-danger-subtle text-danger-emphasis">Required</span>@endif
-                                    @if ($attribute->filterable)<span class="badge text-bg-info-subtle text-info-emphasis">Filter</span>@endif
-                                    @if ($attribute->configurable)<span class="badge text-bg-primary-subtle text-primary-emphasis">Variant</span>@endif
-                                    @if ($attribute->comparable)<span class="badge text-bg-secondary-subtle text-secondary-emphasis">Compare</span>@endif
-                                </div>
-                            </td>
-                            <td>
-                                <span class="status-dot status-{{ $attribute->status }}"></span>
-                                {{ [0 => 'Disabled', 1 => 'Published', 2 => 'Draft'][$attribute->status] ?? 'Unknown' }}
-                            </td>
-                            <td class="text-end text-nowrap">
-                                <a href="{{ route('sysadmin.catalog.attribute.edit', $attribute->id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
-                                <button type="button" wire:click="delete({{ $attribute->id }})" wire:confirm="Delete this attribute?" class="btn btn-sm btn-outline-danger">Delete</button>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr><td colspan="6" class="py-5 text-center text-muted">No attributes match these filters.</td></tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-
-        @if ($attributeRows->hasPages())
-            <div class="card-footer bg-white">{{ $attributeRows->links() }}</div>
-        @endif
-    </div>
+    @if($attributeRows->hasPages())<div>{{ $attributeRows->links() }}</div>@endif
 </div>

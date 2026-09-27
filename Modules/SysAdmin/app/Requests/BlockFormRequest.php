@@ -4,11 +4,9 @@ namespace Modules\SysAdmin\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Modules\SysAdmin\Models\Page;
 
 class BlockFormRequest extends FormRequest
 {
-
     public function authorize()
     {
         return true;
@@ -21,12 +19,10 @@ class BlockFormRequest extends FormRequest
      */
     public function rules()
     {
-        if ($this->isMethod('PATCH')) {
-            return $this->update();
-        }
-        return $this->store();
+        return $this->isMethod('PATCH') || $this->isMethod('PUT')
+            ? $this->update()
+            : $this->store();
     }
-
 
     /**
      * Get the validation rules that apply to the post request.
@@ -36,11 +32,12 @@ class BlockFormRequest extends FormRequest
     public function store()
     {
         return [
-            'key' => 'required|string|unique:blocks|max:30',
-            'title' => 'required|string|max:120',
-            'value' => 'required|string',
-            'icon' => 'string|max:100',
-            'thumbnail' => 'image|mimes:jpg,png,jpeg|max:2048'
+            'key' => ['required', 'string', 'max:30', 'unique:blocks,key'],
+            'title' => ['required', 'string', 'max:120'],
+            'value' => ['required', 'string'],
+            'icon' => ['nullable', 'string', 'max:100'],
+            'thumbnail' => ['nullable', 'image', 'mimes:jpg,png,jpeg,webp', 'max:4096'],
+            'remove_thumbnail' => ['nullable', 'boolean'],
         ];
     }
 
@@ -52,11 +49,12 @@ class BlockFormRequest extends FormRequest
     public function update()
     {
         return [
-            'key' => 'required|string|max:30|unique:blocks,key,' . $this->route('id'),
-            'title' => 'required|string|max:120',
-            'value' => 'required|string',
-            'icon' => 'string|max:100',
-            'thumbnail' => 'image|mimes:jpg,png,jpeg|max:2048'
+            'key' => ['required', 'string', 'max:30', Rule::unique('blocks', 'key')->ignore($this->route('id'))],
+            'title' => ['required', 'string', 'max:120'],
+            'value' => ['required', 'string'],
+            'icon' => ['nullable', 'string', 'max:100'],
+            'thumbnail' => ['nullable', 'image', 'mimes:jpg,png,jpeg,webp', 'max:4096'],
+            'remove_thumbnail' => ['nullable', 'boolean'],
         ];
     }
 }

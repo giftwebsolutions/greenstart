@@ -4,7 +4,6 @@
 @endsection
 
 @section('style')
-    <link rel="stylesheet" type="text/css" href="{{ asset('admin/css/vendors/select2.css') }}">
 @endsection
 
 @section('breadcrumb-title')

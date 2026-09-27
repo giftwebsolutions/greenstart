@@ -7,7 +7,6 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Modules\SysAdmin\Models\Attribute;
-use Modules\SysAdmin\Models\AttributeFamily;
 use Modules\SysAdmin\Models\AttributeType;
 use Modules\SysAdmin\Models\AttributeValue;
 
@@ -33,8 +32,6 @@ class Form extends Component
 
     public int $status = 1;
 
-    public array $groupIds = [];
-
     public array $values = [['id' => null, 'value' => '']];
 
     public function mount(?int $id = null): void
@@ -43,7 +40,7 @@ class Form extends Component
             return;
         }
 
-        $attribute = Attribute::with(['groups:id', 'values' => fn ($query) => $query->orderBy('sort_order')])->findOrFail($id);
+        $attribute = Attribute::with(['values' => fn ($query) => $query->orderBy('sort_order')])->findOrFail($id);
         $this->attributeId = $attribute->id;
         $this->name = $attribute->name;
         $this->code = (string) $attribute->code;
@@ -54,7 +51,6 @@ class Form extends Component
         $this->isConfigurable = (bool) $attribute->configurable;
         $this->isComparable = (bool) $attribute->comparable;
         $this->status = (int) $attribute->status;
-        $this->groupIds = $attribute->groups->pluck('id')->map(fn ($groupId) => (string) $groupId)->all();
         $this->values = $attribute->values->map(fn ($value) => ['id' => $value->id, 'value' => $value->value])->values()->all();
         $this->values = $this->values ?: [['id' => null, 'value' => '']];
     }
@@ -100,14 +96,11 @@ class Form extends Component
             'isConfigurable' => ['boolean'],
             'isComparable' => ['boolean'],
             'status' => ['required', Rule::in([0, 1, 2])],
-            'groupIds' => ['array'],
-            'groupIds.*' => ['integer', 'distinct', Rule::exists('attribute_group', 'id')],
             'values' => ['array'],
             'values.*.id' => ['nullable', 'integer'],
             'values.*.value' => ['nullable', 'string', 'max:255'],
         ], attributes: [
             'sortOrder' => 'sort order',
-            'groupIds' => 'attribute groups',
             'isRequired' => 'required',
             'isFilterable' => 'filterable',
             'isConfigurable' => 'configurable',
@@ -115,10 +108,11 @@ class Form extends Component
         ]);
 
         $type = AttributeType::findOrFail((int) $data['type']);
-        $usesOptions = in_array(Str::lower((string) $type->identifier), ['select', 'multi select', 'multiselect', 'checkbox'], true);
+        $identifier = $this->normalizeIdentifier($type->identifier);
+        $usesOptions = in_array($identifier, ['select', 'multiselect'], true);
 
-        if ($this->isConfigurable && ! $usesOptions) {
-            $this->addError('isConfigurable', 'Only select or multi-select attributes can create product variants.');
+        if ($this->isConfigurable && $identifier !== 'select') {
+            $this->addError('isConfigurable', 'Only a single-select (dropdown / enum) attribute can generate product variants.');
 
             return;
         }
@@ -137,10 +131,9 @@ class Form extends Component
         $creating = $this->attributeId === null;
 
         DB::transaction(function () use ($data, $optionRows, $usesOptions): void {
-            $attribute = Attribute::updateOrCreate(['id' => $this->attributeId], [
+            $payload = [
                 'name' => trim($data['name']),
                 'code' => Str::lower(trim($data['code'])),
-                'group_id' => collect($data['groupIds'])->first(),
                 'sort_order' => $data['sortOrder'],
                 'type' => (int) $data['type'],
                 'require' => $data['isRequired'],
@@ -148,12 +141,15 @@ class Form extends Component
                 'configurable' => $data['isConfigurable'],
                 'comparable' => $data['isComparable'],
                 'status' => $data['status'],
-            ]);
+            ];
 
-            $sync = collect($data['groupIds'])->values()->mapWithKeys(fn ($groupId, $position) => [
-                (int) $groupId => ['position' => $position, 'value' => null],
-            ])->all();
-            $attribute->groups()->sync($sync);
+            // Family/group assignment belongs exclusively to the family builder.
+            // Do not disturb existing mappings while editing the attribute itself.
+            if ($this->attributeId === null) {
+                $payload['group_id'] = null;
+            }
+
+            $attribute = Attribute::updateOrCreate(['id' => $this->attributeId], $payload);
 
             if (! $usesOptions) {
                 $attribute->values()->whereDoesntHave('variantValues')->delete();
@@ -183,14 +179,22 @@ class Form extends Component
     public function render()
     {
         $selectedType = AttributeType::find($this->type);
-        $identifier = Str::lower((string) $selectedType?->identifier);
+        $identifier = $this->normalizeIdentifier($selectedType?->identifier);
 
         return view('sysadmin::livewire.catalog.attributes.form', [
             'types' => AttributeType::query()->where('status', 1)->orderBy('type_name')->get(),
-            'families' => AttributeFamily::query()
-                ->with(['groups' => fn ($query) => $query->orderBy('position')])
-                ->orderBy('name')->get(),
-            'usesOptions' => in_array($identifier, ['select', 'multi select', 'multiselect', 'checkbox'], true),
+            'selectedIdentifier' => $identifier,
+            'usesOptions' => in_array($identifier, ['select', 'multiselect'], true),
+            'canBeConfigurable' => $identifier === 'select',
         ]);
+    }
+
+    private function normalizeIdentifier(?string $identifier): string
+    {
+        return (string) Str::of($identifier ?? '')
+            ->lower()
+            ->replace(['-', ' '], '_')
+            ->replaceMatches('/_+/', '_')
+            ->replace('multi_select', 'multiselect');
     }
 }

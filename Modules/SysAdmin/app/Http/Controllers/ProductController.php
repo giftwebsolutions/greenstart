@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Modules\SysAdmin\DataTables\ProductDataTable;
 use Modules\SysAdmin\Helpers\ImageUploader;
@@ -82,8 +83,7 @@ class ProductController extends Controller
 
     public function attributes(int $productId)
     {
-        $product = $this->productRepository->find($productId);
-        // dd($product);
+        $product = Product::query()->find($productId);
         if (! $product) {
             abort(404);
         }
@@ -94,39 +94,7 @@ class ProductController extends Controller
                 ->with('error', 'Please select an attribute family for this product first.');
         }
 
-        $family = AttributeFamily::with(['groups.attributes.values'])
-            ->findOrFail($product->attribute_family_id);
-        $familyAttributes = $family->groups->flatMap->attributes->unique('id')->values();
-
-        //  Product-level attribute values only (product_id = product.id)
-        $productAttributeValues = $this->productAttributeValueRepository
-            ->findWhere(['product_id' => $product->id])
-            ->keyBy('attribute_id');
-
-        //  Existing configurable attributes for this product
-        $existingConfigurable = $this->configAttrRepository
-            ->findWhere(['product_id' => $product->id])
-            ->pluck('attribute_id')
-            ->toArray();
-
-        // Variant attributes (dropdown + configurable)
-        $variantAttributes = $familyAttributes->filter(function ($attr) {
-            return (int) $attr->configurable === 1 && in_array((int) $attr->type, [2, 3], true);
-        });
-
-        //  Existing variants with their values
-        // Use Eloquent/Repo method that REALLY eager loads `values`
-        $existingVariants = $this->variantRepository->with(['values'])
-            ->findWhere(['product_id' => $product->id]);
-
-        return view('sysadmin::catalog.product.attributes', [
-            'product' => $product,
-            'family' => $family,
-            'productAttributeValues' => $productAttributeValues,
-            'existingConfigurable' => $existingConfigurable,
-            'variantAttributes' => $variantAttributes,
-            'existingVariants' => $existingVariants,
-        ]);
+        return view('sysadmin::catalog.product.attributes', ['product' => $product]);
     }
 
     // already in your code
@@ -148,7 +116,7 @@ class ProductController extends Controller
                 ->with('error', 'Please select an attribute family first.');
         }
 
-        $family = AttributeFamily::with(['groups.attributes.values'])->findOrFail($product->attribute_family_id);
+        $family = AttributeFamily::with(['groups.attributes.values', 'groups.attributes.attribute_type'])->findOrFail($product->attribute_family_id);
         $attributeMeta = $family->groups->flatMap->attributes->unique('id')->keyBy('id');
 
         /* ============================================================
@@ -172,7 +140,9 @@ class ProductController extends Controller
                 'attribute_id' => $attributeId,
             ];
 
-            if ((int) $attributeDef->type === 3) {
+            $identifier = $this->attributeTypeIdentifier($attributeDef->attribute_type?->identifier);
+
+            if ($identifier === 'select') {
                 $data['attribute_value_id'] = (int) $rawValue;
                 $data['value'] = null;
             } else {
@@ -337,6 +307,15 @@ class ProductController extends Controller
         return redirect()
             ->route('sysadmin.catalog.product.attributes', $product->id)
             ->with('success', 'Attributes & variants saved successfully.');
+    }
+
+    private function attributeTypeIdentifier(?string $identifier): string
+    {
+        return (string) Str::of($identifier ?? '')
+            ->lower()
+            ->replace(['-', ' '], '_')
+            ->replaceMatches('/_+/', '_')
+            ->replace('multi_select', 'multiselect');
     }
 
     /**

@@ -4,8 +4,8 @@ namespace Modules\Frontend\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Modules\Frontend\Support\SeoData;
 use Modules\Frontend\Interfaces\ProductInterface;
+use Modules\Frontend\Support\SeoData;
 use Modules\SysAdmin\Interfaces\ProductCategoryInterface;
 use Modules\SysAdmin\Models\Page;
 use Modules\SysAdmin\Models\Product;
@@ -87,7 +87,7 @@ class ShopController extends Controller
                 ];
             }
 
-            if (!empty($product->sub_product_category) && empty($categoryImages[$product->sub_product_category])) {
+            if (! empty($product->sub_product_category) && empty($categoryImages[$product->sub_product_category])) {
                 $categoryImages[$product->sub_product_category] = [
                     'file' => $product->thumb,
                     'created_at' => $product->created_at,
@@ -112,17 +112,17 @@ class ShopController extends Controller
     public function category(string $slug, Request $request)
     {
         $category = $this->categories->findBySlug($slug);
-        abort_if(!$category, 404);
+        abort_if(! $category, 404);
 
         $filters = $this->buildFilters($request, ['c_cat' => $category->id]);
         if ($request->filled('s_cat')) {
             $filters = $this->buildFilters($request, ['s_cat' => $request->integer('s_cat')]);
         }
 
-        $products       = $this->products->paginateForFrontend($filters, $this->perPage($request));
-        $filterGroups   = $this->products->getFilterableGroups();
+        $products = $this->products->paginateForFrontend($filters, $this->perPage($request));
+        $filterGroups = $this->products->getFilterableGroups();
         $rootCategories = $this->categories->getMenuTree();
-        $subCategories  = $category->children()->where('status', '1')->orderBy('sort')->get();
+        $subCategories = $category->children()->where('status', '1')->orderBy('sort')->get();
 
         if ($request->ajax()) {
             return $this->ajaxListingResponse($products);
@@ -140,9 +140,9 @@ class ShopController extends Controller
      */
     public function newArrivals(Request $request)
     {
-        $filters        = $this->buildFilters($request);
-        $products       = $this->products->paginateForFrontend($filters, $this->perPage($request));
-        $filterGroups   = $this->products->getFilterableGroups();
+        $filters = $this->buildFilters($request);
+        $products = $this->products->paginateForFrontend($filters, $this->perPage($request));
+        $filterGroups = $this->products->getFilterableGroups();
         $rootCategories = $this->categories->getMenuTree();
 
         if ($request->ajax()) {
@@ -161,13 +161,13 @@ class ShopController extends Controller
      */
     public function search(Request $request)
     {
-        $q       = trim((string) $request->get('q', ''));
+        $q = trim((string) $request->get('q', ''));
         $filters = $this->buildFilters($request, ['search' => $q]);
 
-        $products       = $this->products->paginateForFrontend($filters, $this->perPage($request));
-        $filterGroups   = $this->products->getFilterableGroups();
+        $products = $this->products->paginateForFrontend($filters, $this->perPage($request));
+        $filterGroups = $this->products->getFilterableGroups();
         $rootCategories = $this->categories->getMenuTree();
-        $activeTitle    = $q !== '' ? "Search: {$q}" : 'Search Results';
+        $activeTitle = $q !== '' ? "Search: {$q}" : 'Search Results';
 
         if ($request->ajax()) {
             return $this->ajaxListingResponse($products);
@@ -191,24 +191,26 @@ class ShopController extends Controller
     {
         $attrs = $request->input('attr', []);
         // Ensure it's always an array of arrays
-        if (!is_array($attrs)) {
+        if (! is_array($attrs)) {
             $attrs = [];
         }
 
         return array_merge([
             'price_min' => $request->integer('price_min', 0),
             'price_max' => $request->integer('price_max', 100000),
-            'c_cat'  => $request->integer('c_cat') ?: null,
-            's_cat'  => $request->integer('s_cat') ?: null,
+            'c_cat' => $request->integer('c_cat') ?: null,
+            's_cat' => $request->integer('s_cat') ?: null,
             'search' => $request->get('q'),
-            'attrs'  => $attrs,
-            'sort'   => $request->get('sort', 'newest'),
+            'attrs' => $attrs,
+            'sort' => $request->get('sort', 'newest'),
         ], $overrides);
     }
 
     private function perPage(Request $request): int
     {
-        return min(max($request->integer('per_page', 12), 6), 36);
+        $default = (int) config('site-settings.products_per_page', 12);
+
+        return min(max($request->integer('per_page', $default), 6), 36);
     }
 
     private function ajaxListingResponse($products)

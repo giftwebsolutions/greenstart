@@ -13,6 +13,10 @@
     $createdAt = $product->created_at ?? null;
     $createdDate = is_numeric($createdAt) ? Carbon::createFromTimestamp((int) $createdAt) : ($createdAt ? Carbon::parse($createdAt) : null);
     $isNew = $createdDate ? $createdDate->diffInDays(now()) <= 30 : false;
+    $siteSettings = config('site-settings', []);
+    $currencySymbol = $siteSettings['currency_symbol'] ?? '₹';
+    $showPrices = filter_var($siteSettings['show_product_prices'] ?? true, FILTER_VALIDATE_BOOL);
+    $enableEnquiries = filter_var($siteSettings['enable_enquiries'] ?? true, FILTER_VALIDATE_BOOL);
 @endphp
 
 <article class="pcard">
@@ -38,22 +42,26 @@
         <h3 class="pcard-title">
             <a href="{{ $productUrl }}">{{ $title }}</a>
         </h3>
-        <div class="pcard-price">
-            <span class="price-new">₹{{ number_format($price) }}</span>
-            @if ($hasDiscount)
-                <span class="price-old">₹{{ number_format($mrp) }}</span>
-                <span class="price-off">{{ $discountPercent }}% off</span>
-            @endif
-        </div>
-        <button
-            type="button"
-            class="btn btn-sw-green btn-sm w-100 js-enquiry-open"
-            data-product-id="{{ $product->id }}"
-            data-category-id="{{ $product->product_category ?? $product->category_id ?? 0 }}"
-            data-price="{{ $price }}"
-            data-product-name="{{ $title }}"
-        >
-            Enquiry
-        </button>
+        @if ($showPrices)
+            <div class="pcard-price">
+                <span class="price-new">{{ $currencySymbol }}{{ number_format($price) }}</span>
+                @if ($hasDiscount)
+                    <span class="price-old">{{ $currencySymbol }}{{ number_format($mrp) }}</span>
+                    <span class="price-off">{{ $discountPercent }}% off</span>
+                @endif
+            </div>
+        @endif
+        @if ($enableEnquiries)
+            <button
+                type="button"
+                class="btn btn-sw-green btn-sm w-100 js-enquiry-open"
+                data-product-id="{{ $product->id }}"
+                data-category-id="{{ $product->product_category ?? $product->category_id ?? 0 }}"
+                data-price="{{ $price }}"
+                data-product-name="{{ $title }}"
+            >
+                Enquiry
+            </button>
+        @endif
     </div>
 </article>

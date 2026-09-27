@@ -2,16 +2,14 @@
 
 namespace Modules\SysAdmin\Repository;
 
-use Modules\SysAdmin\Core\Eloquent\RequestCriteria;
 use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
-use Modules\SysAdmin\Models\Blocks;
-use Modules\SysAdmin\Interfaces\BlockInterface;
+use Modules\SysAdmin\Core\Eloquent\RequestCriteria;
 use Modules\SysAdmin\Helpers\ImageUploader;
+use Modules\SysAdmin\Interfaces\BlockInterface;
+use Modules\SysAdmin\Models\Blocks;
 
 /**
  * Class BlockRepositoryEloquent.
- *
- * @package namespace Modules\SysAdmin\Repository;
  */
 class BlockRepository extends BaseRepository implements BlockInterface
 {
@@ -34,21 +32,28 @@ class BlockRepository extends BaseRepository implements BlockInterface
 
     public function saveOrUpdate($data, $id = 0)
     {
-        $response = '';
-        $createedAt = $this->getModel()->created_at;
-        if ($id !== 0) {
-            $block = $this->find($id);
-            $createedAt = $block->createedAt;
+        $block = $id !== 0 ? $this->find($id) : null;
+        $oldImage = null;
+
+        if (! empty($data['thumbnail'])) {
+            $data['thumbnail'] = ImageUploader::upload($data['thumbnail'], $block?->created_at);
+            $oldImage = $block?->thumbnail;
+        } elseif ($block?->thumbnail && ! empty($data['remove_thumbnail'])) {
+            $data['thumbnail'] = null;
+            $oldImage = $block->thumbnail;
         }
-        if (isset($data['thumbnail'])) {
-            $data['thumbnail'] = ImageUploader::upload($data['thumbnail'], $createedAt);
+
+        unset($data['remove_thumbnail']);
+
+        $savedBlock = $id !== 0
+            ? parent::update($data, $id)
+            : parent::create($data);
+
+        if ($oldImage) {
+            ImageUploader::remove((string) $savedBlock->created_at, $oldImage);
         }
-        if ($id !== 0) {
-            $response =  parent::update($data, $id);
-        } else {
-            $response = parent::create($data);
-        }
-        return $response;
+
+        return $savedBlock;
     }
 
     /**

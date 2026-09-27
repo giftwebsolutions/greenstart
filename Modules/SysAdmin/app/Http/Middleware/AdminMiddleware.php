@@ -5,6 +5,7 @@ namespace Modules\SysAdmin\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Modules\SysAdmin\Support\PermissionCatalog;
 
 class AdminMiddleware
 {
@@ -19,10 +20,17 @@ class AdminMiddleware
                 ->with('error', 'Please login to access the SysAdmin panel.');
         }
 
-        // (Optional) Role check — only allow admin users
-        // if (! Auth::user()->is_admin) {
-        //     abort(403, 'You are not authorized to access the admin panel.');
-        // }
+        $user = Auth::user();
+        if ($user->is_active === false) {
+            Auth::logout();
+
+            return redirect()->route('sysadmin.login.form')->with('error', 'This administrator account is inactive.');
+        }
+
+        $permission = PermissionCatalog::forRoute($request->route()?->getName());
+        if ($permission && $user->cannot($permission)) {
+            abort(403, 'You do not have permission to access this area.');
+        }
 
         return $next($request);
     }

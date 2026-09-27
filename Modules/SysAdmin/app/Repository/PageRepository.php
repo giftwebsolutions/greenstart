@@ -4,15 +4,12 @@ namespace Modules\SysAdmin\Repository;
 
 use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
 use Modules\SysAdmin\Core\Eloquent\RequestCriteria;
-use Modules\SysAdmin\Models\Page;
-use Illuminate\Support\Carbon;
 use Modules\SysAdmin\Helpers\ImageUploader;
 use Modules\SysAdmin\Interfaces\PageInterface;
+use Modules\SysAdmin\Models\Page;
 
 /**
  * Class PageRepositoryEloquent.
- *
- * @package namespace Modules\SysAdmin\App\Repository;
  */
 class PageRepository extends BaseRepository implements PageInterface
 {
@@ -34,36 +31,51 @@ class PageRepository extends BaseRepository implements PageInterface
     public function getParents()
     {
         $parents = $this->getModel()->select(['id', 'name'])->where('parent_id', 0)->get()->toArray();
+
         return $parents;
     }
 
     public function saveOrUpdate($data, $id = 0)
     {
-        $page = '';
-        $createdAt = $this->getModel()->created_at;
+        $page = $id !== 0 ? $this->find($id) : null;
+        $createdAt = $page?->created_at;
+        $filesToRemove = [];
         $data['author_id'] = auth()->user()->id;
         $data['parent_id'] = $data['parent_id'] ?? 0;
 
-        if ($id !== 0) {
-            $_page = $this->find($id);
-            $createdAt = $_page->created_at;
-        }
-
-        if (isset($data['featured_image'])) {
+        if (! empty($data['featured_image'])) {
             $data['featured_image'] = ImageUploader::upload($data['featured_image'], $createdAt);
+            if ($page?->featured_image) {
+                $filesToRemove[] = $page->featured_image;
+            }
+        } elseif ($page?->featured_image && ! empty($data['remove_featured_image'])) {
+            $data['featured_image'] = null;
+            $filesToRemove[] = $page->featured_image;
         }
 
-        if (isset($data['banner'])) {
+        if (! empty($data['banner'])) {
             $data['banner'] = ImageUploader::upload($data['banner'], $createdAt);
+            if ($page?->banner) {
+                $filesToRemove[] = $page->banner;
+            }
+        } elseif ($page?->banner && ! empty($data['remove_banner'])) {
+            $data['banner'] = null;
+            $filesToRemove[] = $page->banner;
         }
 
-        if ($id !== 0) {
-            $page =  parent::update($data, $id);
-        } else {
-            $page = parent::create($data);
+        unset($data['remove_featured_image'], $data['remove_banner']);
+
+        $savedPage = $id !== 0
+            ? parent::update($data, $id)
+            : parent::create($data);
+
+        foreach (array_unique($filesToRemove) as $filename) {
+            ImageUploader::remove((string) $savedPage->created_at, $filename);
         }
-        return $page;
+
+        return $savedPage;
     }
+
     /**
      * Boot up the repository, pushing criteria
      */

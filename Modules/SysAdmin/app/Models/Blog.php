@@ -2,15 +2,15 @@
 
 namespace Modules\SysAdmin\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 /**
  * Class Blog
- * 
+ *
  * @property int $id
  * @property string $title
  * @property string $slug
@@ -27,8 +27,6 @@ use Illuminate\Support\Str;
  * @property Carbon|null $updated_at
  * @property int|null $type
  * @property BlogCategory|null $blog_category
- *
- * @package Modules\SysAdmin\Models
  */
 class Blog extends Model
 {
@@ -70,7 +68,7 @@ class Blog extends Model
         'author_id',
         'featured_image',
         'published_at',
-        'status'
+        'status',
     ];
 
     protected function setTitleAttribute($value)
@@ -79,19 +77,11 @@ class Blog extends Model
         $this->attributes['slug'] = Str::slug($value);
     }
 
-    protected function setPublishedAtAttribute($value)
-    {
-        return Attribute::make(
-            set: fn (int $value) => date('Y-m-d H:i:s', strtotime($value)),
-            get: fn (int $value) => date('d/m/Y HH:mm', strtotime($value)),
-        );
-    }
-
     protected function status(): Attribute
     {
         return Attribute::make(
             set: fn (int $value) => $value ?? 1,
-            //get: fn (int $value) => $this->statuses[$value]
+            // get: fn (int $value) => $this->statuses[$value]
         );
     }
 
@@ -112,13 +102,14 @@ class Blog extends Model
 
     public function scopeLatestFirst(Builder $query)
     {
-        $query->orderBy("id", "DESC");
+        $query->orderBy('id', 'DESC');
     }
 
     public function scopeByCategory(Builder $query, $category_id)
     {
         return $query->where('parent_id', $category_id)->active();
     }
+
     public static function scopeSearch(Builder $query, $searchTerm)
     {
         return $query->where('title', 'like', "%{$searchTerm}%")

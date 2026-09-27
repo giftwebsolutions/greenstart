@@ -73,6 +73,7 @@
     $to            = $products->lastItem()  ?? 0;
     $lastPage      = $products->lastPage();
     $perPageCount  = $products->perPage();
+    $currencySymbol = config('site-settings.currency_symbol', '₹');
 @endphp
 
 <x-frontend::layouts.master :seo="$seo ?? []" :structuredData="$structuredData ?? []">
@@ -195,8 +196,8 @@
                                        value="{{ request('price_max', 100000) }}" class="sw-range-input">
                             </div>
                             <div class="d-flex justify-content-between mb-2" style="font-size:.8rem;color:#555">
-                                <span>₹<span id="sw-price-lbl-min">{{ number_format(request('price_min', 0)) }}</span></span>
-                                <span>₹<span id="sw-price-lbl-max">{{ number_format(request('price_max', 100000)) }}</span></span>
+                                <span>{{ $currencySymbol }}<span id="sw-price-lbl-min">{{ number_format(request('price_min', 0)) }}</span></span>
+                                <span>{{ $currencySymbol }}<span id="sw-price-lbl-max">{{ number_format(request('price_max', 100000)) }}</span></span>
                             </div>
                             <form method="GET" action="{{ $formAction }}" id="price-filter-form">
                                 @if ($currentSCat)

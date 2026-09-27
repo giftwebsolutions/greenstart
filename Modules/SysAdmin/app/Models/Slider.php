@@ -1,9 +1,10 @@
 <?php
+
 namespace Modules\SysAdmin\Models;
 
 use Carbon\Carbon;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 /**
  * Class Slider
@@ -16,16 +17,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $thumbnail
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- *
- * @package App\Models
  */
-
 class Slider extends Model
 {
     protected $table = 'sliders';
 
     protected $casts = [
-        'status' => 'int'
+        'status' => 'int',
     ];
 
     protected $fillable = [
@@ -33,12 +31,12 @@ class Slider extends Model
         'slug',
         'description',
         'status',
-        'thumbnail'
+        'thumbnail',
     ];
 
     public function sliderItems()
     {
-        return $this->hasMany(SliderItem::class, 'slider_id');
+        return $this->hasMany(SliderItem::class, 'slider_id')->orderBy('sort_order')->orderBy('id');
     }
 
     protected static function boot()
@@ -46,7 +44,7 @@ class Slider extends Model
         parent::boot();
         static::creating(function (self $model) {
             // Slug generate if empty
-            if (empty($model->slug) && !empty($model->name)) {
+            if (empty($model->slug) && ! empty($model->name)) {
 
                 $model->slug = Str::slug($model->name);
             }
@@ -55,7 +53,6 @@ class Slider extends Model
             $model->slug = $model->makeUniqueSlug($model->slug, null);
         });
     }
-
 
     protected function makeUniqueSlug(?string $baseSlug, ?int $ignoreId = null): ?string
     {
@@ -68,14 +65,15 @@ class Slider extends Model
 
         while (
             self::query()
-            ->where('slug', $slug)
-            ->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))
-            ->exists()
+                ->where('slug', $slug)
+                ->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))
+                ->exists()
 
         ) {
-            $slug = $baseSlug . '-' . $i;
+            $slug = $baseSlug.'-'.$i;
             $i++;
         }
+
         return $slug;
     }
 }

@@ -4,53 +4,26 @@ namespace Modules\SysAdmin\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
-use Modules\SysAdmin\DataTables\RoleDataTable;
-use Modules\SysAdmin\Interfaces\RoleInterface;
-use Modules\SysAdmin\Requests\RoleFormRequest;
 
 class RoleController extends Controller
 {
-    public function __construct(
-        protected RoleInterface $roleRepository
-    ) {}
-
-    public function index(RoleDataTable $dataTable)
+    public function index()
     {
-        return $dataTable->render('sysadmin::roles.index');
+        return view('sysadmin::roles.index');
     }
 
-    public function create()
+    public function create(): RedirectResponse
     {
-        return view('sysadmin::roles.create');
+        return redirect()->route('sysadmin.roles.index');
     }
 
-    public function store(RoleFormRequest $request): RedirectResponse
+    public function show(): RedirectResponse
     {
-        $this->roleRepository->saveOrUpdate($request->validated());
-        return redirect()->route('sysadmin.roles.index')->with('success', 'Role created successfully.');
+        return redirect()->route('sysadmin.roles.index');
     }
 
-    public function show($id)
+    public function edit(): RedirectResponse
     {
-        $role = $this->roleRepository->findOrFail($id)->toArray();
-        return view('sysadmin::roles.view', compact('role'));
-    }
-
-    public function edit($id)
-    {
-        $role = $this->roleRepository->findOrFail($id);
-        return view('sysadmin::roles.edit', compact('role'));
-    }
-
-    public function update(RoleFormRequest $request, $id): RedirectResponse
-    {
-        $this->roleRepository->saveOrUpdate($request->validated(), $id);
-        return redirect()->route('sysadmin.roles.index')->with('success', 'Role updated successfully.');
-    }
-
-    public function destroy($id): RedirectResponse
-    {
-        $this->roleRepository->delete($id);
-        return redirect()->route('sysadmin.roles.index')->with('success', 'Role deleted successfully.');
+        return redirect()->route('sysadmin.roles.index');
     }
 }

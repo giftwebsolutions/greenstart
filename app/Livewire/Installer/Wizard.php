@@ -137,14 +137,16 @@ class Wizard extends Component
                 throw new \RuntimeException('The users table was not created.');
             }
 
-            User::query()->updateOrCreate(
+            $admin = User::query()->updateOrCreate(
                 ['email' => mb_strtolower(trim($this->adminEmail))],
                 [
                     'name' => trim($this->adminName),
                     'password' => Hash::make($this->adminPassword),
                     'email_verified_at' => now(),
+                    'is_active' => true,
                 ]
             );
+            $admin->syncRoles(['super-admin']);
 
             $lock = json_encode([
                 'installed_at' => now()->toIso8601String(),

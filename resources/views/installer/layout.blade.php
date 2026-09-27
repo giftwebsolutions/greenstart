@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Install {{ config('app.name', 'Product Catalog') }}</title>
-    <link rel="stylesheet" href="{{ asset('admin/css/vendors/bootstrap.css') }}">
+    {{ module_vite('build-sysadmin', 'resources/assets/css/app.css') }}
     @livewireStyles
     <style>
         :root{--installer-primary:#635bdb;--installer-ink:#252a34;--installer-muted:#697386;--installer-bg:#f4f6fa}
@@ -23,6 +23,7 @@
         <div class="install-brand"><div class="install-brand-mark">P</div><div><strong>Product Catalog</strong><small>Secure installation wizard</small></div></div>
         @yield('content')
     </main>
+    {{ module_vite('build-sysadmin', 'resources/assets/js/app.js') }}
     @livewireScripts
 </body>
 </html>

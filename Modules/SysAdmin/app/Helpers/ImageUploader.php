@@ -2,53 +2,51 @@
 
 namespace Modules\SysAdmin\Helpers;
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Laravel\Facades\Image;
+use Illuminate\Support\Str;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 use InvalidArgumentException;
 
 class ImageUploader
 {
-    const DIR = BASE_ROOT_PATH . '/uploads/';
-    const URL =   '/uploads/';
     const DISK = 'uploads';
-    public static array $extensions = ['jpg', 'jpeg', 'gif', 'png', 'pdf'];
 
-    public static function upload($file, ?string $date = null, $thumbnail = true): string
+    public static array $extensions = ['jpg', 'jpeg', 'gif', 'png', 'webp', 'pdf'];
+
+    public static function upload($file, $date = null, $thumbnail = true): string
     {
-        if ($date == null) {
-            $yearMonth = now()->format('Y/m');
-        } else {
-            $yearMonth = date('Y/m', strtotime($date));
-        }
+        $yearMonth = date('Y/m', self::timestamp($date));
 
-        $folderPath = self::DIR . $yearMonth;
+        $folderPath = Storage::disk(self::DISK)->path($yearMonth);
 
-
-        if (!is_dir($folderPath)) {
+        if (! is_dir($folderPath)) {
             mkdir($folderPath, 0777, true);
         }
 
         // Validate file extension
         $extension = strtolower($file->getClientOriginalExtension());
-        if (!in_array($extension, self::$extensions)) {
+        if (! in_array($extension, self::$extensions)) {
             throw new InvalidArgumentException('Invalid file type.');
         }
 
         // Generate unique filename
-        $filename = Str::random(32) . '.' . $extension;
+        $filename = Str::random(32).'.'.$extension;
 
         // Save the image
-        $image = Image::read($file);
-        $image->save($folderPath . "/" . $filename, 100); // Adjust quality as needed
+        // Laravel 13 also registers an `image` container binding, so using the
+        // Intervention facade resolves Laravel's manager instead. Instantiate
+        // Intervention explicitly to keep uploads independent of that binding.
+        $image = (new ImageManager(config('image.driver', Driver::class)))->read($file);
+        $image->save($folderPath.'/'.$filename, 100); // Adjust quality as needed
 
         if ($thumbnail == true) {
-            $thumbnailPath = self::DIR . $yearMonth . '/thumbnail';
-            if (!is_dir($thumbnailPath)) {
+            $thumbnailPath = Storage::disk(self::DISK)->path($yearMonth.'/thumbnail');
+            if (! is_dir($thumbnailPath)) {
                 mkdir($thumbnailPath, 0777, true);
             }
 
-            $thumbnailPath = $thumbnailPath . "/" . $filename;
+            $thumbnailPath = $thumbnailPath.'/'.$filename;
             $image->resize(250, 250)->save($thumbnailPath, 100);
         }
 
@@ -56,26 +54,23 @@ class ImageUploader
         return $filename;
     }
 
-    public static function uploadFile($file, ?string $date = null, $thumbnail = true): string
+    public static function uploadFile($file, $date = null, $thumbnail = true): string
     {
-        if ($date == null) {
-            $yearMonth = now()->format('Y/m');
-        } else {
-            $yearMonth = date('Y/m', strtotime($date));
-        }
-        $folderPath = self::DIR . $yearMonth;
-        if (!is_dir($folderPath)) {
+        $yearMonth = date('Y/m', self::timestamp($date));
+        $folderPath = Storage::disk(self::DISK)->path($yearMonth);
+        if (! is_dir($folderPath)) {
             mkdir($folderPath, 0777, true);
         }
         // Validate file extension
         $extension = strtolower($file->getClientOriginalExtension());
-        if (!in_array($extension, self::$extensions)) {
+        if (! in_array($extension, self::$extensions)) {
             throw new InvalidArgumentException('Invalid file type.');
         }
         // Generate unique filename
-        $filename = Str::random(32) . '.' . $extension;
+        $filename = Str::random(32).'.'.$extension;
         // Save the file
         $file->move($folderPath, $filename);
+
         // Return the stored filename
         return $filename;
     }
@@ -90,18 +85,18 @@ class ImageUploader
         $timestamp = null;
         if (is_numeric($date)) {
             $timestamp = (int) $date;
-        } elseif (!empty($date)) {
+        } elseif (! empty($date)) {
             $timestamp = strtotime($date);
         }
 
-        //dd($date);
+        // dd($date);
 
         if ($timestamp && $timestamp > 0) {
             $yearMonth = date('Y/m', $timestamp);
 
             $relative = $type
-                ? $yearMonth . '/' . $type . '/' . $filename
-                : $yearMonth . '/' . $filename;
+                ? $yearMonth.'/'.$type.'/'.$filename
+                : $yearMonth.'/'.$filename;
 
             $disk = Storage::disk(self::DISK);
 
@@ -113,20 +108,19 @@ class ImageUploader
         return asset('uploads/default.jpg');
     }
 
-
     public static function getFileRootPath(string $filename, string $date, ?string $type = null): string
     {
-        $yearMonth = date('Y/m', strtotime($date));
+        $yearMonth = date('Y/m', self::timestamp($date));
         if ($type !== null) {
-            $file = $yearMonth . '/' . $type . '/' . $filename;
+            $file = $yearMonth.'/'.$type.'/'.$filename;
         } else {
-            $file = $yearMonth . '/' . $filename;
+            $file = $yearMonth.'/'.$filename;
         }
-        //dd(Storage::disk('uploads')->path($file));
-        if (file_exists(Storage::disk('uploads')->path($file))) {
-            return BASE_ROOT_PATH . self::URL . $yearMonth . '/' . $filename;
+        if (Storage::disk(self::DISK)->exists($file)) {
+            return Storage::disk(self::DISK)->path($file);
         }
-        return  BASE_ROOT_PATH . '/uploads/default.jpg';
+
+        return public_path('uploads/default.jpg');
     }
 
     public static function remove(string $date, string $filename): bool
@@ -139,14 +133,14 @@ class ImageUploader
         }
 
         // Fallback: if invalid date, avoid deleting wrong path
-        if (!$timestamp || $timestamp <= 0) {
+        if (! $timestamp || $timestamp <= 0) {
             return false;
         }
 
         $yearMonth = date('Y/m', $timestamp);
 
-        $thumb = $yearMonth . '/thumbnail/' . $filename;
-        $file  = $yearMonth . '/' . $filename;
+        $thumb = $yearMonth.'/thumbnail/'.$filename;
+        $file = $yearMonth.'/'.$filename;
 
         $disk = Storage::disk('uploads');
 
@@ -159,5 +153,26 @@ class ImageUploader
         }
 
         return true;
+    }
+
+    private static function timestamp($date = null): int
+    {
+        if ($date instanceof \DateTimeInterface) {
+            return $date->getTimestamp();
+        }
+
+        if (is_numeric($date)) {
+            return (int) $date;
+        }
+
+        if (! empty($date)) {
+            $timestamp = strtotime((string) $date);
+
+            if ($timestamp !== false) {
+                return $timestamp;
+            }
+        }
+
+        return now()->getTimestamp();
     }
 }

@@ -4,7 +4,6 @@
 @endsection
 
 @section('style')
-    <link rel="stylesheet" type="text/css" href="{{ asset('admin/css/vendors/select2.css') }}">
 @endsection
 
 @section('breadcrumb-title')
@@ -264,15 +263,3 @@
     </div>
 </div>
 @endsection
-
-@pushOnce('scripts')
-<script type="module" src="{{ asset('admin/js/select2/select2.full.min.js') }}"></script>
-
-<script type="module">
-    $('.select2').select2({ width: '100%' });
-
-    $('#cancel-button').on('click', function () {
-        window.location.href = "{{ route('sysadmin.enquiry.index') }}";
-    });
-</script>
-@endPushOnce

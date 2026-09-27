@@ -49,7 +49,7 @@
                             <div class="mb-3">
                                 <label class="col-form-label">Description</label>
                                 <textarea name="description" rows="3"
-                                          class="form-control @error('description') is-invalid @enderror">{{ old('description', $gallery['description']) }}</textarea>
+                                          class="form-control editor @error('description') is-invalid @enderror">{{ old('description', $gallery['description']) }}</textarea>
                                 @error('description')
                                     <span class="invalid-feedback">{{ $message }}</span>
                                 @enderror

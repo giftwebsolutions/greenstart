@@ -1,203 +1,21 @@
 @extends('sysadmin::layouts.master')
-@section('title', 'Home Page')
-
-@section('css')
-@endsection
-
-@section('style')
-@endsection
-
-@section('breadcrumb-title')
-    <h3>Dashboard</h3>
-@endsection
-
-@section('breadcrumb-items')
-    <li class="breadcrumb-item">Dashboard</li>
-    <li class="breadcrumb-item active">Home</li>
-@endsection
-
+@section('title', 'Dashboard')
+@section('page-title', 'Dashboard')
 @section('content')
-    <div class="container-fluid">
-        <div class="row widget-grid">
+@php
+    $stats = [
+        ['Products', \Modules\SysAdmin\Models\Product::query()->count(), 'box', route('sysadmin.catalog.product.index')],
+        ['Attributes', \Modules\SysAdmin\Models\Attribute::query()->count(), 'tag', route('sysadmin.catalog.attribute.index')],
+        ['Families', \Modules\SysAdmin\Models\AttributeFamily::query()->count(), 'layers', route('sysadmin.catalog.attribute.family.index')],
+        ['Categories', \Modules\SysAdmin\Models\ProductCategory::query()->count(), 'folder', route('sysadmin.catalog.productcategory.index')],
+    ];
+@endphp
+<div class="grid gap-6">
+    <section class="overflow-hidden rounded-xl bg-gradient-to-br from-violet-700 to-purple-900 p-6 text-white shadow-sm lg:p-8"><p class="text-xs font-bold uppercase tracking-[.18em] text-purple-200">Commerce workspace</p><h1 class="mt-2 text-2xl font-bold tracking-tight lg:text-3xl">Welcome back, {{ auth()->user()?->name ?? 'Administrator' }}</h1><p class="mt-2 max-w-2xl text-[13px] leading-6 text-purple-100">Manage products through structured attribute families, keep catalog data consistent, and publish storefront content from one workspace.</p><div class="mt-5 flex flex-wrap gap-2"><x-sysadmin::btn variant="secondary" :href="route('sysadmin.catalog.product.create')">{!! \Modules\SysAdmin\Support\Icon::get('plus', 'h-4 w-4') !!} Add product</x-sysadmin::btn><a href="{{ route('sysadmin.catalog.attribute.family.index') }}" class="inline-flex min-h-10 items-center rounded-lg border border-white/20 px-4 text-[13px] font-semibold text-white hover:bg-white/10">Open family builder</a></div></section>
 
-            {{-- Welcome Box --}}
-            <div class="col-12 box-col-12">
-                <div class="card profile-box">
-                    <div class="card-body">
-                        <div class="media">
-                            <div class="media-body">
-                                <div class="greeting-user">
-                                    <h4 class="f-w-600">Welcome to</h4>
-                                    <p>Green Star</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">@foreach($stats as [$label,$value,$icon,$href])<a href="{{ $href }}" class="group rounded-xl border border-hairline bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"><div class="flex items-start justify-between"><span class="text-[12.5px] font-medium text-ink-muted">{{ $label }}</span><span class="grid size-8 place-items-center rounded-lg bg-primary-50 text-primary-600 group-hover:bg-primary group-hover:text-white">{!! \Modules\SysAdmin\Support\Icon::get($icon, 'h-4 w-4') !!}</span></div><div class="mt-1.5 text-[26px] font-bold tracking-tight text-ink tabular-nums">{{ number_format($value) }}</div><p class="mt-1 text-[11.5px] font-semibold text-primary opacity-0 transition group-hover:opacity-100">Open {{ strtolower($label) }} →</p></a>@endforeach</section>
 
-            {{-- Left Section --}}
-            <div class="col-8">
-                <div class="row">
-
-                    {{-- Manage Products Page --}}
-                    <div class="col-xl-12 col-sm-6 mb-3">
-                        <a href="{{ route('sysadmin.catalog.product.index') }}"
-                            style="text-decoration:none; color:inherit;">
-                            <div class="card widget-1">
-                                <div class="card-body">
-                                    <div class="widget-content">
-                                        <div class="widget-round primary">
-                                            <div class="bg-round">
-                                                <svg class="svg-fill">
-                                                    <use href="{{ asset('assets/svg/icon-sprite.svg#tag') }}"></use>
-                                                </svg>
-                                                <svg class="half-circle svg-fill">
-                                                    <use href="{{ asset('assets/svg/icon-sprite.svg#halfcircle') }}"></use>
-                                                </svg>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <h4>Manage Products Page</h4>
-                                            <span class="f-light">Catalog > Manage Products</span>
-                                        </div>
-                                    </div>
-                                    <div class="font-primary f-w-500">
-                                        <i class="icon-arrow-up icon-rotate me-1"></i><span>+70%</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-
-                    {{-- Manage CMS Pages --}}
-                    <div class="col-xl-12 col-sm-6 mb-3">
-                        <a href="{{ route('sysadmin.cms.page.index') }}" style="text-decoration:none; color:inherit;">
-                            <div class="card widget-1">
-                                <div class="card-body">
-                                    <div class="widget-content">
-                                        <div class="widget-round warning">
-                                            <div class="bg-round">
-                                                <svg class="svg-fill">
-                                                    <use href="{{ asset('assets/svg/icon-sprite.svg#return-box') }}"></use>
-                                                </svg>
-                                                <svg class="half-circle svg-fill">
-                                                    <use href="{{ asset('assets/svg/icon-sprite.svg#halfcircle') }}"></use>
-                                                </svg>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <h4>Manage CMS Page</h4>
-                                            <span class="f-light">CMS Page > Manage Page</span>
-                                        </div>
-                                    </div>
-                                    <div class="font-warning f-w-500">
-                                        <i class="icon-arrow-down icon-rotate me-1"></i><span>-20%</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-
-                    {{-- Settings --}}
-                    <div class="col-xl-12 col-sm-6 mb-3">
-                        <a href="{{ route('sysadmin.settings.index') }}" style="text-decoration:none; color:inherit;">
-                            <div class="card widget-1">
-                                <div class="card-body">
-                                    <div class="widget-content">
-                                        <div class="widget-round success">
-                                            <div class="bg-round">
-                                                <svg class="svg-fill">
-                                                    <use href="{{ asset('assets/svg/icon-sprite.svg#rate') }}"></use>
-                                                </svg>
-                                                <svg class="half-circle svg-fill">
-                                                    <use href="{{ asset('assets/svg/icon-sprite.svg#halfcircle') }}"></use>
-                                                </svg>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <h4>Settings</h4>
-                                            <span class="f-light">Add, Edit Site Settings</span>
-                                        </div>
-                                    </div>
-                                    <div class="font-success f-w-500">
-                                        <i class="icon-arrow-up icon-rotate me-1"></i><span>+70%</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-
-                    {{-- Blog --}}
-                    <div class="col-xl-12 col-sm-6 mb-3">
-                        <a href="{{ route('sysadmin.blog.index') }}" style="text-decoration:none; color:inherit;">
-                            <div class="card widget-1">
-                                <div class="card-body">
-                                    <div class="widget-content">
-                                        <div class="widget-round success">
-                                            <div class="bg-round">
-                                                <svg class="svg-fill">
-                                                    <use href="{{ asset('assets/svg/icon-sprite.svg#rate') }}"></use>
-                                                </svg>
-                                                <svg class="half-circle svg-fill">
-                                                    <use href="{{ asset('assets/svg/icon-sprite.svg#halfcircle') }}"></use>
-                                                </svg>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <h4>Blogs</h4>
-                                            <span class="f-light">Add New Post</span>
-                                        </div>
-                                    </div>
-                                    <div class="font-success f-w-500">
-                                        <i class="icon-arrow-up icon-rotate me-1"></i><span>+70%</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-
-                    {{-- Attribute Page --}}
-                    <div class="col-xl-12 col-sm-6 mb-3">
-                        <a href="{{ route('sysadmin.catalog.attribute.index') }}"
-                            style="text-decoration:none; color:inherit;">
-                            <div class="card widget-1">
-                                <div class="card-body">
-                                    <div class="widget-content">
-                                        <div class="widget-round secondary">
-                                            <div class="bg-round">
-                                                <svg class="svg-fill">
-                                                    <use href="{{ asset('assets/svg/icon-sprite.svg#cart') }}"></use>
-                                                </svg>
-                                                <svg class="half-circle svg-fill">
-                                                    <use href="{{ asset('assets/svg/icon-sprite.svg#halfcircle') }}"></use>
-                                                </svg>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <h4>Attributes Page</h4>
-                                            <span class="f-light">Manage Attributes</span>
-                                        </div>
-                                    </div>
-                                    <div class="font-secondary f-w-500">
-                                        <i class="icon-arrow-up icon-rotate me-1"></i><span>+50%</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-
-                </div>
-            </div>
-
-            {{-- Right Sidebar Activity Log --}}
-            <div class="col-4">
-                <x-sysadmin::activitylog />
-            </div>
-
-        </div>
-    </div>
-@endsection
-
-@section('script')
+    <section class="grid gap-5 lg:grid-cols-2"><x-sysadmin::card padded><div class="flex items-center justify-between"><div><h2 class="text-base font-bold text-ink">Catalog architecture</h2><p class="mt-1 text-xs text-ink-muted">Recommended setup sequence</p></div><span class="grid size-9 place-items-center rounded-lg bg-primary-50 text-primary">{!! \Modules\SysAdmin\Support\Icon::get('layers') !!}</span></div><div class="mt-5 space-y-2">@foreach([['1','Define attributes','Create reusable fields and behavior flags.',route('sysadmin.catalog.attribute.index')],['2','Build families','Arrange attributes into ordered groups.',route('sysadmin.catalog.attribute.family.index')],['3','Create products','Use the guided wizard and family fields.',route('sysadmin.catalog.product.create')]] as [$number,$label,$copy,$href])<a href="{{ $href }}" class="flex items-center gap-3 rounded-xl border border-hairline p-3 hover:border-primary/30 hover:bg-primary-50"><span class="grid size-8 shrink-0 place-items-center rounded-full bg-primary text-xs font-bold text-white">{{ $number }}</span><span class="flex-1"><strong class="block text-[13px] text-ink">{{ $label }}</strong><small class="text-[11.5px] text-ink-muted">{{ $copy }}</small></span><span class="text-primary">→</span></a>@endforeach</div></x-sysadmin::card>
+    <x-sysadmin::card padded><h2 class="text-base font-bold text-ink">Quick management</h2><p class="mt-1 text-xs text-ink-muted">Frequently used administration areas</p><div class="mt-5 grid gap-2 sm:grid-cols-2">@foreach([['CMS pages','file','sysadmin.cms.page.index'],['Users','users','sysadmin.user.index'],['Settings','settings','sysadmin.settings.index'],['Enquiries','message','sysadmin.enquiry.index']] as [$label,$icon,$route])<a href="{{ route($route) }}" class="flex items-center gap-3 rounded-xl border border-hairline px-3 py-3 text-[13px] font-semibold text-ink-soft hover:border-primary/30 hover:bg-primary-50 hover:text-primary"><span class="grid size-8 place-items-center rounded-lg bg-slate-100">{!! \Modules\SysAdmin\Support\Icon::get($icon, 'h-4 w-4') !!}</span>{{ $label }}</a>@endforeach</div></x-sysadmin::card></section>
+</div>
 @endsection

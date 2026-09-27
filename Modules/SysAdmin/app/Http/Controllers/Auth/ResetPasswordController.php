@@ -3,9 +3,8 @@
 namespace Modules\SysAdmin\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Password;
 use Modules\SysAdmin\Http\Controllers\Controller;
 
 class ResetPasswordController extends Controller
@@ -35,7 +34,7 @@ class ResetPasswordController extends Controller
         );
 
         return $status === Password::PASSWORD_RESET
-            ? redirect()->route('sysadmin.login')->with('status', __($status))
+            ? redirect()->route('sysadmin.login.form')->with('status', __($status))
             : back()->withErrors(['email' => __($status)]);
     }
 }

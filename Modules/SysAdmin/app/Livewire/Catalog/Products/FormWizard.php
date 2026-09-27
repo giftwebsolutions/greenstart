@@ -5,9 +5,11 @@ namespace Modules\SysAdmin\Livewire\Catalog\Products;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Modules\SysAdmin\Helpers\ImageUploader;
 use Modules\SysAdmin\Models\AttributeFamily;
 use Modules\SysAdmin\Models\Product;
 use Modules\SysAdmin\Models\ProductCategory;
+use Modules\SysAdmin\Models\ProductImage;
 use Modules\SysAdmin\Repository\ProductRepository;
 
 class FormWizard extends Component
@@ -62,6 +64,14 @@ class FormWizard extends Component
 
     public array $galleryImages = [];
 
+    /** @var array<int, array{id: int, image: string, url: string}> */
+    public array $existingGalleryImages = [];
+
+    /** @var array<int, int> */
+    public array $removedGalleryImageIds = [];
+
+    public bool $removeThumb = false;
+
     public function mount(?int $id = null): void
     {
         if (! $id) {
@@ -90,11 +100,66 @@ class FormWizard extends Component
         $this->isFeatured = (bool) $product->is_featured;
         $this->slider = (bool) $product->slider;
         $this->displayOrder = (int) $product->order;
+        $this->loadExistingGallery($product);
     }
 
     public function updatedProductCategory(): void
     {
         $this->subProductCategory = '';
+        $this->resetValidation('subProductCategory');
+    }
+
+    public function updatedThumb(): void
+    {
+        $this->removeThumb = false;
+    }
+
+    public function removeThumbnail(): void
+    {
+        $this->thumb = null;
+        $this->removeThumb = true;
+        $this->resetValidation('thumb');
+    }
+
+    public function removePendingGalleryImage(int $index): void
+    {
+        if (! array_key_exists($index, $this->galleryImages)) {
+            return;
+        }
+
+        unset($this->galleryImages[$index]);
+        $this->galleryImages = array_values($this->galleryImages);
+        $this->resetValidation('galleryImages');
+    }
+
+    public function removeExistingGalleryImage(int $imageId): void
+    {
+        $image = collect($this->existingGalleryImages)->firstWhere('id', $imageId);
+
+        if (! $image) {
+            return;
+        }
+
+        $this->removedGalleryImageIds[] = $imageId;
+        $this->removedGalleryImageIds = array_values(array_unique($this->removedGalleryImageIds));
+        $this->existingGalleryImages = array_values(array_filter(
+            $this->existingGalleryImages,
+            fn (array $row): bool => $row['id'] !== $imageId,
+        ));
+    }
+
+    public function moveExistingGalleryImage(int $index, string $direction): void
+    {
+        $target = $direction === 'up' ? $index - 1 : $index + 1;
+
+        if (! isset($this->existingGalleryImages[$index], $this->existingGalleryImages[$target])) {
+            return;
+        }
+
+        [$this->existingGalleryImages[$index], $this->existingGalleryImages[$target]] = [
+            $this->existingGalleryImages[$target],
+            $this->existingGalleryImages[$index],
+        ];
     }
 
     public function nextStep(): void
@@ -140,7 +205,9 @@ class FormWizard extends Component
             'is_featured' => $this->isFeatured,
             'slider' => $this->slider,
             'order' => $this->displayOrder,
-            'type' => $this->familyHasVariants() ? 2 : 1,
+            // A configurable family only enables variant creation. The product
+            // becomes variable after the Attribute Editor persists real rows.
+            'type' => $this->productId && Product::query()->whereKey($this->productId)->whereHas('variants')->exists() ? 2 : 1,
         ];
 
         if ($this->thumb) {
@@ -149,10 +216,51 @@ class FormWizard extends Component
 
         /** @var ProductRepository $repository */
         $repository = app(ProductRepository::class);
+        $oldThumb = $this->productId ? Product::query()->whereKey($this->productId)->value('thumb') : null;
         $product = $repository->saveOrUpdate($data, $this->productId ?? 0);
+
+        if ($this->removeThumb && ! $this->thumb && $product->thumb) {
+            $oldThumb = $product->thumb;
+            $product->forceFill(['thumb' => null])->save();
+        }
+
+        $existingImageIds = $product->images()->pluck('id')->map(fn ($id) => (int) $id)->all();
 
         if ($this->galleryImages !== []) {
             $repository->syncGallery($product, $this->galleryImages, false);
+        }
+
+        $removedImages = $product->images()
+            ->whereIn('id', $this->removedGalleryImageIds)
+            ->get();
+        ProductImage::query()
+            ->where('product_id', $product->id)
+            ->whereIn('id', $removedImages->pluck('id'))
+            ->delete();
+
+        $newImageIds = $product->images()
+            ->whereNotIn('id', $existingImageIds)
+            ->orderBy('id')
+            ->pluck('id')
+            ->map(fn ($id) => (int) $id)
+            ->all();
+        $galleryOrder = array_merge(
+            array_column($this->existingGalleryImages, 'id'),
+            $newImageIds,
+        );
+
+        foreach ($galleryOrder as $position => $imageId) {
+            ProductImage::query()
+                ->where('product_id', $product->id)
+                ->whereKey($imageId)
+                ->update(['sort_order' => $position]);
+        }
+
+        if ($oldThumb && $this->removeThumb) {
+            ImageUploader::remove((string) $product->created_at, (string) $oldThumb);
+        }
+        foreach ($removedImages as $removedImage) {
+            ImageUploader::remove((string) $product->created_at, (string) $removedImage->image);
         }
 
         $this->productId = $product->id;
@@ -163,18 +271,6 @@ class FormWizard extends Component
             : 'sysadmin.catalog.product.edit';
 
         $this->redirectRoute($route, $product->id, navigate: false);
-    }
-
-    private function familyHasVariants(): bool
-    {
-        if (! $this->attributeFamilyId) {
-            return false;
-        }
-
-        return AttributeFamily::query()
-            ->whereKey($this->attributeFamilyId)
-            ->whereHas('groups.attributes', fn ($query) => $query->where('configurable', 1))
-            ->exists();
     }
 
     private function rulesForStep(int $step): array
@@ -204,15 +300,31 @@ class FormWizard extends Component
             'modelNumber' => ['nullable', 'string', 'max:150'],
             'sku' => ['nullable', 'string', 'max:100'],
             'keywords' => ['nullable', 'string', 'max:120'],
-            'shortDescription' => ['nullable', 'string', 'max:180'],
+            'shortDescription' => [
+                'nullable',
+                'string',
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    if (mb_strlen(trim(strip_tags((string) $value))) > 500) {
+                        $fail('The short description may not exceed 500 visible characters.');
+                    }
+                },
+            ],
             'description' => ['nullable', 'string'],
             'mrp' => ['required', 'numeric', 'min:0'],
             'salesPrice' => ['required', 'numeric', 'min:0', 'lte:mrp'],
-            'productCategory' => ['required', 'integer', Rule::exists('product_category', 'id')],
+            'productCategory' => [
+                'required',
+                'integer',
+                Rule::exists('product_category', 'id')->where(fn ($query) => $query
+                    ->where('parent_id', 0)
+                    ->where('status', '1')),
+            ],
             'subProductCategory' => [
                 'nullable',
                 'integer',
-                Rule::exists('product_category', 'id')->where('parent_id', $this->productCategory ?: 0),
+                Rule::exists('product_category', 'id')->where(fn ($query) => $query
+                    ->where('parent_id', $this->productCategory ?: 0)
+                    ->where('status', '1')),
             ],
             'attributeFamilyId' => ['required', 'integer', Rule::exists('attribute_families', 'id')],
             'video' => ['nullable', 'url:http,https', 'max:255'],
@@ -223,16 +335,18 @@ class FormWizard extends Component
             'slider' => ['boolean'],
             'displayOrder' => ['required', 'integer', 'min:0'],
             'thumb' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
-            'galleryImages' => ['array', 'max:12'],
+            'galleryImages' => ['array', 'max:'.max(0, 12 - count($this->existingGalleryImages))],
             'galleryImages.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ];
     }
 
     public function render()
     {
-        $categories = ProductCategory::query()->where('parent_id', 0)->orderBy('name')->get(['id', 'name']);
+        // product_category.status is an ENUM('0', '1'); bind as a string so MySQL
+        // compares its value instead of interpreting 1 as the enum's first index.
+        $categories = ProductCategory::query()->where('parent_id', 0)->where('status', '1')->orderBy('name')->get(['id', 'name']);
         $subCategories = $this->productCategory
-            ? ProductCategory::query()->where('parent_id', $this->productCategory)->orderBy('name')->get(['id', 'name'])
+            ? ProductCategory::query()->where('parent_id', $this->productCategory)->where('status', '1')->orderBy('name')->get(['id', 'name'])
             : collect();
         $families = AttributeFamily::query()->active()->withCount(['groups', 'products'])->orderBy('name')->get();
         $product = $this->productId ? Product::with('images')->find($this->productId) : null;
@@ -240,5 +354,17 @@ class FormWizard extends Component
         return view('sysadmin::livewire.catalog.products.form-wizard', compact(
             'categories', 'subCategories', 'families', 'product'
         ));
+    }
+
+    private function loadExistingGallery(Product $product): void
+    {
+        $this->existingGalleryImages = $product->images()
+            ->get()
+            ->map(fn (ProductImage $image): array => [
+                'id' => (int) $image->id,
+                'image' => (string) $image->image,
+                'url' => $image->image_url,
+            ])
+            ->all();
     }
 }

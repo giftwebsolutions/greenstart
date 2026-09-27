@@ -109,33 +109,3 @@
 @endsection
 
 {{-- ================= SCRIPTS ================= --}}
-@pushOnce('scripts')
-
-{{-- JS VALIDATION --}}
-
-
-{{-- IMAGE PREVIEW SCRIPT --}}
- <script type="module">
-
-      $('#image').change(function (e) {
-           var file = this.files[0];
-            if (file) {
-                let reader = new FileReader();
-                reader.onload = function (event) {
-                    $("#imgPreview")
-                        .attr("src", event.target.result);
-                };
-                reader.readAsDataURL(file);
-                $('#remove-image-block').removeClass('d-none');
-            }
-        });
-
-        $('#remove-image').click(function () {
-            file = '';
-            $('#image').val('');
-            $("#imgPreview").attr("src", '');
-            $('#remove-image-block').addClass('d-none')
-        });
-
-</script>
-@endPushOnce

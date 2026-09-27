@@ -1,7 +1,6 @@
 @extends('sysadmin::layouts.master')
 
 @section('style')
-    <link rel="stylesheet" href="{{ asset('admin/css/vendors/select2.css') }}">
 @endsection
 
 @section('breadcrumb-title')

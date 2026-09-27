@@ -101,11 +101,3 @@
         </div>
     </div>
 @endsection
-@pushOnce('scripts')
-
-    <script type="module">
-        $('a#cancel-button').click(function() {
-            window.location.href = "{{ route('sysadmin.user.index') }}";
-        });
-    </script>
-@endPushOnce

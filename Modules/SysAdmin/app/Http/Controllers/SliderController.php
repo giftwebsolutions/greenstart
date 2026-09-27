@@ -4,21 +4,20 @@ namespace Modules\SysAdmin\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Validation\ValidationException;
 use Modules\SysAdmin\DataTables\SliderDataTable;
+use Modules\SysAdmin\Helpers\ImageUploader;
 use Modules\SysAdmin\Interfaces\SliderInterface;
 use Modules\SysAdmin\Interfaces\SliderItemInterface;
 use Modules\SysAdmin\Requests\SliderFormRequest;
 use Modules\SysAdmin\Requests\SliderItemFormRequest;
-use Modules\SysAdmin\Helpers\ImageUploader;
 
 class SliderController extends Controller
 {
     public function __construct(
         protected SliderInterface $sliderRepository,
         protected SliderItemInterface $sliderItemRepository
-    ) {
-    }
+    ) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -34,24 +33,29 @@ class SliderController extends Controller
     {
         return view('sysadmin::slider.create');
     }
+
     public function slideritemcreate()
     {
         return view('sysadmin::slider.view');
     }
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(SliderFormRequest $request): RedirectResponse
     {
         $validatedData = $request->validated();
-        //dd($validatedData);
+        // dd($validatedData);
         $this->sliderRepository->saveOrUpdate($validatedData);
+
         return redirect()->route('sysadmin.slider.index');
     }
+
     public function slideritemstore(SliderItemFormRequest $request): RedirectResponse
     {
         $validatedData = $request->validated();
         $this->sliderItemRepository->saveOrUpdate($validatedData);
+
         return redirect()->route('sysadmin.slider.view');
     }
 
@@ -60,11 +64,9 @@ class SliderController extends Controller
      */
     public function show($id)
     {
-        $slider = $this->sliderRepository->with('sliderItems')->findOrFail($id)->toArray();
-        //dd($slider);
-        return view('sysadmin::slider.view')->with([
-            'slider' => $slider
-        ]);
+        $this->sliderRepository->findOrFail($id);
+
+        return view('sysadmin::slider.view', ['sliderId' => (int) $id]);
     }
 
     /**
@@ -72,8 +74,9 @@ class SliderController extends Controller
      */
     public function edit($id)
     {
-        $slider = $this->sliderRepository->findOrFail($id);
-        return view('sysadmin::slider.edit', compact('slider'));
+        $this->sliderRepository->findOrFail($id);
+
+        return view('sysadmin::slider.edit', ['sliderId' => (int) $id]);
     }
 
     /**
@@ -83,11 +86,13 @@ class SliderController extends Controller
     {
         $validatedData = $request->validated();
         $page = $this->sliderRepository->saveOrUpdate($validatedData, $id);
+
         return redirect()->route('sysadmin.slider.index');
     }
+
     public function itemCreate(SliderItemFormRequest $request, $id): RedirectResponse
     {
-        //dd($request);
+        // dd($request);
         $validatedData = $request->validated();
         $this->sliderItemRepository->save($validatedData);
 
@@ -123,6 +128,7 @@ class SliderController extends Controller
             ImageUploader::remove($item->created_at, $item->file);
             $item->delete();
         }
+
         return redirect()->route('sysadmin.slider.view', $item->slider_id);
     }
 }

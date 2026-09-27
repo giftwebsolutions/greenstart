@@ -109,33 +109,3 @@
         </div>
     </div>
 @endsection
-@pushOnce('scripts')
-    <script type="module">
-        $('div#route-cache').click(function() {
-            $.get("{{route('cache.route')}}", function(data) {
-                alert("Route Cache Cleared.");
-            });
-        });
-
-         $('div#optimize-cache').click(function() {
-            $.get("{{route('cache.optimize')}}", function(data) {
-                alert("Optimize Clear Done.");
-            });
-        });
-
-         $('div#file-cache').click(function() {
-            $.get("{{route('cache.file')}}", function(data) {
-                alert("View Files are Cleared.");
-            });
-        });
-
-         $('div#config-cache').click(function() {
-            $.get("{{route('cache.config')}}", function(data) {
-                alert("Config Cache Cleared.");
-            });
-        });
-    </script>
-@endPushOnce
-@section('script')
-
-@endsection

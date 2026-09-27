@@ -9,7 +9,5 @@
 @endsection
 
 @section('content')
-    <div class="container-fluid">
-        {!! $dataTable->table() !!}
-    </div>
+    <livewire:sysadmin.resource-table :resource="$resource" />
 @endsection

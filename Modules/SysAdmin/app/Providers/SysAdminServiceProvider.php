@@ -3,14 +3,21 @@
 namespace Modules\SysAdmin\Providers;
 
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
+use Modules\SysAdmin\Livewire\Auth\Login;
 use Modules\SysAdmin\Livewire\Catalog\Attributes\Form as AttributeForm;
 use Modules\SysAdmin\Livewire\Catalog\Attributes\Index as AttributeIndex;
 use Modules\SysAdmin\Livewire\Catalog\Families\Builder as FamilyBuilder;
 use Modules\SysAdmin\Livewire\Catalog\Families\Index as FamilyIndex;
+use Modules\SysAdmin\Livewire\Catalog\Products\AttributeEditor as ProductAttributeEditor;
 use Modules\SysAdmin\Livewire\Catalog\Products\FormWizard as ProductFormWizard;
+use Modules\SysAdmin\Livewire\Roles\Workspace as RolesWorkspace;
+use Modules\SysAdmin\Livewire\Settings\Workspace as SettingsWorkspace;
+use Modules\SysAdmin\Livewire\Sliders\Editor as SliderEditor;
 use Modules\SysAdmin\Livewire\Tables\ResourceTable;
+use Modules\SysAdmin\Livewire\Users\Index as UsersIndex;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -36,15 +43,23 @@ class SysAdminServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
 
         foreach ([
+            'sysadmin.auth.login' => Login::class,
             'sysadmin.catalog.attributes.index' => AttributeIndex::class,
             'sysadmin.catalog.attributes.form' => AttributeForm::class,
             'sysadmin.catalog.families.index' => FamilyIndex::class,
             'sysadmin.catalog.families.builder' => FamilyBuilder::class,
             'sysadmin.catalog.products.form-wizard' => ProductFormWizard::class,
+            'sysadmin.catalog.products.attribute-editor' => ProductAttributeEditor::class,
             'sysadmin.resource-table' => ResourceTable::class,
+            'sysadmin.roles.workspace' => RolesWorkspace::class,
+            'sysadmin.sliders.editor' => SliderEditor::class,
+            'sysadmin.settings.workspace' => SettingsWorkspace::class,
+            'sysadmin.users.index' => UsersIndex::class,
         ] as $alias => $component) {
             Livewire::component($alias, $component);
         }
+
+        Gate::before(fn ($user, string $ability) => method_exists($user, 'hasAnyRole') && $user->hasAnyRole(['super-admin', 'owner']) ? true : null);
     }
 
     /**

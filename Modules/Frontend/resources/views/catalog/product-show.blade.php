@@ -26,9 +26,13 @@
     $hasDiscount = $mrp > 0 && $mrp > $price;
     $discountPercent = $hasDiscount ? round((($mrp - $price) / $mrp) * 100) : 0;
     $inStock = (int) ($product->stock ?? 1) > 0;
-    $settings = Config::get('site-settings');
+    $settings = Config::get('site-settings', []);
     $phone = $settings['mobile'] ?? '';
-    $waNumber = preg_replace('/\D+/', '', $settings['whatsapp'] ?? '');
+    $currencySymbol = $settings['currency_symbol'] ?? '₹';
+    $showPrices = filter_var($settings['show_product_prices'] ?? true, FILTER_VALIDATE_BOOL);
+    $enableEnquiries = filter_var($settings['enable_enquiries'] ?? true, FILTER_VALIDATE_BOOL);
+    $enableWhatsApp = filter_var($settings['enable_whatsapp'] ?? true, FILTER_VALIDATE_BOOL);
+    $waNumber = $enableWhatsApp ? preg_replace('/\D+/', '', $settings['whatsapp'] ?? '') : '';
 @endphp
 
 <x-frontend::layouts.master :seo="$seo ?? []" :structuredData="$structuredData ?? []">
@@ -91,13 +95,15 @@
                         <span class="{{ $inStock ? 'is-stock' : 'is-out' }}">{{ $inStock ? 'Available' : 'Out of stock' }}</span>
                     </div>
 
-                    <div class="pd-price-row">
-                        <strong class="pd-price">₹{{ number_format($price) }}</strong>
-                        @if ($hasDiscount)
-                            <span class="pd-mrp">₹{{ number_format($mrp) }}</span>
-                            <span class="pd-save">Save ₹{{ number_format($mrp - $price) }}</span>
-                        @endif
-                    </div>
+                    @if ($showPrices)
+                        <div class="pd-price-row">
+                            <strong class="pd-price">{{ $currencySymbol }}{{ number_format($price) }}</strong>
+                            @if ($hasDiscount)
+                                <span class="pd-mrp">{{ $currencySymbol }}{{ number_format($mrp) }}</span>
+                                <span class="pd-save">Save {{ $currencySymbol }}{{ number_format($mrp - $price) }}</span>
+                            @endif
+                        </div>
+                    @endif
 
                     @if (!empty($product->short_description))
                         <p class="pd-short">{{ $product->short_description }}</p>
@@ -110,13 +116,15 @@
                     </div>
 
                     <div class="pd-actions">
-                        <button type="button" class="pd-primary js-enquiry-open"
-                            data-product-id="{{ $product->id }}"
-                            data-category-id="{{ $product->product_category ?? 0 }}"
-                            data-price="{{ $price }}"
-                            data-product-name="{{ $title }}">
-                            <i class="fa-regular fa-paper-plane"></i> Send Enquiry
-                        </button>
+                        @if ($enableEnquiries)
+                            <button type="button" class="pd-primary js-enquiry-open"
+                                data-product-id="{{ $product->id }}"
+                                data-category-id="{{ $product->product_category ?? 0 }}"
+                                data-price="{{ $price }}"
+                                data-product-name="{{ $title }}">
+                                <i class="fa-regular fa-paper-plane"></i> Send Enquiry
+                            </button>
+                        @endif
                         <a class="pd-secondary" href="{{ $phone ? 'tel:' . $phone : route('frontend.contact') }}">
                             <i class="fa-solid fa-phone"></i> Talk to Expert
                         </a>
@@ -157,9 +165,9 @@
                                     @foreach ($variantAttributes as $attr)
                                         <th>{{ $attr->name }}</th>
                                     @endforeach
-                                    <th>Price</th>
+                                    @if ($showPrices)<th>Price</th>@endif
                                     <th>Stock</th>
-                                    <th></th>
+                                    @if ($enableEnquiries)<th></th>@endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -171,17 +179,19 @@
                                             @php $val = $variant->values->firstWhere('attribute_id', $attr->id); @endphp
                                             <td>{{ $val?->attributeValue?->value ?? '-' }}</td>
                                         @endforeach
-                                        <td>₹{{ number_format($variant->sales_price ?? $variant->price ?? $price) }}</td>
+                                        @if ($showPrices)<td>{{ $currencySymbol }}{{ number_format($variant->sales_price ?? $variant->price ?? $price) }}</td>@endif
                                         <td>{{ $variant->stock ?? '-' }}</td>
-                                        <td>
-                                            <button type="button" class="pd-mini-btn js-enquiry-open"
-                                                data-product-id="{{ $product->id }}"
-                                                data-category-id="{{ $product->product_category ?? 0 }}"
-                                                data-price="{{ $variant->sales_price ?? $variant->price ?? $price }}"
-                                                data-product-name="{{ $title }} - {{ $variant->name ?? 'Variant ' . $variant->id }}">
-                                                Enquire
-                                            </button>
-                                        </td>
+                                        @if ($enableEnquiries)
+                                            <td>
+                                                <button type="button" class="pd-mini-btn js-enquiry-open"
+                                                    data-product-id="{{ $product->id }}"
+                                                    data-category-id="{{ $product->product_category ?? 0 }}"
+                                                    data-price="{{ $variant->sales_price ?? $variant->price ?? $price }}"
+                                                    data-product-name="{{ $title }} - {{ $variant->name ?? 'Variant ' . $variant->id }}">
+                                                    Enquire
+                                                </button>
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>

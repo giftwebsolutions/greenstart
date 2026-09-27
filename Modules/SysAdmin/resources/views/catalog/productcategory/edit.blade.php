@@ -8,7 +8,6 @@
 @endsection
 
 @section('style')
-    <link rel="stylesheet" type="text/css" href="{{ asset('admin/css/vendors/select2.css') }}">
 @endsection
 
 @section('breadcrumb-title')
@@ -190,53 +189,3 @@
     </form>
 </div>
 @endsection
-
-@pushOnce('scripts')
- <script type="module">
-$(function () {
-
-    // ---------- BANNER ----------
-    $('#banner-image').on('change', function () {
-        const file = this.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = e => {
-            $('#bannerPreview').attr('src', e.target.result).removeClass('d-none');
-            $('#remove-banner-block').removeClass('d-none');
-            $('#remove_banner').val(0);
-        };
-        reader.readAsDataURL(file);
-    });
-
-    $('#remove-banner').on('click', function () {
-        $('#banner-image').val('');
-        $('#bannerPreview').attr('src', '').addClass('d-none');
-        $('#remove-banner-block').addClass('d-none');
-        $('#remove_banner').val(1);
-    });
-
-    // ---------- CATEGORY IMAGE ----------
-    $('#image-input').on('change', function () {
-        const file = this.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = e => {
-            $('#imagePreview').attr('src', e.target.result).removeClass('d-none');
-            $('#remove-image-block').removeClass('d-none');
-            $('#remove_image').val(0);
-        };
-        reader.readAsDataURL(file);
-    });
-
-    $('#remove-image').on('click', function () {
-        $('#image-input').val('');
-        $('#imagePreview').attr('src', '').addClass('d-none');
-        $('#remove-image-block').addClass('d-none');
-        $('#remove_image').val(1);
-    });
-
-});
-</script>
-@endPushOnce

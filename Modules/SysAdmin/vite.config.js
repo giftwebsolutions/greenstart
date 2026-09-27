@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import path from 'path';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
     build: {
@@ -15,22 +15,13 @@ export default defineConfig({
             publicDirectory: '../../public',
             buildDirectory: 'build-sysadmin',
             input: [
-                __dirname + '/resources/assets/scss/style.scss',
+                __dirname + '/resources/assets/css/app.css',
                 __dirname + '/resources/assets/js/app.js'
             ],
             refresh: true,
         }),
+        tailwindcss(),
     ],
-    resolve: {
-        alias: {
-            '$': 'jQuery',
-            jQuery: 'jquery',
-            '~bootstrap': path.resolve(__dirname, 'node_modules/bootstrap'),
-        },
-    },
-    rollupOptions: {
-        external: [],
-    }
 });
 // Scen all resources for assets file. Return array
 //function getFilePaths(dir) {

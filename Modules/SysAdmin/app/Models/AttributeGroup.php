@@ -33,6 +33,7 @@ class AttributeGroup extends Model
     protected $casts = [
         'family_id' => 'int',
         'position' => 'int',
+        'column' => 'int',
         'is_user_defined' => 'bool',
         'status' => 'int',
     ];
@@ -42,6 +43,7 @@ class AttributeGroup extends Model
         'name',
         'slug',
         'position',
+        'column',
         'is_user_defined',
         'status',
     ];

@@ -1,40 +1,10 @@
-<div class="catalog-workspace">
-    @include('sysadmin::layouts.alert')
-    @error('delete')<div class="alert alert-danger">{{ $message }}</div>@enderror
-
-    <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4">
-        <div><h4 class="mb-1">Attribute families</h4><p class="text-muted mb-0">Product templates containing ordered groups and reusable attributes.</p></div>
-        <a href="{{ route('sysadmin.catalog.attribute.family.create') }}" class="btn btn-primary"><i class="fa fa-plus me-1"></i>New family</a>
-    </div>
-
-    <div class="card border-0 shadow-sm">
-        <div class="card-body border-bottom">
-            <div class="row g-2">
-                <div class="col-md-8"><input type="search" wire:model.live.debounce.300ms="search" class="form-control" placeholder="Search family name or code"></div>
-                <div class="col-md-4"><select wire:model.live="status" class="form-select"><option value="all">All statuses</option><option value="1">Published</option><option value="2">Draft</option><option value="0">Disabled</option></select></div>
-            </div>
-        </div>
-        <div class="table-responsive">
-            <table class="table align-middle mb-0 catalog-table">
-                <thead><tr><th>Family</th><th>Structure</th><th>Products</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
-                <tbody>
-                    @forelse ($families as $family)
-                        <tr wire:key="family-{{ $family->id }}">
-                            <td><div class="fw-semibold">{{ $family->name }}</div><code class="small">{{ $family->code }}</code></td>
-                            <td><strong>{{ $family->groups_count }}</strong> groups <span class="text-muted mx-1">·</span> <strong>{{ $family->attributes_count }}</strong> attributes</td>
-                            <td>{{ $family->products_count }}</td>
-                            <td><span class="status-dot status-{{ $family->status }}"></span>{{ [0 => 'Disabled', 1 => 'Published', 2 => 'Draft'][$family->status] }}</td>
-                            <td class="text-end text-nowrap">
-                                <a href="{{ route('sysadmin.catalog.attribute.family.edit', $family->id) }}" class="btn btn-sm btn-primary">Open builder</a>
-                                <button type="button" wire:click="delete({{ $family->id }})" wire:confirm="Delete this family and its groups?" class="btn btn-sm btn-outline-danger">Delete</button>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr><td colspan="5" class="text-center text-muted py-5">No attribute families found.</td></tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-        @if ($families->hasPages())<div class="card-footer bg-white">{{ $families->links() }}</div>@endif
-    </div>
+<div class="grid gap-5">
+    <div class="flex flex-wrap items-end justify-between gap-3"><div><h1 class="text-[22px] font-bold tracking-tight text-ink">Attribute families</h1><p class="mt-1 text-[13px] text-ink-muted">Magento-style product templates with ordered groups and reusable attributes.</p></div><x-sysadmin::btn variant="primary" :href="route('sysadmin.catalog.attribute.family.create')">{!! \Modules\SysAdmin\Support\Icon::get('plus', 'h-4 w-4') !!} New family</x-sysadmin::btn></div>
+    @error('delete')<div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700">{{ $message }}</div>@enderror
+    <x-sysadmin::table-toolbar search-placeholder="Search family name or code..."><select wire:model.live="status" class="min-h-11 rounded-xl border border-hairline-strong bg-white px-3 text-[12.5px] font-semibold"><option value="all">All statuses</option><option value="1">Published</option><option value="2">Draft</option><option value="0">Disabled</option></select></x-sysadmin::table-toolbar>
+    <div class="overflow-x-auto rounded-xl border border-hairline bg-white shadow-sm"><table class="w-full min-w-[760px] border-collapse"><thead><tr><x-sysadmin::th>Family</x-sysadmin::th><x-sysadmin::th>Structure</x-sysadmin::th><x-sysadmin::th>Products</x-sysadmin::th><x-sysadmin::th>Status</x-sysadmin::th><x-sysadmin::th align="right">Actions</x-sysadmin::th></tr></thead><tbody>
+        @forelse($families as $family)<tr wire:key="family-{{ $family->id }}" class="hover:bg-[#fafbfc]"><x-sysadmin::td><div class="font-semibold text-ink">{{ $family->name }}</div><code class="text-[11.5px] text-primary">{{ $family->code }}</code></x-sysadmin::td><x-sysadmin::td><span class="font-semibold text-ink">{{ $family->groups_count }}</span> <span class="text-ink-muted">groups</span><span class="mx-2 text-hairline-strong">/</span><span class="font-semibold text-ink">{{ $family->attributes_count }}</span> <span class="text-ink-muted">attributes</span></x-sysadmin::td><x-sysadmin::td><span class="tabular-nums font-semibold">{{ $family->products_count }}</span></x-sysadmin::td><x-sysadmin::td><span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11.5px] font-semibold {{ $family->status === 1 ? 'bg-emerald-50 text-emerald-700' : ($family->status === 2 ? 'bg-amber-50 text-amber-700' : 'bg-slate-100 text-slate-600') }}"><span class="size-1.5 rounded-full bg-current"></span>{{ [0=>'Disabled',1=>'Published',2=>'Draft'][$family->status] }}</span></x-sysadmin::td><x-sysadmin::td align="right"><div class="flex justify-end gap-1"><x-sysadmin::btn variant="primary" :href="route('sysadmin.catalog.attribute.family.edit', $family->id)" class="min-h-9 px-3">Open builder</x-sysadmin::btn><x-sysadmin::icon-button icon="trash" label="Delete family" danger wire:click="delete({{ $family->id }})" wire:confirm="Delete this family and its groups?"/></div></x-sysadmin::td></tr>
+        @empty<tr><td colspan="5" class="px-6 py-14 text-center text-[13px] text-ink-muted">No attribute families found.</td></tr>@endforelse
+    </tbody></table></div>
+    @if($families->hasPages())<div>{{ $families->links() }}</div>@endif
 </div>

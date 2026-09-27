@@ -2,7 +2,6 @@
 
 namespace Modules\Frontend\Support;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Modules\SysAdmin\Models\Settings;
 
@@ -19,18 +18,19 @@ class SeoData
     {
         $settings ??= static::settings();
 
-        $siteName = $settings['site_name'] ?? config('app.name');
+        $siteName = $settings['site_name'] ?? $settings['title'] ?? config('app.name');
         $description = $settings['meta_description'] ?? $settings['description'] ?? $siteName;
         $keywords = $settings['meta_keywords'] ?? $settings['keywords'] ?? '';
 
         return [
             'site_name' => $siteName,
-            'title' => $siteName,
+            'title' => ! empty($settings['meta_title']) ? $settings['meta_title'] : $siteName,
             'description' => Str::limit(strip_tags((string) $description), 160, ''),
             'keywords' => $keywords,
+            'author' => ! empty($settings['meta_author']) ? $settings['meta_author'] : $siteName,
             'canonical' => url()->current(),
-            'robots' => 'index,follow',
-            'image' => asset('assets/img/logo.png'),
+            'robots' => $settings['robots'] ?? 'index,follow',
+            'image' => Settings::assetUrl($settings['og_image'] ?? $settings['site_logo'] ?? null, 'assets/images/logo/logo.png'),
             'type' => 'website',
             'twitter_card' => 'summary_large_image',
         ];
@@ -41,11 +41,11 @@ class SeoData
         $defaults = static::defaults();
 
         $seo = array_merge($defaults, [
-            'title' => trim($title . ' | ' . $defaults['site_name']),
+            'title' => trim($title.' | '.$defaults['site_name']),
         ], $overrides);
 
-        if (!Str::contains((string) $seo['title'], $defaults['site_name'])) {
-            $seo['title'] = trim($seo['title'] . ' | ' . $defaults['site_name']);
+        if (! Str::contains((string) $seo['title'], $defaults['site_name'])) {
+            $seo['title'] = trim($seo['title'].' | '.$defaults['site_name']);
         }
 
         return [
@@ -58,7 +58,7 @@ class SeoData
 
     public static function page($page = null, array $overrides = []): array
     {
-        if (!$page) {
+        if (! $page) {
             return static::basic('Page');
         }
 
@@ -190,10 +190,10 @@ class SeoData
     {
         $offer = [];
 
-        if (!empty($product->sales_price)) {
+        if (! empty($product->sales_price)) {
             $offer = [
                 '@type' => 'Offer',
-                'priceCurrency' => 'INR',
+                'priceCurrency' => static::settings()['currency_code'] ?? 'INR',
                 'price' => $product->sales_price,
                 'availability' => 'https://schema.org/InStock',
                 'url' => url()->current(),
@@ -208,6 +208,6 @@ class SeoData
             'image' => $product->thumb_url ?: null,
             'sku' => $product->sku ?? null,
             'offers' => $offer ?: null,
-        ], fn ($value) => !is_null($value) && $value !== '');
+        ], fn ($value) => ! is_null($value) && $value !== '');
     }
 }

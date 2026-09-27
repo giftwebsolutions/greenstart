@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class SliderItem
- * 
+ *
  * @property int $id
  * @property int $slider_id
  * @property string $path
@@ -15,30 +15,29 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $description
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * 
  * @property Gallery $gallery
- *
- * @package App\Models
  */
 class SliderItem extends Model
 {
-	protected $table = 'slider_items';
+    protected $table = 'slider_items';
 
-	protected $casts = [
-		'slider_id' => 'int'
-	];
+    protected $casts = [
+        'slider_id' => 'int',
+        'sort_order' => 'int',
+    ];
 
-	protected $fillable = [
-		'slider_id',
-		'path',
-		'title',
-		'file',
-		'target',
-		'description'
-	];
+    protected $fillable = [
+        'slider_id',
+        'path',
+        'title',
+        'file',
+        'target',
+        'sort_order',
+        'description',
+    ];
 
-	public function gallery()
-	{
-		return $this->belongsTo(Gallery::class, 'slider_id');
-	}
+    public function gallery()
+    {
+        return $this->belongsTo(Gallery::class, 'slider_id');
+    }
 }

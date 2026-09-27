@@ -1,11 +1,14 @@
 @php
     $menus    = Config::get('frontend.menus');
-    $settings = Config::get('site-settings');
-    $waNumber = preg_replace('/\D+/', '', $settings['whatsapp'] ?? '');
+    $settings = Config::get('site-settings', []);
+    $enableWhatsApp = filter_var($settings['enable_whatsapp'] ?? true, FILTER_VALIDATE_BOOL);
+    $enableEnquiries = filter_var($settings['enable_enquiries'] ?? true, FILTER_VALIDATE_BOOL);
+    $waNumber = $enableWhatsApp ? preg_replace('/\D+/', '', $settings['whatsapp'] ?? '') : '';
     $phone    = $settings['mobile'] ?? '';
     $email    = $settings['email'] ?? '';
-    $logo     = asset('assets/images/logo/logo.png');
-    $brand    = config('app.name', 'Greens Aqua World');
+    $logo     = \Modules\SysAdmin\Models\Settings::assetUrl($settings['site_logo'] ?? null, 'assets/images/logo/logo.png');
+    $brand    = $settings['site_name'] ?? $settings['title'] ?? config('app.name', 'Greens Aqua World');
+    $tagline  = $settings['tagline'] ?? 'Pure water solutions for homes & businesses';
     $drawerCategories = \Modules\SysAdmin\Models\ProductCategory::query()
         ->where(function ($query) {
             $query->where('parent_id', 0)->orWhereNull('parent_id');
@@ -23,7 +26,7 @@
     <div class="ga-utility">
         <div class="container ga-utility-row">
             <p class="ga-utility-note">
-                <i class="fa-solid fa-droplet"></i> Pure water solutions for homes &amp; businesses
+                <i class="fa-solid fa-droplet"></i> {{ $tagline }}
             </p>
             <div class="ga-utility-actions">
                 @if ($phone)
@@ -37,6 +40,8 @@
                     @if (!empty($settings['facebook']))<a href="{{ $settings['facebook'] }}" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>@endif
                     @if (!empty($settings['instagram']))<a href="{{ $settings['instagram'] }}" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>@endif
                     @if (!empty($settings['youtube']))<a href="{{ $settings['youtube'] }}" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>@endif
+                    @if (!empty($settings['x_twitter']))<a href="{{ $settings['x_twitter'] }}" target="_blank" rel="noopener" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>@endif
+                    @if (!empty($settings['linkedin']))<a href="{{ $settings['linkedin'] }}" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>@endif
                 </span>
             </div>
         </div>
@@ -74,9 +79,11 @@
                         <i class="fa-brands fa-whatsapp"></i>
                     </a>
                 @endif
-                <a class="ga-enquiry-btn ga-only-desktop" href="{{ route('frontend.enquiry') }}">
-                    <i class="fa-regular fa-paper-plane"></i> Get a Quote
-                </a>
+                @if ($enableEnquiries)
+                    <a class="ga-enquiry-btn ga-only-desktop" href="{{ route('frontend.enquiry') }}">
+                        <i class="fa-regular fa-paper-plane"></i> Get a Quote
+                    </a>
+                @endif
             </div>
         </div>
 
@@ -192,11 +199,13 @@
             <span class="metro-drawer-text"><strong>FAQ</strong><small>Common purifier questions</small></span>
             <i class="fa-solid fa-chevron-right"></i>
         </a>
-        <a href="{{ route('frontend.enquiry') }}" class="metro-drawer-link {{ request()->routeIs('frontend.enquiry') ? 'active' : '' }}">
-            <span class="metro-drawer-icon"><i class="fa-regular fa-paper-plane"></i></span>
-            <span class="metro-drawer-text"><strong>Enquiry</strong><small>Request product support</small></span>
-            <i class="fa-solid fa-chevron-right"></i>
-        </a>
+        @if ($enableEnquiries)
+            <a href="{{ route('frontend.enquiry') }}" class="metro-drawer-link {{ request()->routeIs('frontend.enquiry') ? 'active' : '' }}">
+                <span class="metro-drawer-icon"><i class="fa-regular fa-paper-plane"></i></span>
+                <span class="metro-drawer-text"><strong>Enquiry</strong><small>Request product support</small></span>
+                <i class="fa-solid fa-chevron-right"></i>
+            </a>
+        @endif
         <a href="{{ route('frontend.contact') }}" class="metro-drawer-link {{ request()->routeIs('frontend.contact') ? 'active' : '' }}">
             <span class="metro-drawer-icon"><i class="fa-solid fa-envelope"></i></span>
             <span class="metro-drawer-text"><strong>Contact</strong><small>Call, WhatsApp, location</small></span>
@@ -218,6 +227,8 @@
         @if (!empty($settings['facebook']))<a href="{{ $settings['facebook'] }}" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>@endif
         @if (!empty($settings['instagram']))<a href="{{ $settings['instagram'] }}" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>@endif
         @if (!empty($settings['youtube']))<a href="{{ $settings['youtube'] }}" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>@endif
+        @if (!empty($settings['x_twitter']))<a href="{{ $settings['x_twitter'] }}" target="_blank" rel="noopener" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>@endif
+        @if (!empty($settings['linkedin']))<a href="{{ $settings['linkedin'] }}" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>@endif
     </div>
 </aside>
 <div class="ga-overlay" data-ga-drawer-close></div>

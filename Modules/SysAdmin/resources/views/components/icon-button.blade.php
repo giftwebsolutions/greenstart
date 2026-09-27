@@ -1,0 +1,3 @@
+@props(['icon', 'label', 'href' => null, 'danger' => false, 'type' => 'button'])
+@php($classes = 'inline-grid size-9 place-items-center rounded-lg border border-hairline bg-white transition '.($danger ? 'text-red-600 hover:bg-red-50' : 'text-ink-soft hover:bg-primary-50 hover:text-primary-600'))
+@if($href)<a href="{{ $href }}" title="{{ $label }}" aria-label="{{ $label }}" {{ $attributes->class($classes) }}>{!! \Modules\SysAdmin\Support\Icon::get($icon, 'h-4 w-4') !!}</a>@else<button type="{{ $type }}" title="{{ $label }}" aria-label="{{ $label }}" {{ $attributes->class($classes) }}>{!! \Modules\SysAdmin\Support\Icon::get($icon, 'h-4 w-4') !!}</button>@endif

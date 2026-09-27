@@ -4,11 +4,9 @@ namespace Modules\SysAdmin\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Modules\SysAdmin\Models\Page;
 
 class PageFormRequest extends FormRequest
 {
-
     public function authorize()
     {
         return true;
@@ -21,14 +19,10 @@ class PageFormRequest extends FormRequest
      */
     public function rules()
     {
-        return match (request()->route()->action['as']) {
-            'sysadmin.cms.page.create',  => $this->store(),
-            'sysadmin.cms.page.edit' => $this->update(),
-            'sysadmin.cms.page.update' => $this->update(),
-            default => $this->store()
-        };
+        return $this->isMethod('PATCH') || $this->isMethod('PUT')
+            ? $this->update()
+            : $this->store();
     }
-
 
     /**
      * Get the validation rules that apply to the post request.
@@ -38,14 +32,17 @@ class PageFormRequest extends FormRequest
     public function store()
     {
         return [
-            'name' => 'required|string|unique:pages|max:120',
-            'title' => 'required|string|unique:pages',
-            'parent_id' => 'nullable|integer',
-            'content' => 'required|string',
-            'keywords' => 'required|string|max:220',
-            'description' => 'required|string|max:220',
-            'featured_image' => 'image|mimes:jpg,jpeg,png,webp|max:4096',
-            'banner' => 'image|mimes:jpg,jpeg,png,webp|max:4096',
+            'name' => ['required', 'string', 'max:120', 'unique:pages,name'],
+            'title' => ['required', 'string', 'max:255', 'unique:pages,title'],
+            'parent_id' => ['nullable', 'integer', Rule::exists('pages', 'id')],
+            'content' => ['required', 'string'],
+            'keywords' => ['required', 'string', 'max:220'],
+            'description' => ['required', 'string', 'max:2000'],
+            'status' => ['required', 'integer', Rule::in([0, 1, 2])],
+            'featured_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'banner' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'remove_featured_image' => ['nullable', 'boolean'],
+            'remove_banner' => ['nullable', 'boolean'],
         ];
     }
 
@@ -57,14 +54,17 @@ class PageFormRequest extends FormRequest
     public function update()
     {
         return [
-            'name' => 'required|string|max:120|unique:pages,name,' . $this->id,
-            'title' => 'required|string|unique:pages,title,' . $this->id,
-            'parent_id' => 'nullable|integer',
-            'content' => 'required|string',
-            'keywords' => 'required|string|max:220',
-            'description' => 'required|string|max:220',
-            'featured_image' => 'image|mimes:jpg,jpeg,png,webp|max:4096',
-            'banner' => 'image|mimes:jpg,jpeg,png,webp|max:4096',
+            'name' => ['required', 'string', 'max:120', Rule::unique('pages', 'name')->ignore($this->route('id'))],
+            'title' => ['required', 'string', 'max:255', Rule::unique('pages', 'title')->ignore($this->route('id'))],
+            'parent_id' => ['nullable', 'integer', Rule::exists('pages', 'id')->where(fn ($query) => $query->where('id', '!=', $this->route('id')))],
+            'content' => ['required', 'string'],
+            'keywords' => ['required', 'string', 'max:220'],
+            'description' => ['required', 'string', 'max:2000'],
+            'status' => ['required', 'integer', Rule::in([0, 1, 2])],
+            'featured_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'banner' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'remove_featured_image' => ['nullable', 'boolean'],
+            'remove_banner' => ['nullable', 'boolean'],
         ];
     }
 }
