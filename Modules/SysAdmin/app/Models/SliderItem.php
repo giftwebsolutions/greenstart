@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $description
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property Gallery $gallery
+ * @property Slider $slider
  */
 class SliderItem extends Model
 {
@@ -36,8 +36,8 @@ class SliderItem extends Model
         'description',
     ];
 
-    public function gallery()
+    public function slider()
     {
-        return $this->belongsTo(Gallery::class, 'slider_id');
+        return $this->belongsTo(Slider::class, 'slider_id');
     }
 }

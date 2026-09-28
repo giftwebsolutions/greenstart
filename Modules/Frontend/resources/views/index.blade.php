@@ -15,18 +15,38 @@
     <!-- Slider Start -->
     <div class="slider-area">
         <div class="hero-slider-wrapper">
-            <!-- Single Slider  -->
-             @forelse ($sliderdata as $slider)
+            @forelse ($sliderdata as $slide)
+                @php
+                    $slidePath = trim((string) $slide->path);
+                    $isExternalSlide = preg_match('/^https?:\/\//i', $slidePath) === 1;
+                    $isSpecialSlideLink = preg_match('/^(mailto:|tel:|#)/i', $slidePath) === 1;
+                    $slideUrl = $slidePath === ''
+                        ? route('frontend.shop.index')
+                        : (($isExternalSlide || $isSpecialSlideLink)
+                            ? $slidePath
+                            : url('/'.ltrim($slidePath, '/')));
+                    $slideTarget = in_array($slide->target, ['_self', '_blank'], true)
+                        ? $slide->target
+                        : '_self';
+                @endphp
                 <div class="single-slide slider-height-1 bg-img d-flex"
-                    data-bg-image=" {{ ImageUploader::getFilePath($slider['file'], $slider['created_at']) }}">
+                    data-bg-image="{{ ImageUploader::getFilePath($slide->file, $slide->created_at) }}">
                     <div class="container hero-copy">
                         <div class="hero-copy-inner">
-                            <span class="hero-kicker">Aqua water purification systems</span>
-                            <h1>Pure water solutions for homes and businesses</h1>
-                            <p>Explore domestic RO, industrial RO, filters, spares, and service support from Greens Aqua World.</p>
+                            @if ($homeSlider && filled($homeSlider->name))
+                                <span class="hero-kicker">{{ $homeSlider->name }}</span>
+                            @endif
+                            <h1>{{ $slide->title }}</h1>
+                            @if (filled($slide->description))
+                                <div class="hero-description">{!! $slide->description !!}</div>
+                            @endif
                             <div class="hero-actions">
-                                <a href="{{ route('frontend.shop.index') }}" class="hero-btn hero-btn-primary">Shop Products</a>
-                                <a href="{{ route('frontend.enquiry') }}" class="hero-btn hero-btn-secondary">Request Enquiry</a>
+                                <a href="{{ $slideUrl }}"
+                                    target="{{ $slideTarget }}"
+                                    @if ($slideTarget === '_blank') rel="noopener noreferrer" @endif
+                                    class="hero-btn hero-btn-primary">
+                                    View details
+                                </a>
                             </div>
                         </div>
                     </div>

@@ -27,14 +27,14 @@
             @if($sliderId)
                 <section class="overflow-hidden rounded-xl border border-hairline bg-white shadow-sm">
                     <header class="flex flex-wrap items-center justify-between gap-3 border-b border-hairline px-5 py-4">
-                        <div><h2 class="text-base font-bold text-ink">Slides</h2><p class="mt-1 text-xs text-ink-muted">Edit content inline and arrange the storefront display order.</p></div>
+                        <div><h2 class="text-base font-bold text-ink">Slides</h2><p class="mt-1 text-xs text-ink-muted">The image, title, description and destination below are rendered on the homepage for the active <span class="font-mono">home</span> slider.</p></div>
                         <x-sysadmin::btn x-on:click="addSlideOpen = ! addSlideOpen">{!! \Modules\SysAdmin\Support\Icon::get('plus', 'h-4 w-4') !!} Add slide</x-sysadmin::btn>
                     </header>
 
                     <div x-show="addSlideOpen" x-cloak x-transition class="border-b border-hairline bg-[#fafbfc] p-5">
                         <form wire:submit="addItem" class="grid gap-4 md:grid-cols-2">
                             <x-sysadmin::input label="Slide title" name="newItemTitle" wire:model="newItemTitle" required />
-                            <x-sysadmin::input label="Destination path or URL" name="newItemPath" wire:model="newItemPath" placeholder="/catalog/new-arrivals" required />
+                            <x-sysadmin::input label="Button destination path or URL" name="newItemPath" wire:model="newItemPath" placeholder="/catalog/new-arrivals or https://example.com" required />
                             <x-sysadmin::select label="Open link in" name="newItemTarget" wire:model="newItemTarget"><option value="_self">Same window</option><option value="_blank">New window</option></x-sysadmin::select>
                             <div><label class="mb-1.5 block text-[12.5px] font-bold text-ink">Slide image <span class="text-red-600">*</span></label><input type="file" wire:model="newItemFile" accept="image/jpeg,image/png,image/webp" class="block w-full rounded-xl border border-hairline-strong bg-white text-xs file:mr-3 file:border-0 file:bg-primary-50 file:px-3 file:py-3 file:font-semibold file:text-primary">@error('newItemFile')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror</div>
                             <x-sysadmin::rich-text label="Slide description" model="newItemDescription" class="md:col-span-2" />
@@ -63,7 +63,7 @@
                                         </div>
                                         <div class="grid gap-3 md:grid-cols-2">
                                             <x-sysadmin::input label="Title" name="items.{{ $index }}.title" wire:model="items.{{ $index }}.title" required />
-                                            <x-sysadmin::input label="Destination" name="items.{{ $index }}.path" wire:model="items.{{ $index }}.path" required />
+                                            <x-sysadmin::input label="Button destination" name="items.{{ $index }}.path" wire:model="items.{{ $index }}.path" required />
                                             <x-sysadmin::select label="Open link in" name="items.{{ $index }}.target" wire:model="items.{{ $index }}.target"><option value="_self">Same window</option><option value="_blank">New window</option></x-sysadmin::select>
                                             <x-sysadmin::rich-text label="Description" model="items.{{ $index }}.description" class="md:col-span-2" />
                                         </div>

@@ -7,27 +7,25 @@ use Modules\Frontend\Support\SeoData;
 use Modules\SysAdmin\Interfaces\EnquiryInterface;
 use Modules\SysAdmin\Models\Page;
 use Modules\SysAdmin\Models\ProductCategory;
-use Modules\SysAdmin\Repository\SliderRepository;
-use Modules\SysAdmin\Repository\SliderItemRepository;
+use Modules\SysAdmin\Models\Slider;
 use Modules\SysAdmin\Repository\TestimonialRepository;
+use Modules\SysAdmin\Requests\EnquiryFormRequest;
 
 class FrontendController extends Controller
 {
-
     public function __construct() {}
 
     /**
      * Home Page
      */
-    public function index(TestimonialRepository $testimonialRepo, SliderRepository $slider)
+    public function index(TestimonialRepository $testimonialRepo)
     {
-        $sliderdata = [];
-        $slider = $slider->with('sliderItems')->findWhere(['slug' => 'home'])->first();
-
-        if ($slider) {
-            $slider = $slider->toArray();
-            $sliderdata = $slider['slider_items'];
-        }
+        $homeSlider = Slider::query()
+            ->where('slug', 'home')
+            ->where('status', 1)
+            ->with('sliderItems')
+            ->first();
+        $sliderdata = $homeSlider?->sliderItems ?? collect();
 
         $testimonials = $testimonialRepo->recentFrontend(6);
         $home = Page::where('slug', 'home')->active()->first();
@@ -35,7 +33,7 @@ class FrontendController extends Controller
         $seoPayload = $home ? SeoData::page($home) : SeoData::basic('Home');
 
         return view('frontend::index', array_merge(
-            compact('testimonials', 'home', 'sliderdata'),
+            compact('testimonials', 'home', 'homeSlider', 'sliderdata'),
             $seoPayload
         ));
     }
@@ -64,20 +62,20 @@ class FrontendController extends Controller
         ));
     }
 
-    public function storeEnquiry(\Modules\SysAdmin\Requests\EnquiryFormRequest $request, EnquiryInterface $enquiry)
+    public function storeEnquiry(EnquiryFormRequest $request, EnquiryInterface $enquiry)
     {
-        //dd($request);
+        // dd($request);
         $data = $request->validated();
-        //dd($data);
+        // dd($data);
         // Ensure defaults if not present
         $data['category_id'] = $data['category_id'] ?? 0;
-        $data['product_id']  = $data['product_id'] ?? 0;
-        $data['status']      = $data['status'] ?? 1;
+        $data['product_id'] = $data['product_id'] ?? 0;
+        $data['status'] = $data['status'] ?? 1;
 
         $enquiry->saveOrUpdate($data);
 
         return response()->json([
-            'status'  => true,
+            'status' => true,
             'message' => 'Thanks! We received your enquiry. Our team will contact you soon.',
         ]);
     }
