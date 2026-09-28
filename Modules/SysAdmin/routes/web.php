@@ -7,23 +7,19 @@ use Modules\SysAdmin\Http\Controllers\AttributeGroupController;
 use Modules\SysAdmin\Http\Controllers\AttributeTypeController;
 use Modules\SysAdmin\Http\Controllers\Auth\AuthController;
 use Modules\SysAdmin\Http\Controllers\Auth\ForgotPasswordController;
+use Modules\SysAdmin\Http\Controllers\Auth\ResetPasswordController;
 use Modules\SysAdmin\Http\Controllers\BlockController;
 use Modules\SysAdmin\Http\Controllers\BlogCategoryController;
 use Modules\SysAdmin\Http\Controllers\BlogController;
-use Modules\SysAdmin\Http\Controllers\CodeEditorController;
 use Modules\SysAdmin\Http\Controllers\DashboardController;
 use Modules\SysAdmin\Http\Controllers\EnquiryController;
 use Modules\SysAdmin\Http\Controllers\GalleryController;
 use Modules\SysAdmin\Http\Controllers\PageController;
 use Modules\SysAdmin\Http\Controllers\ProductCategoryController;
 use Modules\SysAdmin\Http\Controllers\ProductController;
-use Modules\SysAdmin\Http\Controllers\RoleController;
-use Modules\SysAdmin\Http\Controllers\SettingsController;
-use Modules\SysAdmin\Http\Controllers\SitemapController;
 use Modules\SysAdmin\Http\Controllers\SliderController;
 use Modules\SysAdmin\Http\Controllers\TagController;
 use Modules\SysAdmin\Http\Controllers\TestimonialController;
-use Modules\SysAdmin\Http\Controllers\UserController;
 use Modules\SysAdmin\Livewire\Auth\Login;
 
 // ============================================================================
@@ -46,8 +42,11 @@ Route::prefix('sysadmin')->as('sysadmin.')->group(function () {
     Route::controller(ForgotPasswordController::class)->group(function () {
         Route::get('forget-password', 'showLinkRequestForm')->name('forget-password');
         Route::post('forget-password', 'sendResetLinkEmail')->name('forget-password.post');
+    });
+
+    Route::controller(ResetPasswordController::class)->group(function () {
         Route::get('reset-password/{token}', 'showResetForm')->name('reset-password');
-        Route::post('reset-password', 'resetPassword')->name('reset-password.post');
+        Route::post('reset-password', 'reset')->name('reset-password.post');
     });
 
 });
@@ -71,21 +70,21 @@ Route::prefix('sysadmin')
         // ===============================
         // 🔑 Role Management
         // ===============================
-        Route::prefix('roles')->as('roles.')->controller(RoleController::class)->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('view/{id}', 'show')->name('view');
-            Route::get('create', 'create')->name('create');
-            Route::get('edit/{id}', 'edit')->name('edit');
+        Route::prefix('roles')->as('roles.')->group(function () {
+            Route::view('/', 'sysadmin::roles.index')->name('index');
+            Route::redirect('view/{id}', '/sysadmin/roles')->name('view');
+            Route::redirect('create', '/sysadmin/roles')->name('create');
+            Route::redirect('edit/{id}', '/sysadmin/roles')->name('edit');
         });
 
         // ===============================
         // 👤 User Management
         // ===============================
-        Route::prefix('user')->as('user.')->controller(UserController::class)->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('view/{id}', 'show')->name('view');
-            Route::get('create', 'create')->name('create');
-            Route::get('edit/{id}', 'edit')->name('edit');
+        Route::prefix('user')->as('user.')->group(function () {
+            Route::view('/', 'sysadmin::user.index')->name('index');
+            Route::redirect('view/{id}', '/sysadmin/user')->name('view');
+            Route::redirect('create', '/sysadmin/user')->name('create');
+            Route::redirect('edit/{id}', '/sysadmin/user')->name('edit');
         });
 
         Route::prefix('slider')
@@ -228,10 +227,7 @@ Route::prefix('sysadmin')
                 Route::get('/', 'index')->name('index');             // List all testimonials
                 Route::get('view/{id}', 'show')->name('view');       // View a single testimonial
                 Route::get('create', 'create')->name('create');      // Form to create
-                Route::post('create', 'store')->name('store');       // Save new testimonial
                 Route::get('edit/{id}', 'edit')->name('edit');       // Form to edit
-                Route::patch('update/{id}', 'update')->name('update'); // Update testimonial
-                Route::delete('destroy/{id}', 'destroy')->name('delete'); // Delete testimonial
             });
         });
 
@@ -274,8 +270,8 @@ Route::prefix('sysadmin')
         // ===============================
         // ⚙️ Settings
         // ===============================
-        Route::prefix('settings')->as('settings.')->controller(SettingsController::class)->group(function () {
-            Route::get('/', 'index')->name('index');
+        Route::prefix('settings')->as('settings.')->group(function () {
+            Route::view('/', 'sysadmin::settings.index')->name('index');
         });
 
         // ===============================
@@ -295,15 +291,9 @@ Route::prefix('sysadmin')
             });
 
             // Sitemap
-            Route::controller(SitemapController::class)->prefix('sitemap')->as('sitemap.')->group(function () {
-                Route::get('/', 'index')->name('index');
-                Route::post('generate', 'generate')->name('generate');
-            });
+            Route::view('sitemap', 'sysadmin::sitemap.index')->name('sitemap.index');
 
             // Code Editor
-            Route::controller(CodeEditorController::class)->prefix('code-editor')->as('code.')->group(function () {
-                Route::get('robot', 'index')->name('robot');
-                Route::post('robot/save', 'store')->name('robot-save');
-            });
+            Route::view('code-editor/robot', 'sysadmin::code-editor.robot')->name('code.robot');
         });
     });

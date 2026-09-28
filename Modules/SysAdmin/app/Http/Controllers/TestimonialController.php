@@ -3,10 +3,7 @@
 namespace Modules\SysAdmin\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
-use Modules\SysAdmin\Helpers\ImageUploader;
 use Modules\SysAdmin\Interfaces\TestimonialInterface;
-use Modules\SysAdmin\Requests\TestimonialFormRequest;
 
 class TestimonialController extends Controller
 {
@@ -34,18 +31,6 @@ class TestimonialController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
-    public function store(TestimonialFormRequest $request): RedirectResponse
-    {
-        $validatedData = $request->validated();
-        $this->testimonialRepository->saveOrUpdate($validatedData);
-
-        return redirect()->route('sysadmin.testimonial.index')
-            ->with('success', 'Testimonial created successfully.');
-    }
-
-    /**
      * Show the specified resource.
      */
     public function show($id)
@@ -63,32 +48,5 @@ class TestimonialController extends Controller
         $testimonial = $this->testimonialRepository->findOrFail($id);
 
         return view('sysadmin::testimonial.edit', compact('testimonial'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(TestimonialFormRequest $request, $id): RedirectResponse
-    {
-        $validatedData = $request->validated();
-        $this->testimonialRepository->saveOrUpdate($validatedData, $id);
-
-        return redirect()->route('sysadmin.testimonial.index')
-            ->with('success', 'Testimonial updated successfully.');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id): RedirectResponse
-    {
-        $testimonial = $this->testimonialRepository->findOrFail($id);
-        if ($testimonial->image && $testimonial->created_at) {
-            ImageUploader::remove($testimonial->created_at->toDateTimeString(), $testimonial->image);
-        }
-        $this->testimonialRepository->delete($id);
-
-        return redirect()->route('sysadmin.testimonial.index')
-            ->with('success', 'Testimonial deleted successfully.');
     }
 }
