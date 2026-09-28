@@ -35,6 +35,10 @@ final class Icon
         'check' => '<path d="M5 12l5 5 9-10"/>',
         'info' => '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5h.01"/>',
         'lock' => '<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
+        'server' => '<rect x="3" y="3" width="18" height="7" rx="2"/><rect x="3" y="14" width="18" height="7" rx="2"/><path d="M7 6.5h.01M7 17.5h.01M11 6.5h6M11 17.5h6"/>',
+        'refresh' => '<path d="M20 6v5h-5M4 18v-5h5M6.1 9A7 7 0 0 1 18.8 7.5L20 11M4 13l1.2 3.5A7 7 0 0 0 17.9 15"/>',
+        'bolt' => '<path d="M13 2 5 14h7l-1 8 8-12h-7z"/>',
+        'map' => '<path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3zM9 3v15M15 6v15"/>',
     ];
 
     public static function get(string $name, string $class = 'h-[18px] w-[18px]'): HtmlString

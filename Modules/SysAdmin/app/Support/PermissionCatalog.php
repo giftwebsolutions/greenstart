@@ -102,6 +102,10 @@ final class PermissionCatalog
             return 'sysadmin.dashboard.view';
         }
 
+        if (Str::startsWith($routeName, ['sysadmin.tools.', 'sysadmin.media.sitemap.', 'sysadmin.media.code.'])) {
+            return 'sysadmin.server_tools.manage';
+        }
+
         $maps = [
             'sysadmin.user.' => 'sysadmin.user',
             'sysadmin.roles.' => 'sysadmin.role',
@@ -120,9 +124,6 @@ final class PermissionCatalog
             'sysadmin.enquiry.' => 'customer.enquiries',
             'sysadmin.slider.' => 'media.sliders',
             'sysadmin.media.gallery.' => 'media.galleries',
-            'sysadmin.media.sitemap.' => 'sysadmin.server_tools',
-            'sysadmin.media.code.' => 'sysadmin.server_tools',
-            'sysadmin.tools.' => 'sysadmin.server_tools',
         ];
 
         foreach ($maps as $prefix => $permissionPrefix) {
@@ -135,7 +136,7 @@ final class PermissionCatalog
                 $action = 'update';
             }
             $ability = match ($action) {
-                'index', 'view', 'show', 'list', 'available-items', 'subcategories', 'load-attributes', 'attributes' => 'view',
+                'index', 'view', 'show', 'list', 'appointments', 'available-items', 'subcategories', 'load-attributes', 'attributes' => 'view',
                 'create', 'store', 'upload', 'item-create' => 'create',
                 'edit', 'update', 'reorder', 'item-save' => 'update',
                 'delete', 'destroy', 'remove', 'item-delete' => 'delete',

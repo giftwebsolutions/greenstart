@@ -37,7 +37,7 @@
     <div>{{ $users->links() }}</div>
 
     @if($drawerOpen)
-        <div class="fixed inset-0 z-50" role="dialog" aria-modal="true">
+        <div wire:key="user-drawer-{{ $editingId ?: 'create' }}" class="fixed inset-0 z-50" role="dialog" aria-modal="true">
             <button type="button" wire:click="closeDrawer" class="absolute inset-0 bg-slate-950/40" aria-label="Close user form"></button>
             <aside class="absolute inset-y-0 right-0 w-full max-w-lg overflow-y-auto bg-white shadow-2xl">
                 <div class="flex items-start justify-between border-b border-hairline px-6 py-5"><div><h2 class="text-lg font-bold text-ink">{{ $editingId ? 'Edit user' : 'Add user' }}</h2><p class="mt-1 text-xs text-ink-muted">Account information and role-based access.</p></div><button type="button" wire:click="closeDrawer" class="grid size-9 place-items-center rounded-lg text-ink-muted hover:bg-slate-100" aria-label="Close">×</button></div>

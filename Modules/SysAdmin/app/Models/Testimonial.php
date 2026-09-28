@@ -5,6 +5,7 @@ namespace Modules\SysAdmin\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Modules\SysAdmin\Helpers\ImageUploader;
 
 /**
  * Class Testimonial
@@ -43,5 +44,10 @@ class Testimonial extends Model
     {
         return $query->where('name', 'like', "%{$searchTerm}%")
                      ->orWhere('content', 'like', "%{$searchTerm}%");
+    }
+
+    public function getImageUrlAttribute(): string
+    {
+        return ImageUploader::getFilePath($this->image, $this->created_at, 'thumbnail');
     }
 }

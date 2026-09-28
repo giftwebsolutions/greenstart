@@ -13,10 +13,16 @@ use Modules\SysAdmin\Livewire\Catalog\Families\Builder as FamilyBuilder;
 use Modules\SysAdmin\Livewire\Catalog\Families\Index as FamilyIndex;
 use Modules\SysAdmin\Livewire\Catalog\Products\AttributeEditor as ProductAttributeEditor;
 use Modules\SysAdmin\Livewire\Catalog\Products\FormWizard as ProductFormWizard;
+use Modules\SysAdmin\Livewire\Enquiries\Appointments as EnquiryAppointments;
+use Modules\SysAdmin\Livewire\Enquiries\Index as EnquiryIndex;
+use Modules\SysAdmin\Livewire\Enquiries\Workspace as EnquiryWorkspace;
 use Modules\SysAdmin\Livewire\Roles\Workspace as RolesWorkspace;
+use Modules\SysAdmin\Livewire\ServerTools;
 use Modules\SysAdmin\Livewire\Settings\Workspace as SettingsWorkspace;
+use Modules\SysAdmin\Livewire\SitemapManager;
 use Modules\SysAdmin\Livewire\Sliders\Editor as SliderEditor;
 use Modules\SysAdmin\Livewire\Tables\ResourceTable;
+use Modules\SysAdmin\Livewire\Testimonials\Workspace as TestimonialsWorkspace;
 use Modules\SysAdmin\Livewire\Users\Index as UsersIndex;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
@@ -50,10 +56,16 @@ class SysAdminServiceProvider extends ServiceProvider
             'sysadmin.catalog.families.builder' => FamilyBuilder::class,
             'sysadmin.catalog.products.form-wizard' => ProductFormWizard::class,
             'sysadmin.catalog.products.attribute-editor' => ProductAttributeEditor::class,
+            'sysadmin.enquiries.index' => EnquiryIndex::class,
+            'sysadmin.enquiries.workspace' => EnquiryWorkspace::class,
+            'sysadmin.enquiries.appointments' => EnquiryAppointments::class,
             'sysadmin.resource-table' => ResourceTable::class,
             'sysadmin.roles.workspace' => RolesWorkspace::class,
+            'sysadmin.server-tools' => ServerTools::class,
             'sysadmin.sliders.editor' => SliderEditor::class,
+            'sysadmin.sitemap-manager' => SitemapManager::class,
             'sysadmin.settings.workspace' => SettingsWorkspace::class,
+            'sysadmin.testimonials.workspace' => TestimonialsWorkspace::class,
             'sysadmin.users.index' => UsersIndex::class,
         ] as $alias => $component) {
             Livewire::component($alias, $component);

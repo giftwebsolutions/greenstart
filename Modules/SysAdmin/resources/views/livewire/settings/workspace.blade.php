@@ -13,7 +13,7 @@
             <div class="border-b border-hairline p-4"><h2 class="text-[13px] font-bold text-ink">Settings groups</h2><p class="mt-1 text-[11px] text-ink-muted">Changes save one group at a time.</p></div>
             <nav class="grid gap-1 p-2" aria-label="Settings sections">
                 @foreach($sections as $sectionKey => $section)
-                    <button type="button" wire:click="selectSection('{{ $sectionKey }}')" class="flex items-center gap-3 rounded-lg px-3 py-3 text-left transition {{ $activeSection === $sectionKey ? 'bg-primary-50 text-primary-600' : 'text-ink-soft hover:bg-[#fafbfc] hover:text-ink' }}">
+                    <button type="button" wire:key="settings-nav-{{ $sectionKey }}" wire:click="selectSection('{{ $sectionKey }}')" wire:loading.attr="disabled" wire:target="selectSection" class="flex items-center gap-3 rounded-lg px-3 py-3 text-left transition disabled:cursor-wait disabled:opacity-60 {{ $activeSection === $sectionKey ? 'bg-primary-50 text-primary-600' : 'text-ink-soft hover:bg-[#fafbfc] hover:text-ink' }}">
                         <span class="grid size-8 shrink-0 place-items-center rounded-lg {{ $activeSection === $sectionKey ? 'bg-white text-primary shadow-sm' : 'bg-slate-100 text-ink-muted' }}">{!! \Modules\SysAdmin\Support\Icon::get($section['icon'], 'h-4 w-4') !!}</span>
                         <span class="min-w-0"><strong class="block text-[12.5px]">{{ $section['label'] }}</strong><small class="mt-0.5 block truncate text-[10px] font-normal text-ink-muted">{{ $section['help'] }}</small></span>
                     </button>
@@ -21,7 +21,7 @@
             </nav>
         </aside>
 
-        <main class="min-w-0">
+        <main wire:key="settings-section-{{ $activeSection }}" class="min-w-0">
             @if($activeSection === 'advanced')
                 <div class="grid gap-5">
                     <x-sysadmin::card>

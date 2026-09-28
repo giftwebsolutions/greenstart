@@ -3,14 +3,13 @@
 namespace Modules\SysAdmin\Repository;
 
 use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
-use Modules\SysAdmin\Interfaces\EnquiryInterface;
 use Modules\SysAdmin\Core\Eloquent\RequestCriteria;
+use Modules\SysAdmin\Interfaces\EnquiryInterface;
 use Modules\SysAdmin\Models\Enquiry;
+use Modules\SysAdmin\Services\EnquiryWorkflowService;
 
 /**
  * Class EnquiryRepositoryEloquent.
- *
- * @package namespace App\Repositories;
  */
 class EnquiryRepository extends BaseRepository implements EnquiryInterface
 {
@@ -31,15 +30,33 @@ class EnquiryRepository extends BaseRepository implements EnquiryInterface
 
     public function saveOrUpdate($data, $id = 0)
     {
-        $query = [];
-        if ($id !== 0) {
-            $query =  parent::update($data, $id);
-        } else {
-            $query = parent::create($data);
-        }
-        return $query;
-    }
+        $existing = $id !== 0 ? $this->find($id) : null;
+        $oldStatus = $existing?->status;
+        $status = (int) ($data['status'] ?? $existing?->status ?? Enquiry::STATUS_NEW);
+        $data['status'] = $status;
+        $data['priority'] = $data['priority'] ?? $existing?->priority ?? 'normal';
+        $data['closed_at'] = Enquiry::isClosedStatus($status) ? ($existing?->closed_at ?? now()) : null;
 
+        if ($id !== 0) {
+            $enquiry = parent::update($data, $id);
+        } else {
+            $enquiry = parent::create($data);
+        }
+
+        $workflow = app(EnquiryWorkflowService::class);
+        if (! $existing) {
+            $workflow->activity($enquiry, 'created', 'Enquiry created from '.str($enquiry->enquiry_type ?: 'admin')->headline().'.');
+        } elseif ((int) $oldStatus !== $status) {
+            $workflow->activity(
+                $enquiry,
+                'status_change',
+                'Status changed from '.(Enquiry::$statuses[(int) $oldStatus] ?? $oldStatus).' to '.(Enquiry::$statuses[$status] ?? $status).'.',
+                ['from' => (int) $oldStatus, 'to' => $status],
+            );
+        }
+
+        return $enquiry;
+    }
 
     /**
      * Optional: common filters
@@ -61,5 +78,4 @@ class EnquiryRepository extends BaseRepository implements EnquiryInterface
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
 }

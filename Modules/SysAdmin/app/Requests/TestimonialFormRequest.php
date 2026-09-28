@@ -30,8 +30,9 @@ class TestimonialFormRequest extends FormRequest
     {
         return [
             'name'   => 'required|string|max:120',
-            'content'=> 'required|string',
-            'image'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'content' => 'required|string|max:5000',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'remove_image' => 'sometimes|boolean',
         ];
     }
 
@@ -42,8 +43,9 @@ class TestimonialFormRequest extends FormRequest
     {
         return [
             'name'   => 'required|string|max:120',
-            'content'=> 'required|string',
-            'image'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'content' => 'required|string|max:5000',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'remove_image' => 'sometimes|boolean',
         ];
     }
 }

@@ -2,13 +2,13 @@
 
 namespace Modules\SysAdmin\Repository;
 
-use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
-use Modules\SysAdmin\Core\Eloquent\RequestCriteria;
-use Modules\SysAdmin\Models\Testimonial;
-use Modules\SysAdmin\Interfaces\TestimonialInterface;
-use Modules\SysAdmin\Helpers\ImageUploader;
-use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
+use Modules\SysAdmin\Core\Eloquent\RequestCriteria;
+use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
+use Modules\SysAdmin\Helpers\ImageUploader;
+use Modules\SysAdmin\Interfaces\TestimonialInterface;
+use Modules\SysAdmin\Models\Testimonial;
+use Throwable;
 
 class TestimonialRepository extends BaseRepository implements TestimonialInterface
 {
@@ -17,46 +17,63 @@ class TestimonialRepository extends BaseRepository implements TestimonialInterfa
         return Testimonial::class;
     }
 
-     public function saveOrUpdate($data, $id = 0)
+    public function saveOrUpdate($data, $id = 0)
     {
-        $testimonial = null;
-         $createdAt = $this->getModel()->created_at;
-        if ($id !== 0) {
-            // Editing existing product
-            $testimonial = $this->find($id);
+        $removeImage = (bool) ($data['remove_image'] ?? false);
+        unset($data['remove_image']);
 
-            // Handle image upload only if a new file is provided
-            if (isset($data['image']) && $data['image'] instanceof UploadedFile) {
-              
-                // Remove old image (original + thumbnail)
-                if ($testimonial->image && $testimonial->created_at) {
-                    ImageUploader::remove($createdAt, $testimonial->image);
-                }
-
-                // Upload new one using existing created_at date
-                $data['image'] = ImageUploader::upload(
-                    $data['image'],
-                    $createdAt
-                );
+        if ((int) $id === 0) {
+            $createdAt = now()->toDateTimeString();
+            $newImage = null;
+            if (($data['image'] ?? null) instanceof UploadedFile) {
+                $newImage = ImageUploader::upload($data['image'], $createdAt);
+                $data['image'] = $newImage;
             } else {
-                // Don't touch the current image if no new file is uploaded
                 unset($data['image']);
             }
-            //dd($data);
-            $testimonial = parent::update($data, $id);
-        } else {
-            // Creating new product
 
-            if (isset($data['image']) && $data['image'] instanceof UploadedFile) {
-                // For create, pass null date -> ImageUploader will use now()
-                $data['image'] = ImageUploader::upload($data['image'], $createdAt);
+            try {
+                return parent::create($data);
+            } catch (Throwable $exception) {
+                if ($newImage) {
+                    ImageUploader::remove($createdAt, $newImage);
+                }
+
+                throw $exception;
+            }
+        }
+
+        /** @var Testimonial $testimonial */
+        $testimonial = $this->find($id);
+        $createdAt = $testimonial->created_at?->toDateTimeString() ?? now()->toDateTimeString();
+        $oldImage = $testimonial->image;
+        $newImage = null;
+
+        if (($data['image'] ?? null) instanceof UploadedFile) {
+            $newImage = ImageUploader::upload($data['image'], $createdAt);
+            $data['image'] = $newImage;
+        } elseif ($removeImage) {
+            $data['image'] = null;
+        } else {
+            unset($data['image']);
+        }
+
+        try {
+            $updated = parent::update($data, $id);
+        } catch (Throwable $exception) {
+            if ($newImage) {
+                ImageUploader::remove($createdAt, $newImage);
             }
 
-            $testimonial = parent::create($data);
+            throw $exception;
         }
-        return $testimonial;
+
+        if ($oldImage && ($newImage || $removeImage)) {
+            ImageUploader::remove($createdAt, $oldImage);
+        }
+
+        return $updated;
     }
-   
 
     public function boot()
     {

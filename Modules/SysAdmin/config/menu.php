@@ -155,7 +155,7 @@ return [
 
     [
         'key' => 'enquiry',
-        'name' => 'Enquiry',
+        'name' => 'Enquiry CRM',
         'route' => '#',
         'sort' => 1,
         'icon' => 'stroke-project',
@@ -169,9 +169,16 @@ return [
             ],
             [
                 'key' => 'enquiry.index',
-                'name' => 'List Enquiry',
+                'name' => 'Enquiry CRM',
                 'route' => 'sysadmin.enquiry.index',
                 'sort' => 2,
+                'icon' => 'icon-gear',
+            ],
+            [
+                'key' => 'enquiry.appointments',
+                'name' => 'Appointments',
+                'route' => 'sysadmin.enquiry.appointments',
+                'sort' => 3,
                 'icon' => 'icon-gear',
             ],
         ],
@@ -226,6 +233,30 @@ return [
                 'name' => 'Manage Blog',
                 'route' => 'sysadmin.blog.index',
                 'sort' => 1,
+                'icon' => 'icon-gear',
+            ],
+        ],
+    ],
+
+    [
+        'key' => 'system',
+        'name' => 'System',
+        'route' => '#',
+        'sort' => 1,
+        'icon' => 'stroke-widget',
+        'children' => [
+            [
+                'key' => 'system-tools',
+                'name' => 'System Tools',
+                'route' => 'sysadmin.tools.index',
+                'sort' => 1,
+                'icon' => 'icon-gear',
+            ],
+            [
+                'key' => 'sitemap',
+                'name' => 'XML Sitemap',
+                'route' => 'sysadmin.media.sitemap.index',
+                'sort' => 2,
                 'icon' => 'icon-gear',
             ],
         ],

@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Modules\SysAdmin\Http\Controllers\AttributeController;
 use Modules\SysAdmin\Http\Controllers\AttributeFamilyController;
@@ -67,13 +66,7 @@ Route::prefix('sysadmin')
         // Dashboard
         Route::get('/', [DashboardController::class, 'index'])->name('index');
 
-        Route::prefix('tools')->as('tools.')->group(function () {
-            Route::post('/config-clear', fn () => Artisan::call('config:clear'))->name('config-clear');
-            Route::post('/config-cache', fn () => Artisan::call('config:cache'))->name('config-cache');
-            Route::post('/cache-clear', fn () => Artisan::call('cache:clear'))->name('cache-clear');
-            Route::post('/view-clear', fn () => Artisan::call('view:clear'))->name('view-clear');
-            Route::post('/optimize-clear', fn () => Artisan::call('optimize:clear'))->name('optimize-clear');
-        });
+        Route::view('tools', 'sysadmin::tools.index')->name('tools.index');
 
         // ===============================
         // 🔑 Role Management
@@ -127,6 +120,7 @@ Route::prefix('sysadmin')
             ->controller(EnquiryController::class)
             ->group(function () {
                 Route::get('/', 'index')->name('index');
+                Route::get('appointments', 'appointments')->name('appointments');
                 Route::get('view/{id}', 'show')->name('view');
                 Route::get('create', 'create')->name('create');
                 Route::post('create', 'store')->name('store');

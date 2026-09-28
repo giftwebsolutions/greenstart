@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\SysAdmin\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -8,102 +10,66 @@ use Modules\SysAdmin\Models\Enquiry;
 
 class EnquiryFormRequest extends FormRequest
 {
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Determine validation rules based on route name.
-     */
-    public function rules()
-    {
-        return match (request()->route()->action['as'] ?? null) {
-
-            'sysadmin.enquiry.create',
-            'sysadmin.enquiry.store' => $this->store(),
-
-            'sysadmin.enquiry.edit',
-            'sysadmin.enquiry.update' => $this->update(),
-
-            default => $this->store(),
-        };
-    }
-
-    /**
-     * Validation for create
-     */
-    public function store()
+    public function rules(): array
     {
         return [
-            'name'        => ['required', 'string', 'max:50'],
-            'email'       => ['nullable', 'email', 'max:75'],
-
-            'subject'     => ['required', 'string'],
-            'message'     => ['required', 'string'],
-             
-            //need query for below things to add in the table ok ??
-            'mobile'      => ['required', 'string', 'max:15'],
-
-            'city'        => ['nullable', 'string', 'max:50'],
-            'state'       => ['nullable', 'string', 'max:50'],
-
-            'category_id' => ['nullable', 'integer'],
-            'product_id'  => ['nullable', 'integer'],
-
-            'qty'         => ['nullable', 'numeric', 'min:0.01'],
-            'price'       => ['nullable', 'numeric', 'min:0'],
-            'req_price'   => ['nullable', 'numeric', 'min:0'],
-
-            'status'      => [
+            'name' => ['required', 'string', 'max:50'],
+            'email' => ['nullable', 'email:rfc', 'max:75'],
+            'mobile' => ['required', 'string', 'max:15'],
+            'city' => ['nullable', 'string', 'max:180'],
+            'state' => ['nullable', 'string', 'max:50'],
+            'subject' => ['nullable', 'string', 'max:150'],
+            'message' => ['required', 'string', 'max:255'],
+            'internal_notes' => ['nullable', 'string', 'max:5000'],
+            'category_id' => ['nullable', 'integer', Rule::exists('product_category', 'id')],
+            'product_id' => [
                 'nullable',
-                Rule::in(array_keys((new Enquiry)->statuses ?? [0 => 'Inactive', 1 => 'Active']))
+                'integer',
+                Rule::exists('product', 'id')->where(fn ($query) => filled($this->input('category_id'))
+                    ? $query->where('product_category', $this->integer('category_id'))
+                    : $query),
             ],
+            'qty' => ['nullable', 'numeric', 'min:0.01', 'max:99999999.99'],
+            'price' => ['nullable', 'numeric', 'min:0', 'max:99999999.99'],
+            'req_price' => ['nullable', 'numeric', 'min:0', 'max:99999999.99'],
+            'status' => ['required', 'integer', Rule::in(array_keys(Enquiry::$statuses))],
+            'priority' => ['required', Rule::in(array_keys(Enquiry::$priorities))],
+            'assigned_to' => ['nullable', 'integer', Rule::exists('users', 'id')],
+            'enquiry_type' => ['nullable', 'string', 'max:50'],
         ];
     }
 
-    /**
-     * Validation for update
-     */
-    public function update()
+    public function attributes(): array
     {
         return [
-            'name'        => ['required', 'string', 'max:50'],
-            'email'       => ['nullable', 'email', 'max:75'],
-
-            'subject'     => ['required', 'string'],
-            'message'     => ['required', 'string'],
-
-            
-            'mobile'      => ['required', 'string', 'max:15'],
-            'city'        => ['nullable', 'string', 'max:50'],
-            'state'       => ['nullable', 'string', 'max:50'],
-
-            'category_id' => ['nullable', 'integer'],
-            'product_id'  => ['nullable', 'integer'],
-
-            'qty'         => ['nullable', 'numeric', 'min:0.01'],
-            'price'       => ['nullable', 'numeric', 'min:0'],
-            'req_price'   => ['nullable', 'numeric', 'min:0'],
-
-            'status'      => [
-                'nullable',
-                Rule::in(array_keys((new Enquiry)->statuses ?? [0 => 'Inactive', 1 => 'Active']))
-            ],
+            'name' => 'customer name',
+            'mobile' => 'mobile number',
+            'email' => 'email address',
+            'category_id' => 'product category',
+            'product_id' => 'product',
+            'req_price' => 'requested price',
+            'assigned_to' => 'assigned team member',
         ];
     }
 
-    /**
-     * Custom attribute names (clean error messages)
-     */
-    public function attributes()
+    protected function prepareForValidation(): void
     {
-        return [
-            'name'        => 'customer name',
-            'mobile'      => 'mobile number',
-            'email'       => 'email address',
-            'subject'     => 'subject',
-            'message'     => 'message',
-        ];
+        $trimmed = [];
+        foreach (['name', 'email', 'mobile', 'city', 'state', 'subject', 'message', 'internal_notes', 'enquiry_type'] as $field) {
+            if (is_string($this->input($field))) {
+                $trimmed[$field] = trim($this->input($field));
+            }
+        }
+
+        $this->merge([
+            ...$trimmed,
+            'status' => $this->input('status', Enquiry::STATUS_NEW),
+            'priority' => $this->input('priority', 'normal'),
+        ]);
     }
 }

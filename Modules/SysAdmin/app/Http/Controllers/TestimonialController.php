@@ -4,7 +4,7 @@ namespace Modules\SysAdmin\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
-use Modules\SysAdmin\DataTables\TestimonialDataTable;
+use Modules\SysAdmin\Helpers\ImageUploader;
 use Modules\SysAdmin\Interfaces\TestimonialInterface;
 use Modules\SysAdmin\Requests\TestimonialFormRequest;
 
@@ -20,9 +20,9 @@ class TestimonialController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(TestimonialDataTable $dataTable)
+    public function index()
     {
-        return $dataTable->render('sysadmin::testimonial.index');
+        return view('sysadmin::testimonial.index');
     }
 
     /**
@@ -78,6 +78,10 @@ class TestimonialController extends Controller
      */
     public function destroy($id): RedirectResponse
     {
+        $testimonial = $this->testimonialRepository->findOrFail($id);
+        if ($testimonial->image && $testimonial->created_at) {
+            ImageUploader::remove($testimonial->created_at->toDateTimeString(), $testimonial->image);
+        }
         $this->testimonialRepository->delete($id);
         return redirect()->route('sysadmin.testimonial.index')
                          ->with('success', 'Testimonial deleted successfully.');

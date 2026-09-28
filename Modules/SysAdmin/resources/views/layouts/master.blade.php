@@ -22,7 +22,7 @@
     $initials = collect(preg_split('/\s+/', trim((string) ($admin?->name ?: 'Admin'))))->filter()->take(2)->map(fn ($part) => mb_strtoupper(mb_substr($part, 0, 1)))->implode('');
     $adminRole = $admin?->roles->first()?->name;
     $adminRoleLabel = $adminRole ? str($adminRole)->replace(['-', '_'], ' ')->title() : 'Administrator';
-    $icons = ['dashboard' => 'home', 'settings' => 'settings', 'user' => 'users', 'slider' => 'image', 'catalog' => 'box', 'page' => 'file', 'enquiry' => 'message', 'testimonial' => 'message', 'blog' => 'book'];
+    $icons = ['dashboard' => 'home', 'settings' => 'settings', 'user' => 'users', 'slider' => 'image', 'catalog' => 'box', 'page' => 'file', 'enquiry' => 'message', 'testimonial' => 'message', 'blog' => 'book', 'system' => 'server'];
     $canAccessRoute = function (?string $routeName) use ($admin): bool {
         if (! $routeName || $routeName === '#') {
             return true;

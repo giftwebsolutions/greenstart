@@ -1,37 +1,8 @@
 @extends('sysadmin::layouts.master')
-@section('css')
-@endsection
 
-@section('style')
-@endsection
-
-@section('breadcrumb-title')
-    <h3>Manage Enquiry</h3>
-@endsection
-
-@section('breadcrumb-items')
-    <li class="breadcrumb-item">Enquiry</li>
-    <li class="breadcrumb-item active">List</li>
-@endsection
-
+@section('title', 'Enquiry CRM')
+@section('page-title', 'Enquiry CRM')
 
 @section('content')
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <div class="card-body">
-                        {{ $dataTable->table() }}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    @push('scripts')
-        {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
-    @endpush
-@endsection
-
-@section('script')
+    <livewire:sysadmin.enquiries.index />
 @endsection

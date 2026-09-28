@@ -3,10 +3,12 @@
 namespace Modules\SysAdmin\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Validation\ValidationException;
 use Modules\SysAdmin\Interfaces\EnquiryInterface;
-use Modules\SysAdmin\DataTables\EnquiryDataTable;
+use Modules\SysAdmin\Models\Enquiry;
+use Modules\SysAdmin\Models\Product;
+use Modules\SysAdmin\Models\ProductCategory;
 use Modules\SysAdmin\Requests\EnquiryFormRequest;
 
 class EnquiryController extends Controller
@@ -15,13 +17,12 @@ class EnquiryController extends Controller
         protected EnquiryInterface $enquiryRepository
     ) {}
 
-    /**                                                                             
+    /**
      * Enquiry listing
      */
-    public function index(EnquiryDataTable $dataTable)
+    public function index()
     {
-        //dd($dataTable);
-        return $dataTable->render('sysadmin::enquiry.index');
+        return view('sysadmin::enquiry.index');
     }
 
     /**
@@ -29,9 +30,7 @@ class EnquiryController extends Controller
      */
     public function create()
     {
-        return view('sysadmin::enquiry.create')->with([
-            'statuses' => $this->enquiryRepository->getStatuses(),
-        ]);
+        return view('sysadmin::enquiry.create', $this->formOptions());
     }
 
     /**
@@ -41,9 +40,9 @@ class EnquiryController extends Controller
     {
         $validatedData = $request->validated();
 
-        $this->enquiryRepository->saveOrUpdate($validatedData);
+        $enquiry = $this->enquiryRepository->saveOrUpdate($validatedData);
 
-        return redirect()->route('sysadmin.enquiry.index');
+        return redirect()->route('sysadmin.enquiry.view', $enquiry->id)->with('success', 'Enquiry created.');
     }
 
     /**
@@ -51,17 +50,9 @@ class EnquiryController extends Controller
      */
     public function show($id)
     {
-        try {
-            $enquiry = $this->enquiryRepository
-                ->with(['category', 'product'])
-                ->findOrFail($id);
-            //dd($enquiry);
-            return view('sysadmin::enquiry.view')->with([
-                'enquiry' => $enquiry,
-            ]);
-        } catch (ValidationException $e) {
-            return back()->withErrors($e->validator->errors());
-        }
+        $enquiry = $this->enquiryRepository->findOrFail($id);
+
+        return view('sysadmin::enquiry.view', compact('enquiry'));
     }
 
     /**
@@ -73,10 +64,7 @@ class EnquiryController extends Controller
             ->with(['category', 'product'])
             ->findOrFail($id);
 
-        return view('sysadmin::enquiry.edit')->with([
-            'enquiry'  => $enquiry,
-            'statuses' => $this->enquiryRepository->getStatuses(),
-        ]);
+        return view('sysadmin::enquiry.edit', ['enquiry' => $enquiry, ...$this->formOptions()]);
     }
 
     /**
@@ -84,15 +72,10 @@ class EnquiryController extends Controller
      */
     public function update(EnquiryFormRequest $request, $id): RedirectResponse
     {
-        try {
-            $validatedData = $request->validated();
+        $validatedData = $request->validated();
+        $this->enquiryRepository->saveOrUpdate($validatedData, $id);
 
-            $this->enquiryRepository->saveOrUpdate($validatedData, $id);
-
-            return redirect()->route('sysadmin.enquiry.index');
-        } catch (ValidationException $e) {
-            return back()->withErrors($e->validator->errors());
-        }
+        return redirect()->route('sysadmin.enquiry.view', $id)->with('success', 'Enquiry updated.');
     }
 
     /**
@@ -103,5 +86,21 @@ class EnquiryController extends Controller
         $this->enquiryRepository->delete($id);
 
         return redirect()->route('sysadmin.enquiry.index');
+    }
+
+    public function appointments()
+    {
+        return view('sysadmin::enquiry.appointments.index');
+    }
+
+    private function formOptions(): array
+    {
+        return [
+            'statuses' => $this->enquiryRepository->getStatuses(),
+            'priorities' => Enquiry::$priorities,
+            'categories' => ProductCategory::query()->orderBy('name')->pluck('name', 'id'),
+            'products' => Product::query()->orderBy('title')->get(['id', 'title', 'product_category']),
+            'users' => User::query()->where('is_active', true)->orderBy('name')->get(['id', 'name']),
+        ];
     }
 }

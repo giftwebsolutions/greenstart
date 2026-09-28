@@ -3,37 +3,21 @@
 namespace Modules\SysAdmin\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Spatie\Sitemap\Sitemap;
-use Spatie\Sitemap\Tags\Url;
-use Illuminate\Support\Facades\File;
+use Modules\SysAdmin\Services\SitemapService;
 
 class SitemapController extends Controller
 {
     public function index()
     {
-
-        // Example file path
-        $filePath = base_path('./public/sitemap.xml');
-
-        // Read file content
-        $content = file_get_contents($filePath);
-        $exists = File::exists($filePath);
-
-        return view('sysadmin::sitemap.index')->with(['content' => $content, 'exists' => $exists]);
+        return view('sysadmin::sitemap.index');
     }
 
-    public function generate(Request $request)
+    public function generate(SitemapService $sitemaps)
     {
-        $sitemap = Sitemap::create();
+        $result = $sitemaps->generate();
 
-        // Add your site URLs here dynamically
-        $sitemap->add(Url::create(route('frontend.home'))->setPriority(1.0)->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY));
-        // Add more URLs as needed
-
-        // Save sitemap to storage
-        $sitemap->writeToFile(public_path('sitemap.xml'));
-
-        return redirect()->route('sysadmin.media.sitemap.index')->with('success', 'Sitemap generated successfully!');
+        return redirect()
+            ->route('sysadmin.media.sitemap.index')
+            ->with('success', number_format($result['url_count']).' sitemap URLs generated.');
     }
 }
