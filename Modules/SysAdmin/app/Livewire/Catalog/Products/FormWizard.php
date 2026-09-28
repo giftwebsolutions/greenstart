@@ -40,6 +40,8 @@ class FormWizard extends Component
 
     public string $salesPrice = '0.00';
 
+    public int $stock = 1;
+
     public string $productCategory = '';
 
     public string $subProductCategory = '';
@@ -90,6 +92,7 @@ class FormWizard extends Component
         $this->description = (string) $product->description;
         $this->mrp = (string) $product->mrp;
         $this->salesPrice = (string) $product->sales_price;
+        $this->stock = (int) $product->stock;
         $this->productCategory = (string) $product->product_category;
         $this->subProductCategory = $product->sub_product_category ? (string) $product->sub_product_category : '';
         $this->attributeFamilyId = $product->attribute_family_id ? (string) $product->attribute_family_id : '';
@@ -195,6 +198,7 @@ class FormWizard extends Component
             'description' => trim($this->description),
             'mrp' => $this->mrp,
             'sales_price' => $this->salesPrice,
+            'stock' => $this->stock,
             'product_category' => (int) $this->productCategory,
             'sub_product_category' => $this->subProductCategory !== '' ? (int) $this->subProductCategory : 0,
             'attribute_family_id' => (int) $this->attributeFamilyId,
@@ -281,7 +285,7 @@ class FormWizard extends Component
                 'shortDescription', 'description',
             ])),
             2 => array_intersect_key($this->rules(), array_flip([
-                'mrp', 'salesPrice', 'productCategory', 'subProductCategory', 'attributeFamilyId',
+                'mrp', 'salesPrice', 'stock', 'productCategory', 'subProductCategory', 'attributeFamilyId',
             ])),
             3 => array_intersect_key($this->rules(), array_flip([
                 'video', 'catalog', 'thumb', 'galleryImages', 'galleryImages.*',
@@ -312,6 +316,7 @@ class FormWizard extends Component
             'description' => ['nullable', 'string'],
             'mrp' => ['required', 'numeric', 'min:0'],
             'salesPrice' => ['required', 'numeric', 'min:0', 'lte:mrp'],
+            'stock' => ['required', 'integer', 'min:0', 'max:4294967295'],
             'productCategory' => [
                 'required',
                 'integer',

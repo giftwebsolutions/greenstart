@@ -3,8 +3,8 @@
 namespace Modules\Frontend\Repository;
 
 use Illuminate\Database\Eloquent\Collection;
-use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
 use Modules\Frontend\Interfaces\ProductInterface;
+use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
 use Modules\SysAdmin\Models\AttributeGroup;
 use Modules\SysAdmin\Models\Product;
 
@@ -32,15 +32,15 @@ class ProductRepository extends BaseRepository implements ProductInterface
         $this->scopeQuery(function ($q) use ($filters) {
             $q = $q->newQuery()->where('status', 1);
 
-            if (!empty($filters['c_cat'])) {
+            if (! empty($filters['c_cat'])) {
                 $q = $q->where('product_category', (int) $filters['c_cat']);
             }
 
-            if (!empty($filters['s_cat'])) {
+            if (! empty($filters['s_cat'])) {
                 $q = $q->where('sub_product_category', (int) $filters['s_cat']);
             }
 
-            if (!empty($filters['search'])) {
+            if (! empty($filters['search'])) {
                 $search = $filters['search'];
                 $q = $q->where(function ($sub) use ($search) {
                     $sub->where('title', 'like', "%{$search}%")
@@ -49,16 +49,16 @@ class ProductRepository extends BaseRepository implements ProductInterface
                 });
             }
 
-            if(isset($filters['price_min']) && isset($filters['price_max']) ){
-                //dd($filters);
-                $q = $q->whereBetween('sales_price', [
-                    (int) $filters['price_min'],
-                    (int) $filters['price_max']
-                ]);
+            if (isset($filters['price_min'])) {
+                $q->where('sales_price', '>=', (int) $filters['price_min']);
+            }
+
+            if (isset($filters['price_max'])) {
+                $q->where('sales_price', '<=', (int) $filters['price_max']);
             }
 
             // Attribute filters: each selected attribute must match at least one chosen value
-            if (!empty($filters['attrs']) && is_array($filters['attrs'])) {
+            if (! empty($filters['attrs']) && is_array($filters['attrs'])) {
                 foreach ($filters['attrs'] as $attributeId => $valueIds) {
                     $valueIds = array_filter(array_map('intval', (array) $valueIds));
                     if (empty($valueIds)) {
@@ -66,19 +66,27 @@ class ProductRepository extends BaseRepository implements ProductInterface
                     }
                     $q = $q->whereHas('productAttributeValues', function ($sub) use ($attributeId, $valueIds) {
                         $sub->where('attribute_id', (int) $attributeId)
-                            ->whereIn('attribute_value_id', $valueIds);
+                            ->where(function ($values) use ($valueIds): void {
+                                $values->whereIn('attribute_value_id', $valueIds)
+                                    // Compatibility for legacy rows that stored a
+                                    // select option ID in the scalar value column.
+                                    ->orWhere(function ($legacy) use ($valueIds): void {
+                                        $legacy->whereNull('attribute_value_id')
+                                            ->whereIn('value', array_map('strval', $valueIds));
+                                    });
+                            });
                     });
                 }
             }
 
             return match ($filters['sort'] ?? 'newest') {
-                'price_asc'  => $q->orderBy('sales_price', 'asc'),
+                'price_asc' => $q->orderBy('sales_price', 'asc'),
                 'price_desc' => $q->orderBy('sales_price', 'desc'),
-                'name_asc'   => $q->orderBy('title', 'asc'),
-                default      => $q->orderByDesc('created_at'),
+                'name_asc' => $q->orderBy('title', 'asc'),
+                default => $q->orderByDesc('created_at'),
             };
         });
-      
+
         return $this->paginate($perPage);
     }
 
@@ -102,7 +110,7 @@ class ProductRepository extends BaseRepository implements ProductInterface
         $this->resetModel();
 
         $this->with([
-            'variants'                        => fn($q) => $q->where('status', 1)->orderBy('id'),
+            'variants' => fn ($q) => $q->where('status', 1)->orderBy('id'),
             'variants.values.attribute',
             'variants.values.attributeValue',
             'configurableAttributes.attribute.values',
@@ -147,14 +155,14 @@ class ProductRepository extends BaseRepository implements ProductInterface
     {
         return AttributeGroup::with(['attributes' => function ($q) {
             $q->where('filterable', 1)
-              ->where('status', 1)
-              ->orderBy('sort_order')
-              ->with(['values' => fn($q) => $q->orderBy('sort_order')->orderBy('id')]);
+                ->where('status', 1)
+                ->orderBy('sort_order')
+                ->with(['values' => fn ($q) => $q->orderBy('sort_order')->orderBy('id')]);
         }])
-        ->where('status', 1)
-        ->orderBy('id')
-        ->get()
-        ->filter(fn($group) => $group->attributes->isNotEmpty())
-        ->values();
+            ->where('status', 1)
+            ->orderBy('id')
+            ->get()
+            ->filter(fn ($group) => $group->attributes->isNotEmpty())
+            ->values();
     }
 }

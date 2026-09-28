@@ -56,6 +56,15 @@ class Workspace extends Component
         $this->resetPage();
     }
 
+    public function updatedPerPage(int $value): void
+    {
+        if (! in_array($value, [12, 24, 48], true)) {
+            $this->perPage = 12;
+        }
+
+        $this->resetPage();
+    }
+
     public function create(): void
     {
         Gate::authorize('content.testimonials.create');

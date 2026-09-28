@@ -25,7 +25,10 @@
     $mrp = (float) ($product->mrp ?? 0);
     $hasDiscount = $mrp > 0 && $mrp > $price;
     $discountPercent = $hasDiscount ? round((($mrp - $price) / $mrp) * 100) : 0;
-    $inStock = (int) ($product->stock ?? 1) > 0;
+    $availableStock = (int) $product->type === 2 && $product->relationLoaded('variants')
+        ? (int) $product->variants->where('status', 1)->sum('stock')
+        : (int) ($product->stock ?? 0);
+    $inStock = $availableStock > 0;
     $settings = Config::get('site-settings', []);
     $phone = $settings['mobile'] ?? '';
     $currencySymbol = $settings['currency_symbol'] ?? '₹';
@@ -92,12 +95,12 @@
                         @if (!empty($product->sku))
                             <span>SKU: <strong>{{ $product->sku }}</strong></span>
                         @endif
-                        <span class="{{ $inStock ? 'is-stock' : 'is-out' }}">{{ $inStock ? 'Available' : 'Out of stock' }}</span>
+                        <span data-product-stock class="{{ $inStock ? 'is-stock' : 'is-out' }}">{{ $inStock ? 'Available' : 'Out of stock' }}</span>
                     </div>
 
                     @if ($showPrices)
                         <div class="pd-price-row">
-                            <strong class="pd-price">{{ $currencySymbol }}{{ number_format($price) }}</strong>
+                            <strong class="pd-price" data-product-price>{{ $currencySymbol }}{{ number_format($price) }}</strong>
                             @if ($hasDiscount)
                                 <span class="pd-mrp">{{ $currencySymbol }}{{ number_format($mrp) }}</span>
                                 <span class="pd-save">Save {{ $currencySymbol }}{{ number_format($mrp - $price) }}</span>
@@ -160,6 +163,7 @@
                         <table class="table align-middle">
                             <thead>
                                 <tr>
+                                    <th>Image</th>
                                     <th>Variant</th>
                                     <th>SKU</th>
                                     @foreach ($variantAttributes as $attr)
@@ -167,30 +171,47 @@
                                     @endforeach
                                     @if ($showPrices)<th>Price</th>@endif
                                     <th>Stock</th>
-                                    @if ($enableEnquiries)<th></th>@endif
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($product->variants as $variant)
-                                    <tr>
-                                        <td>{{ $variant->name ?? 'Variant ' . $variant->id }}</td>
+                                    @php
+                                        $variantName = $variant->name ?? 'Variant '.$variant->id;
+                                        $variantPrice = (float) ($variant->price ?? $price);
+                                        $variantStock = (int) ($variant->stock ?? 0);
+                                        $variantImage = $variant->thumb
+                                            ? ImageUploader::getFilePath($variant->thumb, $product->created_at)
+                                            : $mainImage;
+                                    @endphp
+                                    <tr data-variant-row
+                                        data-name="{{ $variantName }}"
+                                        data-price="{{ $variantPrice }}"
+                                        data-stock="{{ $variantStock }}"
+                                        data-image="{{ $variantImage }}">
+                                        <td><img src="{{ $variantImage }}" alt="{{ $variantName }}" class="pd-variant-image" loading="lazy" onerror="this.onerror=null;this.src='{{ asset('uploads/default.jpg') }}';"></td>
+                                        <td>{{ $variantName }}</td>
                                         <td>{{ $variant->sku ?: '-' }}</td>
                                         @foreach ($variantAttributes as $attr)
                                             @php $val = $variant->values->firstWhere('attribute_id', $attr->id); @endphp
                                             <td>{{ $val?->attributeValue?->value ?? '-' }}</td>
                                         @endforeach
-                                        @if ($showPrices)<td>{{ $currencySymbol }}{{ number_format($variant->sales_price ?? $variant->price ?? $price) }}</td>@endif
-                                        <td>{{ $variant->stock ?? '-' }}</td>
+                                        @if ($showPrices)<td>{{ $currencySymbol }}{{ number_format($variantPrice) }}</td>@endif
+                                        <td>{{ $variantStock }}</td>
                                         @if ($enableEnquiries)
                                             <td>
+                                                <button type="button" class="pd-mini-btn" data-variant-select aria-pressed="false">Select</button>
                                                 <button type="button" class="pd-mini-btn js-enquiry-open"
                                                     data-product-id="{{ $product->id }}"
                                                     data-category-id="{{ $product->product_category ?? 0 }}"
-                                                    data-price="{{ $variant->sales_price ?? $variant->price ?? $price }}"
-                                                    data-product-name="{{ $title }} - {{ $variant->name ?? 'Variant ' . $variant->id }}">
+                                                    data-price="{{ $variantPrice }}"
+                                                    data-product-name="{{ $title }} - {{ $variantName }}"
+                                                    @disabled($variantStock < 1)>
                                                     Enquire
                                                 </button>
                                             </td>
+                                        @else
+                                            <td><button type="button" class="pd-mini-btn" data-variant-select aria-pressed="false">Select</button></td>
                                         @endif
                                     </tr>
                                 @endforeach
@@ -249,6 +270,35 @@
                     $('[data-pd-main]').attr('src', full);
                     $('.pd-thumb').removeClass('is-active');
                     $(this).addClass('is-active');
+                });
+
+                $(document).on('click', '[data-variant-select]', function () {
+                    var $row = $(this).closest('[data-variant-row]');
+                    var price = Number($row.data('price') || 0);
+                    var stock = Number($row.data('stock') || 0);
+                    var name = String($row.data('name') || 'Variant');
+                    var image = String($row.data('image') || '');
+
+                    $('[data-variant-row]').removeClass('is-selected');
+                    $('[data-variant-select]').attr('aria-pressed', 'false').text('Select');
+                    $row.addClass('is-selected');
+                    $(this).attr('aria-pressed', 'true').text('Selected');
+
+                    if (image) {
+                        $('[data-pd-main]').attr('src', image);
+                        $('.pd-thumb').removeClass('is-active');
+                    }
+
+                    $('[data-product-price]').text(@json($currencySymbol) + price.toLocaleString('en-IN'));
+                    $('[data-product-stock]')
+                        .toggleClass('is-stock', stock > 0)
+                        .toggleClass('is-out', stock < 1)
+                        .text(stock > 0 ? 'Available (' + stock + ')' : 'Out of stock');
+
+                    $('.pd-actions .js-enquiry-open')
+                        .attr('data-price', price)
+                        .attr('data-product-name', @json($title) + ' - ' + name)
+                        .prop('disabled', stock < 1);
                 });
             });
         </script>

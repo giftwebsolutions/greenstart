@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\SysAdmin\Livewire\Settings;
 
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -49,7 +50,7 @@ class Workspace extends Component
                 if ($key === 'site_name' && ! isset($stored[$key]) && isset($stored['title'])) {
                     $fallback = $stored['title'];
                 }
-                $value = $stored[$key] ?? $fallback;
+                $value = ($definition['sensitive'] ?? false) ? '' : ($stored[$key] ?? $fallback);
                 $this->values[$key] = ($definition['input'] ?? 'text') === 'toggle'
                     ? filter_var($value, FILTER_VALIDATE_BOOL)
                     : (string) $value;
@@ -93,8 +94,15 @@ class Workspace extends Component
 
         foreach ($definitions as $key => $definition) {
             $value = $this->values[$key] ?? '';
+
+            if (($definition['sensitive'] ?? false) && blank($value) && Settings::query()->where('key', $key)->exists()) {
+                continue;
+            }
+
             Settings::query()->updateOrCreate(['key' => $key], [
-                'value' => ($definition['input'] ?? 'text') === 'toggle' ? ((bool) $value ? '1' : '0') : trim((string) $value),
+                'value' => ($definition['sensitive'] ?? false)
+                    ? Crypt::encryptString((string) $value)
+                    : (($definition['input'] ?? 'text') === 'toggle' ? ((bool) $value ? '1' : '0') : trim((string) $value)),
                 'type' => $definition['group'],
             ]);
         }
@@ -313,6 +321,7 @@ class Workspace extends Component
                 'mail_host' => ['label' => 'SMTP host', 'input' => 'text', 'group' => 'smtp', 'default' => ''],
                 'mail_port' => ['label' => 'SMTP port', 'input' => 'number', 'group' => 'smtp', 'default' => '587'],
                 'mail_username' => ['label' => 'SMTP username', 'input' => 'text', 'group' => 'smtp', 'default' => ''],
+                'mail_password' => ['label' => 'SMTP password', 'input' => 'password', 'group' => 'smtp', 'default' => '', 'sensitive' => true, 'help' => 'Encrypted at rest. Leave blank to keep the saved password.'],
                 'mail_encryption' => ['label' => 'Encryption', 'input' => 'select', 'group' => 'smtp', 'default' => 'tls', 'options' => ['tls' => 'TLS', 'ssl' => 'SSL', 'none' => 'None']],
             ],
             'advanced' => [],

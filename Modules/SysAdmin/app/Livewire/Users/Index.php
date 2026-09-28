@@ -144,6 +144,7 @@ class Index extends Component
             $this->dispatch('toast', message: 'User deleted.');
         }
         $this->confirmingDelete = null;
+        $this->resetPage();
     }
 
     public function closeDrawer(): void

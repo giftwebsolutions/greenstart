@@ -22,6 +22,11 @@ class Index extends Component
         $this->resetPage();
     }
 
+    public function updatedStatus(): void
+    {
+        $this->resetPage();
+    }
+
     public function delete(int $id): void
     {
         $family = AttributeFamily::withCount('products')->findOrFail($id);
@@ -34,6 +39,7 @@ class Index extends Component
 
         $family->delete();
         session()->flash('success', 'Attribute family deleted successfully.');
+        $this->resetPage();
     }
 
     public function render()

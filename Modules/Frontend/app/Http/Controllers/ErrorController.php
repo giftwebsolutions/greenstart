@@ -12,6 +12,6 @@ class ErrorController extends Controller
     public function notFound()
     {
         return response()
-            ->view('Frontend::errors.404', [], 404);
+            ->view('frontend::errors.404', [], 404);
     }
 }

@@ -2,6 +2,9 @@
     $page = $page ?? $about ?? null;
     $title = $page->title ?? $page->name ?? 'About Greens Aqua World';
     $banner = $page->banner ?? $page->featured_image ?? null;
+    $bannerUrl = $banner
+        ? \Modules\SysAdmin\Helpers\ImageUploader::getFilePath($banner, $page?->created_at)
+        : null;
     $introText = $page?->description
         ?: \Illuminate\Support\Str::limit(trim(strip_tags($page?->content ?? '')), 220)
         ?: 'We help customers choose, install, and maintain reliable water purifier systems with quick service support across our local service network.';
@@ -53,8 +56,8 @@
                 </div>
 
                 <div class="about-hero-media">
-                    @if ($banner)
-                        <img src="{{ asset($banner) }}" alt="{{ $title }}">
+                    @if ($bannerUrl)
+                        <img src="{{ $bannerUrl }}" alt="{{ $title }}">
                     @else
                         <div class="about-media-fallback">
                             <i class="fa-solid fa-droplet"></i>

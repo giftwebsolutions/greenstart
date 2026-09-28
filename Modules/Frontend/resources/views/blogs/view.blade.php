@@ -5,7 +5,7 @@
     use Modules\SysAdmin\Helpers\ImageUploader;
 
     // fallback image
-    $fallback = asset('assets/images/blog-image/3.jpg');
+    $fallback = asset('uploads/default.jpg');
 @endphp
 
 <x-frontend::layouts.master :seo="$seo ?? []" :structuredData="$structuredData ?? []">
@@ -80,7 +80,7 @@
                                 @php
                                     $relImg = $rel->featured_image
                                         ? ImageUploader::getFilePath($rel->featured_image, $rel->created_at)
-                                        : asset('assets/images/blog-image/1.jpg');
+                                        : asset('uploads/default.jpg');
                                 @endphp
                                 <div class="col-md-4 mb-4">
                                     <article class="corp-blog-card compact">

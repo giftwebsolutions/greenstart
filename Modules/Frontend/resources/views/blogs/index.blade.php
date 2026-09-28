@@ -6,7 +6,7 @@
     use Illuminate\Support\Str;
 
     // fallback image if blog image is empty
-    $fallback = asset('assets/images/blog-image/1.jpg');
+    $fallback = asset('uploads/default.jpg');
 
     // title split (LATEST + BLOGS) like your HTML
     $titleParts = explode(' ', trim($title ?? ''), 2);

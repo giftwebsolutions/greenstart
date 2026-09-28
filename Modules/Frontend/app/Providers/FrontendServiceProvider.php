@@ -3,6 +3,7 @@
 namespace Modules\Frontend\Providers;
 
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -195,7 +196,9 @@ class FrontendServiceProvider extends ServiceProvider
         try {
             if (Schema::hasTable('settings') && DB::table('settings')->exists()) {
                 $settings = Settings::getSettingByType('system');
-                config()->set('site-settings', array_merge(config('site-settings', []), $settings));
+                $publicSettings = $settings;
+                unset($publicSettings['mail_password']);
+                config()->set('site-settings', array_merge(config('site-settings', []), $publicSettings));
                 if (! empty($settings['site_name'] ?? $settings['title'] ?? null)) {
                     config()->set('app.name', $settings['site_name'] ?? $settings['title']);
                 }
@@ -216,6 +219,14 @@ class FrontendServiceProvider extends ServiceProvider
                 }
                 if (! empty($settings['mail_username'])) {
                     config()->set('mail.mailers.smtp.username', $settings['mail_username']);
+                }
+                if (! empty($settings['mail_password'])) {
+                    try {
+                        config()->set('mail.mailers.smtp.password', Crypt::decryptString($settings['mail_password']));
+                    } catch (Throwable) {
+                        // Preserve the environment password when a legacy plain
+                        // value or a value encrypted with another key is found.
+                    }
                 }
                 if (array_key_exists('mail_encryption', $settings)) {
                     config()->set('mail.mailers.smtp.scheme', $settings['mail_encryption'] === 'none' ? null : $settings['mail_encryption']);

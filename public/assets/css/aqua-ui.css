@@ -876,6 +876,19 @@ a:hover {
     border-color: var(--aqua-line);
 }
 
+.pd-variant-table tr.is-selected td {
+    background: color-mix(in srgb, var(--aqua) 8%, white);
+}
+
+.pd-variant-image {
+    width: 48px;
+    height: 48px;
+    border: 1px solid var(--aqua-line);
+    border-radius: 10px;
+    object-fit: contain;
+    background: #fff;
+}
+
 .pd-mini-btn {
     min-height: 36px;
     padding: 0 14px;

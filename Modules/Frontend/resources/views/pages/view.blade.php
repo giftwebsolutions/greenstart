@@ -5,7 +5,7 @@
     use Modules\SysAdmin\Helpers\ImageUploader;
 
     // fallback image
-    $fallback = asset('public/admin/images/dashboard/papernote.jpg');
+    $fallback = asset('uploads/default.jpg');
 @endphp
 
 
@@ -51,8 +51,9 @@
                             <div class="about-left-image mb-md-30px mb-lm-30px">
                                 {{-- @dd($page->featured_image) --}}
                                  @php
-                                        $img = $page->featured_image
-                                            ? ImageUploader::getFilePath($page->featured_image, $page->created_at, 'thumbnail')
+                                        $pageImage = $page->banner ?: $page->featured_image;
+                                        $img = $pageImage
+                                            ? ImageUploader::getFilePath($pageImage, $page->created_at)
                                             : $fallback;
                                  @endphp
                                     <img src="{{ $img }}" alt="{{ $page->title }}" />

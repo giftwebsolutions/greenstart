@@ -2,7 +2,7 @@
     use Modules\SysAdmin\Helpers\ImageUploader;
     use Illuminate\Support\Str;
 
-    $fallback = asset('assets/images/blog-image/1.jpg');
+    $fallback = asset('uploads/default.jpg');
     $titleParts = explode(' ', trim($title), 2);
     $titleFirst = $titleParts[0] ?? 'Latest';
     $titleRest  = $titleParts[1] ?? 'Blogs';

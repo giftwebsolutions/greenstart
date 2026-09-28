@@ -36,9 +36,9 @@ class Product extends Model
         'order' => 'int',
         'attribute_family_id' => 'int',
 
-        // prices should be numeric, but keeping int as per your current DB
-        'mrp' => 'int',
-        'sales_price' => 'int',
+        'mrp' => 'decimal:2',
+        'sales_price' => 'decimal:2',
+        'stock' => 'int',
     ];
 
     protected $fillable = [
@@ -68,6 +68,7 @@ class Product extends Model
         'order',
         'mrp',
         'sales_price',
+        'stock',
     ];
 
     protected static function boot()

@@ -120,6 +120,7 @@ class ShopController extends Controller
         }
 
         $products = $this->products->paginateForFrontend($filters, $this->perPage($request));
+        $priceCeiling = $this->priceCeiling();
         $filterGroups = $this->products->getFilterableGroups();
         $rootCategories = $this->categories->getMenuTree();
         $subCategories = $category->children()->where('status', '1')->orderBy('sort')->get();
@@ -129,7 +130,7 @@ class ShopController extends Controller
         }
 
         return view('frontend::catalog.shop', array_merge(
-            compact('products', 'filterGroups', 'rootCategories', 'category', 'subCategories', 'filters'),
+            compact('products', 'filterGroups', 'rootCategories', 'category', 'subCategories', 'filters', 'priceCeiling'),
             ['activeTitle' => $category->name],
             SeoData::productList($category->name)
         ));
@@ -142,6 +143,7 @@ class ShopController extends Controller
     {
         $filters = $this->buildFilters($request);
         $products = $this->products->paginateForFrontend($filters, $this->perPage($request));
+        $priceCeiling = $this->priceCeiling();
         $filterGroups = $this->products->getFilterableGroups();
         $rootCategories = $this->categories->getMenuTree();
 
@@ -150,7 +152,7 @@ class ShopController extends Controller
         }
 
         return view('frontend::catalog.shop', array_merge(
-            compact('products', 'filterGroups', 'rootCategories', 'filters'),
+            compact('products', 'filterGroups', 'rootCategories', 'filters', 'priceCeiling'),
             ['activeTitle' => 'New Arrivals'],
             SeoData::productList('New Arrivals')
         ));
@@ -165,6 +167,7 @@ class ShopController extends Controller
         $filters = $this->buildFilters($request, ['search' => $q]);
 
         $products = $this->products->paginateForFrontend($filters, $this->perPage($request));
+        $priceCeiling = $this->priceCeiling();
         $filterGroups = $this->products->getFilterableGroups();
         $rootCategories = $this->categories->getMenuTree();
         $activeTitle = $q !== '' ? "Search: {$q}" : 'Search Results';
@@ -174,7 +177,7 @@ class ShopController extends Controller
         }
 
         return view('frontend::catalog.shop', array_merge(
-            compact('products', 'filterGroups', 'rootCategories', 'activeTitle', 'filters', 'q'),
+            compact('products', 'filterGroups', 'rootCategories', 'activeTitle', 'filters', 'q', 'priceCeiling'),
             SeoData::productList($activeTitle, ['robots' => 'noindex,follow'])
         ));
     }
@@ -196,8 +199,8 @@ class ShopController extends Controller
         }
 
         return array_merge([
-            'price_min' => $request->integer('price_min', 0),
-            'price_max' => $request->integer('price_max', 100000),
+            'price_min' => $request->filled('price_min') ? max(0, $request->integer('price_min')) : null,
+            'price_max' => $request->filled('price_max') ? max(0, $request->integer('price_max')) : null,
             'c_cat' => $request->integer('c_cat') ?: null,
             's_cat' => $request->integer('s_cat') ?: null,
             'search' => $request->get('q'),
@@ -211,6 +214,13 @@ class ShopController extends Controller
         $default = (int) config('site-settings.products_per_page', 12);
 
         return min(max($request->integer('per_page', $default), 6), 36);
+    }
+
+    private function priceCeiling(): int
+    {
+        $maximum = (int) Product::query()->where('status', 1)->max('sales_price');
+
+        return max(1000, (int) (ceil($maximum / 1000) * 1000));
     }
 
     private function ajaxListingResponse($products)

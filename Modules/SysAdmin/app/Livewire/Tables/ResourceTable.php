@@ -48,6 +48,15 @@ class ResourceTable extends Component
         $this->resetPage();
     }
 
+    public function updatedPerPage(int $value): void
+    {
+        if (! in_array($value, [15, 30, 50], true)) {
+            $this->perPage = 15;
+        }
+
+        $this->resetPage();
+    }
+
     public function sort(string $field): void
     {
         $allowed = collect($this->definition()['columns'])->pluck('sort', 'key')->filter()->values()->all();
@@ -59,6 +68,8 @@ class ResourceTable extends Component
             $this->sortField = $field;
             $this->sortDirection = 'asc';
         }
+
+        $this->resetPage();
     }
 
     public function render()

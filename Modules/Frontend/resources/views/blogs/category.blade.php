@@ -5,7 +5,7 @@
     use Modules\SysAdmin\Helpers\ImageUploader;
 
     // fallback image if blog image is empty
-    $fallback = asset('assets/images/blog-image/1.jpg');
+    $fallback = asset('uploads/default.jpg');
 @endphp
 
 <x-frontend::layouts.master :seo="$seo ?? []" :structuredData="$structuredData ?? []">

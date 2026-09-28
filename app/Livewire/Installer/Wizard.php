@@ -110,6 +110,15 @@ class Wizard extends Component
         $this->failure = '';
 
         try {
+            $pending = json_encode([
+                'started_at' => now()->toIso8601String(),
+                'database' => trim($this->dbDatabase),
+            ], JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
+
+            if (file_put_contents(InstallationState::pendingPath(), $pending, LOCK_EX) === false) {
+                throw new \RuntimeException('Unable to write the installation progress file.');
+            }
+
             $environment->write([
                 'APP_NAME' => trim($this->appName),
                 'APP_URL' => rtrim(trim($this->appUrl), '/'),
@@ -132,6 +141,16 @@ class Wizard extends Component
 
             $this->configureDatabase();
             Artisan::call('migrate', ['--force' => true]);
+
+            if (! is_link(public_path('storage'))) {
+                if (file_exists(public_path('storage'))) {
+                    throw new \RuntimeException('public/storage exists but is not a symbolic link.');
+                }
+
+                if (Artisan::call('storage:link') !== 0 || ! is_link(public_path('storage'))) {
+                    throw new \RuntimeException('Unable to create the public storage link.');
+                }
+            }
 
             if (! Schema::hasTable('users')) {
                 throw new \RuntimeException('The users table was not created.');
@@ -156,6 +175,10 @@ class Wizard extends Component
 
             if (file_put_contents(InstallationState::lockPath(), $lock, LOCK_EX) === false) {
                 throw new \RuntimeException('Unable to write the installation lock file.');
+            }
+
+            if (is_file(InstallationState::pendingPath())) {
+                unlink(InstallationState::pendingPath());
             }
 
             Artisan::call('optimize:clear');
@@ -228,7 +251,7 @@ class Wizard extends Component
             ];
         }
 
-        foreach ([storage_path() => 'Storage directory', base_path('bootstrap/cache') => 'Bootstrap cache', base_path() => 'Project directory (.env)'] as $path => $label) {
+        foreach ([storage_path() => 'Storage directory', base_path('bootstrap/cache') => 'Bootstrap cache', public_path() => 'Public directory', base_path() => 'Project directory (.env)'] as $path => $label) {
             $checks[] = [
                 'label' => $label,
                 'detail' => is_writable($path) ? 'Writable' : 'Not writable',

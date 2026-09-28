@@ -19,12 +19,16 @@
     $currentSort   = $filters['sort']   ?? 'newest';
     $currentSearch = $filters['search'] ?? null;
 
-    $formAction = isset($category)
-        ? route('frontend.shop.category', $category->slug)
-        : route('frontend.shop.index');
+    $formAction = match (true) {
+        isset($category) => route('frontend.shop.category', $category->slug),
+        request()->routeIs('frontend.shop.search') => route('frontend.shop.search'),
+        default => route('frontend.shop.new-arrivals'),
+    };
+    $priceFloor = (int) ($filters['price_min'] ?? 0);
+    $priceLimit = (int) ($filters['price_max'] ?? $priceCeiling ?? 1000);
+    $hasPriceFilter = isset($filters['price_min']) || isset($filters['price_max']);
 
-    function shopFilterUrl(string $baseUrl, array $currentAttrs, int $attrId, int $valueId, ?int $cCat, ?int $sCat, ?string $sort, ?string $search): string
-    {
+    $shopFilterUrl = static function (string $baseUrl, array $currentAttrs, int $attrId, int $valueId, ?int $cCat, ?int $sCat, ?string $sort, ?string $search, ?int $priceMin, ?int $priceMax): string {
         $attrs    = $currentAttrs;
         $existing = array_map('intval', (array) ($attrs[$attrId] ?? []));
         if (in_array($valueId, $existing)) {
@@ -42,16 +46,16 @@
             's_cat' => $sCat,
             'sort'  => $sort !== 'newest' ? $sort : null,
             'q'     => $search,
-        ]);
+            'price_min' => $priceMin,
+            'price_max' => $priceMax,
+        ], fn ($value) => $value !== null && $value !== '');
         if (!empty($attrs)) {
             foreach ($attrs as $aId => $vIds) {
-                foreach ($vIds as $vId) {
-                    $query["attr[{$aId}][]"] = $vId;
-                }
+                $query['attr'][(int) $aId] = array_values(array_map('intval', (array) $vIds));
             }
         }
         return $baseUrl . (empty($query) ? '' : '?' . http_build_query($query));
-    }
+    };
 
     $activeChips = [];
     foreach ($currentAttrs as $attrId => $valueIds) {
@@ -60,7 +64,7 @@
                 if ((int) $attr->id !== (int) $attrId) continue;
                 foreach ($attr->values as $val) {
                     if (in_array((int) $val->id, array_map('intval', (array) $valueIds))) {
-                        $removeUrl     = shopFilterUrl($formAction, $currentAttrs, (int) $attrId, (int) $val->id, $currentCCat, $currentSCat, $currentSort, $currentSearch);
+                        $removeUrl = $shopFilterUrl($formAction, $currentAttrs, (int) $attrId, (int) $val->id, $currentCCat, $currentSCat, $currentSort, $currentSearch, $hasPriceFilter ? $priceFloor : null, $hasPriceFilter ? $priceLimit : null);
                         $activeChips[] = ['label' => $attr->name . ': ' . $val->value, 'url' => $removeUrl];
                     }
                 }
@@ -190,14 +194,14 @@
                         <div class="px-1">
                             <div id="sw-price-slider" class="sw-price-track mb-2">
                                 <div class="sw-price-fill" id="sw-price-fill"></div>
-                                <input type="range" id="sw-price-min-r" min="0" max="100000" step="100"
-                                       value="{{ request('price_min', 0) }}" class="sw-range-input">
-                                <input type="range" id="sw-price-max-r" min="0" max="100000" step="100"
-                                       value="{{ request('price_max', 100000) }}" class="sw-range-input">
+                                <input type="range" id="sw-price-min-r" min="0" max="{{ $priceCeiling }}" step="100"
+                                       value="{{ $priceFloor }}" class="sw-range-input">
+                                <input type="range" id="sw-price-max-r" min="0" max="{{ $priceCeiling }}" step="100"
+                                       value="{{ $priceLimit }}" class="sw-range-input">
                             </div>
                             <div class="d-flex justify-content-between mb-2" style="font-size:.8rem;color:#555">
-                                <span>{{ $currencySymbol }}<span id="sw-price-lbl-min">{{ number_format(request('price_min', 0)) }}</span></span>
-                                <span>{{ $currencySymbol }}<span id="sw-price-lbl-max">{{ number_format(request('price_max', 100000)) }}</span></span>
+                                <span>{{ $currencySymbol }}<span id="sw-price-lbl-min">{{ number_format($priceFloor) }}</span></span>
+                                <span>{{ $currencySymbol }}<span id="sw-price-lbl-max">{{ number_format($priceLimit) }}</span></span>
                             </div>
                             <form method="GET" action="{{ $formAction }}" id="price-filter-form">
                                 @if ($currentSCat)
@@ -214,8 +218,8 @@
                                 @if ($currentSort !== 'newest')
                                     <input type="hidden" name="sort" value="{{ $currentSort }}">
                                 @endif
-                                <input type="hidden" name="price_min" id="pf-min" value="{{ request('price_min', 0) }}">
-                                <input type="hidden" name="price_max" id="pf-max" value="{{ request('price_max', 100000) }}">
+                                <input type="hidden" name="price_min" id="pf-min" value="{{ $priceFloor }}">
+                                <input type="hidden" name="price_max" id="pf-max" value="{{ $priceLimit }}">
                                 <button type="submit" class="btn btn-sw-green btn-sm">Apply</button>
                             </form>
                         </div>
@@ -232,7 +236,7 @@
                                         @foreach ($attr->values as $val)
                                             @php
                                                 $isChecked = in_array((int) $val->id, array_map('intval', (array) ($currentAttrs[$attr->id] ?? [])));
-                                                $toggleUrl = shopFilterUrl($formAction, $currentAttrs, (int) $attr->id, (int) $val->id, $currentCCat, $currentSCat, $currentSort, $currentSearch);
+                                                $toggleUrl = $shopFilterUrl($formAction, $currentAttrs, (int) $attr->id, (int) $val->id, $currentCCat, $currentSCat, $currentSort, $currentSearch, $hasPriceFilter ? $priceFloor : null, $hasPriceFilter ? $priceLimit : null);
                                             @endphp
                                             <li>
                                                 <a href="{{ $toggleUrl }}"
@@ -251,7 +255,7 @@
                     {{-- Clear all filters --}}
                     @if (!empty($activeChips))
                         <div class="mb-3">
-                            <a href="{{ isset($category) ? route('frontend.shop.category', $category->slug) : route('frontend.shop.index') }}"
+                            <a href="{{ $formAction }}"
                                class="btn btn-outline-danger btn-sm w-100">
                                 Clear All Filters
                             </a>
@@ -364,9 +368,13 @@
                                 @if ($currentSort !== 'newest')
                                     <input type="hidden" name="sort" value="{{ $currentSort }}">
                                 @endif
+                                @if ($hasPriceFilter)
+                                    <input type="hidden" name="price_min" value="{{ $priceFloor }}">
+                                    <input type="hidden" name="price_max" value="{{ $priceLimit }}">
+                                @endif
                                 <label class="toolbar-label mb-0">Show:</label>
                                 <select name="per_page" class="form-select form-select-sm toolbar-sel">
-                                    @foreach ([9, 18, 27, 36] as $pp)
+                                    @foreach ([12, 24, 36] as $pp)
                                         <option value="{{ $pp }}" @selected($perPageCount == $pp)>{{ $pp }}</option>
                                     @endforeach
                                 </select>
@@ -385,8 +393,12 @@
                                         <input type="hidden" name="attr[{{ $attrId }}][]" value="{{ $vId }}">
                                     @endforeach
                                 @endforeach
-                                @if ($perPageCount != 9)
+                                @if ($perPageCount != 12)
                                     <input type="hidden" name="per_page" value="{{ $perPageCount }}">
+                                @endif
+                                @if ($hasPriceFilter)
+                                    <input type="hidden" name="price_min" value="{{ $priceFloor }}">
+                                    <input type="hidden" name="price_max" value="{{ $priceLimit }}">
                                 @endif
                                 <label class="toolbar-label mb-0">Sort By:</label>
                                 <select name="sort" class="form-select form-select-sm toolbar-sel">

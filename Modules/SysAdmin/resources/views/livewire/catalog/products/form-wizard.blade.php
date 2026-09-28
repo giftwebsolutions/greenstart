@@ -26,6 +26,7 @@
                 <div class="grid gap-4 md:grid-cols-2">
                     <x-sysadmin::input label="MRP (₹)" name="mrp" type="number" min="0" step="0.01" wire:model="mrp" required/>
                     <x-sysadmin::input label="Sales price (₹)" name="salesPrice" type="number" min="0" step="0.01" wire:model="salesPrice" required/>
+                    <x-sysadmin::input label="Simple product stock" name="stock" type="number" min="0" step="1" wire:model="stock" hint="Used until variants are configured. Variant products use each variant's stock." required/>
                     <x-sysadmin::select label="Main category" name="productCategory" wire:model.live.change="productCategory" placeholder="Choose main category" required>
                         @foreach($categories as $category)<option value="{{ $category->id }}">{{ $category->name }}</option>@endforeach
                     </x-sysadmin::select>
