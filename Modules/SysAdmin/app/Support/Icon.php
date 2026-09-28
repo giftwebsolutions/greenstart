@@ -39,6 +39,11 @@ final class Icon
         'refresh' => '<path d="M20 6v5h-5M4 18v-5h5M6.1 9A7 7 0 0 1 18.8 7.5L20 11M4 13l1.2 3.5A7 7 0 0 0 17.9 15"/>',
         'bolt' => '<path d="M13 2 5 14h7l-1 8 8-12h-7z"/>',
         'map' => '<path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3zM9 3v15M15 6v15"/>',
+        'shield' => '<path d="M12 3 20 6v5c0 5.2-3.3 8.4-8 10-4.7-1.6-8-4.8-8-10V6z"/><path d="m9 12 2 2 4-4"/>',
+        'calendar' => '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/>',
+        'quote' => '<path d="M7 17H4a2 2 0 0 1-2-2v-3a6 6 0 0 1 6-6v3a3 3 0 0 0-3 3h2zM19 17h-3a2 2 0 0 1-2-2v-3a6 6 0 0 1 6-6v3a3 3 0 0 0-3 3h2z"/>',
+        'bot' => '<rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4M8 12h.01M16 12h.01M8 16h8M2 12h2M20 12h2"/>',
+        'code' => '<path d="m8 9-4 3 4 3M16 9l4 3-4 3M14 5l-4 14"/>',
     ];
 
     public static function get(string $name, string $class = 'h-[18px] w-[18px]'): HtmlString

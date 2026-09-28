@@ -5,9 +5,7 @@
             <h1 class="mt-1 text-[22px] font-bold tracking-tight text-ink">System tools</h1>
             <p class="mt-1 max-w-2xl text-[13px] text-ink-muted">Maintain framework caches, inspect the runtime and verify writable application directories.</p>
         </div>
-        <x-sysadmin::btn href="{{ route('sysadmin.media.sitemap.index') }}">
-            {!! \Modules\SysAdmin\Support\Icon::get('map', 'h-4 w-4') !!} Manage sitemap
-        </x-sysadmin::btn>
+        <div class="flex flex-wrap gap-2"><x-sysadmin::btn href="{{ route('sysadmin.media.code.robot') }}">{!! \Modules\SysAdmin\Support\Icon::get('bot', 'h-4 w-4') !!} Edit robots.txt</x-sysadmin::btn><x-sysadmin::btn href="{{ route('sysadmin.media.sitemap.index') }}">{!! \Modules\SysAdmin\Support\Icon::get('map', 'h-4 w-4') !!} Manage sitemap</x-sysadmin::btn></div>
     </div>
 
     <div class="flex gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-[12px] text-amber-950">
@@ -55,6 +53,13 @@
                 <h2 class="mt-4 text-[15px] font-bold text-ink">XML sitemap</h2>
                 <p class="mt-1 text-xs leading-5 text-ink-muted">Generate storefront, catalog, CMS and blog URLs for search engines.</p>
                 <span class="mt-4 inline-flex items-center gap-1 text-xs font-bold text-primary">Open sitemap manager <span aria-hidden="true">→</span></span>
+            </a>
+
+            <a href="{{ route('sysadmin.media.code.robot') }}" class="group rounded-xl border border-sky-100 bg-gradient-to-br from-sky-50 to-white p-5 shadow-sm transition hover:border-sky-200">
+                <span class="grid size-10 place-items-center rounded-xl bg-white text-sky-700 shadow-sm">{!! \Modules\SysAdmin\Support\Icon::get('bot', 'h-5 w-5') !!}</span>
+                <h2 class="mt-4 text-[15px] font-bold text-ink">robots.txt</h2>
+                <p class="mt-1 text-xs leading-5 text-ink-muted">Manage crawler access rules and advertise the XML sitemap.</p>
+                <span class="mt-4 inline-flex items-center gap-1 text-xs font-bold text-sky-700">Open robots editor <span aria-hidden="true">→</span></span>
             </a>
         </div>
     </div>

@@ -22,7 +22,6 @@
     $initials = collect(preg_split('/\s+/', trim((string) ($admin?->name ?: 'Admin'))))->filter()->take(2)->map(fn ($part) => mb_strtoupper(mb_substr($part, 0, 1)))->implode('');
     $adminRole = $admin?->roles->first()?->name;
     $adminRoleLabel = $adminRole ? str($adminRole)->replace(['-', '_'], ' ')->title() : 'Administrator';
-    $icons = ['dashboard' => 'home', 'settings' => 'settings', 'user' => 'users', 'slider' => 'image', 'catalog' => 'box', 'page' => 'file', 'enquiry' => 'message', 'testimonial' => 'message', 'blog' => 'book', 'system' => 'server'];
     $canAccessRoute = function (?string $routeName) use ($admin): bool {
         if (! $routeName || $routeName === '#') {
             return true;
@@ -63,16 +62,16 @@
                 @if(count($children))
                     <div class="mt-0.5">
                         <button type="button" class="{{ $itemClass }}" @click="openGroup = openGroup === @js($menu['key']) ? null : @js($menu['key'])">
-                            {!! \Modules\SysAdmin\Support\Icon::get($icons[$menu['key']] ?? 'grid') !!}<span class="flex-1">{{ $menu['name'] }}</span><span class="transition" :class="openGroup === @js($menu['key']) && 'rotate-180'">{!! \Modules\SysAdmin\Support\Icon::get('chevron-down', 'h-4 w-4') !!}</span>
+                            {!! \Modules\SysAdmin\Support\Icon::get($menu['icon'] ?? 'grid') !!}<span class="flex-1">{{ $menu['name'] }}</span><span class="transition" :class="openGroup === @js($menu['key']) && 'rotate-180'">{!! \Modules\SysAdmin\Support\Icon::get('chevron-down', 'h-4 w-4') !!}</span>
                         </button>
                         <div x-show="openGroup === @js($menu['key'])" x-collapse x-cloak class="ml-5 border-l border-hairline py-1 pl-3">
                             @foreach($children as $child)
-                                <a href="{{ route($child['route']) }}" class="my-0.5 block rounded-lg px-3 py-2 text-[13px] {{ request()->routeIs(str_replace('.index', '.*', $child['route'])) ? 'bg-primary-50 text-primary-600' : 'text-ink-muted hover:bg-[var(--bg)] hover:text-ink' }}">{{ $child['name'] }}</a>
+                                <a href="{{ route($child['route']) }}" class="my-0.5 flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] {{ request()->routeIs(str_replace('.index', '.*', $child['route'])) ? 'bg-primary-50 text-primary-600' : 'text-ink-muted hover:bg-[var(--bg)] hover:text-ink' }}">{!! \Modules\SysAdmin\Support\Icon::get($child['icon'] ?? 'grid', 'h-3.5 w-3.5 shrink-0') !!}<span>{{ $child['name'] }}</span></a>
                             @endforeach
                         </div>
                     </div>
                 @elseif($routeName && $routeName !== '#' && $canAccessRoute($routeName))
-                    <a href="{{ route($routeName) }}" class="{{ $itemClass }} mt-0.5">{!! \Modules\SysAdmin\Support\Icon::get($icons[$menu['key']] ?? 'grid') !!}<span>{{ $menu['name'] }}</span></a>
+                    <a href="{{ route($routeName) }}" class="{{ $itemClass }} mt-0.5">{!! \Modules\SysAdmin\Support\Icon::get($menu['icon'] ?? 'grid') !!}<span>{{ $menu['name'] }}</span></a>
                 @endif
             @endforeach
         </nav>

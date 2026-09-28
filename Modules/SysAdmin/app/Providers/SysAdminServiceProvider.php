@@ -16,6 +16,7 @@ use Modules\SysAdmin\Livewire\Catalog\Products\FormWizard as ProductFormWizard;
 use Modules\SysAdmin\Livewire\Enquiries\Appointments as EnquiryAppointments;
 use Modules\SysAdmin\Livewire\Enquiries\Index as EnquiryIndex;
 use Modules\SysAdmin\Livewire\Enquiries\Workspace as EnquiryWorkspace;
+use Modules\SysAdmin\Livewire\RobotsEditor;
 use Modules\SysAdmin\Livewire\Roles\Workspace as RolesWorkspace;
 use Modules\SysAdmin\Livewire\ServerTools;
 use Modules\SysAdmin\Livewire\Settings\Workspace as SettingsWorkspace;
@@ -61,6 +62,7 @@ class SysAdminServiceProvider extends ServiceProvider
             'sysadmin.enquiries.appointments' => EnquiryAppointments::class,
             'sysadmin.resource-table' => ResourceTable::class,
             'sysadmin.roles.workspace' => RolesWorkspace::class,
+            'sysadmin.robots-editor' => RobotsEditor::class,
             'sysadmin.server-tools' => ServerTools::class,
             'sysadmin.sliders.editor' => SliderEditor::class,
             'sysadmin.sitemap-manager' => SitemapManager::class,

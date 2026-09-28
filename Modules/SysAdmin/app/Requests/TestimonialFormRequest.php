@@ -17,7 +17,7 @@ class TestimonialFormRequest extends FormRequest
     public function rules()
     {
         return match (request()->route()->action['as']) {
-            'sysadmin.testimonial.store'  => $this->store(),
+            'sysadmin.testimonial.store' => $this->store(),
             'sysadmin.testimonial.update' => $this->update(),
             default => $this->store(),
         };
@@ -29,7 +29,7 @@ class TestimonialFormRequest extends FormRequest
     public function store()
     {
         return [
-            'name'   => 'required|string|max:120',
+            'name' => 'required|string|max:120',
             'content' => 'required|string|max:5000',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
             'remove_image' => 'sometimes|boolean',
@@ -42,7 +42,7 @@ class TestimonialFormRequest extends FormRequest
     public function update()
     {
         return [
-            'name'   => 'required|string|max:120',
+            'name' => 'required|string|max:120',
             'content' => 'required|string|max:5000',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
             'remove_image' => 'sometimes|boolean',

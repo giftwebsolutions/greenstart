@@ -40,8 +40,9 @@ class TestimonialController extends Controller
     {
         $validatedData = $request->validated();
         $this->testimonialRepository->saveOrUpdate($validatedData);
+
         return redirect()->route('sysadmin.testimonial.index')
-                         ->with('success', 'Testimonial created successfully.');
+            ->with('success', 'Testimonial created successfully.');
     }
 
     /**
@@ -50,6 +51,7 @@ class TestimonialController extends Controller
     public function show($id)
     {
         $testimonial = $this->testimonialRepository->findOrFail($id);
+
         return view('sysadmin::testimonial.view', compact('testimonial'));
     }
 
@@ -59,6 +61,7 @@ class TestimonialController extends Controller
     public function edit($id)
     {
         $testimonial = $this->testimonialRepository->findOrFail($id);
+
         return view('sysadmin::testimonial.edit', compact('testimonial'));
     }
 
@@ -69,8 +72,9 @@ class TestimonialController extends Controller
     {
         $validatedData = $request->validated();
         $this->testimonialRepository->saveOrUpdate($validatedData, $id);
+
         return redirect()->route('sysadmin.testimonial.index')
-                         ->with('success', 'Testimonial updated successfully.');
+            ->with('success', 'Testimonial updated successfully.');
     }
 
     /**
@@ -83,7 +87,8 @@ class TestimonialController extends Controller
             ImageUploader::remove($testimonial->created_at->toDateTimeString(), $testimonial->image);
         }
         $this->testimonialRepository->delete($id);
+
         return redirect()->route('sysadmin.testimonial.index')
-                         ->with('success', 'Testimonial deleted successfully.');
+            ->with('success', 'Testimonial deleted successfully.');
     }
 }

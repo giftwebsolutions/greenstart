@@ -2,9 +2,10 @@
 
 namespace Modules\SysAdmin\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Modules\SysAdmin\Helpers\ImageUploader;
 
 /**
@@ -14,8 +15,8 @@ use Modules\SysAdmin\Helpers\ImageUploader;
  * @property string $name
  * @property string $content
  * @property string|null $image
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
 class Testimonial extends Model
 {
@@ -43,7 +44,7 @@ class Testimonial extends Model
     public function scopeSearch(Builder $query, $searchTerm)
     {
         return $query->where('name', 'like', "%{$searchTerm}%")
-                     ->orWhere('content', 'like', "%{$searchTerm}%");
+            ->orWhere('content', 'like', "%{$searchTerm}%");
     }
 
     public function getImageUrlAttribute(): string

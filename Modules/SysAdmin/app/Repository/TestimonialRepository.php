@@ -3,8 +3,8 @@
 namespace Modules\SysAdmin\Repository;
 
 use Illuminate\Http\UploadedFile;
-use Modules\SysAdmin\Core\Eloquent\RequestCriteria;
 use Modules\SysAdmin\Core\Eloquent\Repository as BaseRepository;
+use Modules\SysAdmin\Core\Eloquent\RequestCriteria;
 use Modules\SysAdmin\Helpers\ImageUploader;
 use Modules\SysAdmin\Interfaces\TestimonialInterface;
 use Modules\SysAdmin\Models\Testimonial;
@@ -109,7 +109,7 @@ class TestimonialRepository extends BaseRepository implements TestimonialInterfa
         return $this->baseQuery()
             ->when($term, function ($q) use ($term) {
                 $q->where('name', 'like', "%{$term}%")
-                  ->orWhere('content', 'like', "%{$term}%");
+                    ->orWhere('content', 'like', "%{$term}%");
             })
             ->orderByDesc('id')
             ->paginate($perPage)
